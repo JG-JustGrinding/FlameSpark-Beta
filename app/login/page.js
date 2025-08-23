@@ -2,6 +2,9 @@ import Header from "@/components/Header";
 import "../../styles/auth.css";
 import Image from "next/image";
 import Link from "next/link";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
+import { faLock } from '@fortawesome/free-solid-svg-icons'
 
 export default function LoginPage() {
     return (
@@ -24,14 +27,14 @@ export default function LoginPage() {
                     <div className="auth-content">
                         <div className="input-container">
                             <div className="label">
-                                <i className="fa fa-envelope"></i>
+                                <FontAwesomeIcon icon={faEnvelope} />
                                 <p className="label-color bodyFont body-size">Email Address</p>
                             </div>
                             <input className="bodyFont input-field" type="email" placeholder="Enter text here..." />
                         </div>
                         <div className="input-container">
                             <div className="label">
-                                <i className="fa fa-lock"></i>
+                                <FontAwesomeIcon icon={faLock} />
                                 <p className="label-color bodyFont body-size">Password</p>
                             </div>
                             <input className="bodyFont input-field" type="password" placeholder="Enter text here..." />
