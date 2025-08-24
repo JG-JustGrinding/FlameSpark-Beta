@@ -30,7 +30,6 @@ html, body {
 .error-message{
     color: var(--error-color);
     font-weight: bold;
-    display: none;
 }
 
 .container {
@@ -173,6 +172,12 @@ html, body {
 
 .bottom-section a:not(:hover){
     text-decoration-line: none;
+}
+
+.auth-button-off {
+    background-color: #CDCDCD;
+    color: rgba(0, 0, 0, 0.3);
+    cursor: default;
 }
 
 @media(max-width: 768px) {

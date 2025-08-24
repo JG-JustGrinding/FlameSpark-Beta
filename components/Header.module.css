@@ -10,6 +10,7 @@
     gap: 5px;
     font-family: 'Lato', 'Montserrat', sans-serif;
     z-index: 999;
+    height: 70px;
 }
 
     .header a:not(:hover) {
@@ -70,6 +71,10 @@
         gap: 5px;
     }
 
+    .header .authButtons.userActive{
+        gap: 10px;
+    }
+
         .header .authButtons button {
             white-space: nowrap;
             padding: 0.2rem 2rem;
@@ -101,14 +106,122 @@
             color: var(--flamespark-blue-accented);
         }
 
-        .header .authButtons button:hover {
+        .header .authButtons .animate:hover {
             transform: scale(1.03);
         }
 
-        .header .authButtons button:active {
+        .header .authButtons .animate:active {
             filter: brightness(0.9);
             transform: scale(0.97);
         }
+
+.header .authButtons .pfp {
+    max-height: 100%;
+    aspect-ratio: 1 / 1;
+    width: auto;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.2);
+    height: 40px;
+    cursor: pointer;
+    object-fit: cover;
+}
+
+.header .authButtons .inbox {
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.header .userPanel {
+    height: 100%;
+    overflow-y: auto;
+    background-color: red;
+}
+
+.header .userPanel .panelContainer {
+    height: auto;
+}
+
+.header .userSection {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.header .userDropdown {
+    position: absolute;
+    top: 70px;
+    right: 0px;
+    background-color: var(--white);
+    box-shadow: 
+        -2px 2px 4px var(--shadow),
+        2px 2px 4px var(--shadow);
+    padding: 15px 20px;
+    display: none;
+}
+
+.header .userDropdown.open {
+    display: initial;
+}
+
+.header .userDropdown .userDisplay {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    font-weight: bold;
+    justify-content: center;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--black);
+    font-size: 1.1rem;
+}
+
+.header .userDropdown .userDisplay span {
+    max-width: 200px;
+}
+
+.header .userDropdown .options {
+    display: flex;
+    flex-direction: column;
+}
+
+.header .userDropdown .options div{
+    display: flex;
+    gap: 5px;
+    margin: 15px 0px;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+}
+
+.options i {
+    font-size: 2rem;
+}
+
+    .header .userDropdown .logoutButton {
+        background-color: transparent;
+        margin-top: 5px;
+        font-size: .8rem;
+    }
+
+    .header .userDropdown .closeButton {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-user-select: none;
+        cursor: pointer;
+    }
+
+.header .userDropdown .userDisplay img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
 
     .header .hamburger {
         display: none;
