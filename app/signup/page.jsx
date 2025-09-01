@@ -18,7 +18,6 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-
   useEffect(() => {
       const checkUser = async () => {
       const { data } = await supabase.auth.getSession();
@@ -108,7 +107,7 @@ export default function SignupPage() {
 
           <h1 className="titleFont header-size">Sign Up for FlameSpark</h1>
 
-          {error && <p className="error-message titleFont">{error}</p>}
+          {error && <p className="titleFont">{error}</p>}
 
           <div className="auth-content">
             <div className="email-and-user">

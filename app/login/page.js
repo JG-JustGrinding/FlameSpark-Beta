@@ -44,7 +44,7 @@ export default function LoginPage() {
         password,
     }, {
         options: {
-        persistSession: persist,
+            persistSession: persist,
         },
     });
 
@@ -129,7 +129,7 @@ export default function LoginPage() {
                             onClick={handleGoogleLogin}><img src="/logo_google.png"/>
                             Login with Google
                             </button>
-                            <p className="label-color bodyFont account-if">Don't have an account? <a href="#">sign up</a></p>
+                            <p className="label-color bodyFont account-if">Don't have an account? <a href="/signup">sign up</a></p>
                         </div>
                     </div>
                 </div>

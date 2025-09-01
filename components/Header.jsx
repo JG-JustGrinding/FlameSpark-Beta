@@ -10,7 +10,7 @@ import { faBars, faInbox, faUser, faGear, faInfo, faPencil } from '@fortawesome/
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 
-export default function Header() {
+export default function Header({ forceAuthRedirect = false }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [userSet, setUserSet] = useState(false);
@@ -18,6 +18,14 @@ export default function Header() {
   const [avatar, setAvatar] = useState(null);
   const [username, setUsername] = useState(null);
   const [userPanelOpen, setUserPanelOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     // Get initial session
@@ -56,6 +64,11 @@ export default function Header() {
     router.push("/"); // redirect to homepage after logout
   };
 
+  useEffect(() => {
+    if (userSet && user == null && forceAuthRedirect) {
+      router.push('/login');
+    }
+  }, [userSet, user, forceAuthRedirect]);
 
   return (
     <header className={styles.header}>
@@ -64,10 +77,10 @@ export default function Header() {
 
       {/* Desktop nav */}
       <nav className={styles.navLinks}>
-        <Link href="#">Discover</Link>
+        <Link href="/">Discover</Link>
         <a href="#">Home</a>
         <a href="#">Quick Find</a>
-        <a href="#">Create</a>
+        <Link href="/create">Create</Link>
       </nav>
 
       {/* Hamburger (mobile) */}
@@ -98,7 +111,7 @@ export default function Header() {
 
       {/* Search */}
       <div className={styles.searchContainer}>
-        <input type="text" placeholder="Search here..." />
+        <input placeholder="Search here..." />
         <button className={styles.searchIconContainer}>
           <Image src="/search.svg" alt="Search" width={20} height={20} />
         </button>
@@ -112,23 +125,23 @@ export default function Header() {
                 <>
                 <div className={styles.userSection}>
                   <FontAwesomeIcon icon={faInbox} className={styles.inbox} />
-                  <img src={avatar} alt="User Avatar" className={styles.pfp}
+                  <img src={avatar} alt="User Avatar" className={`${styles.pfp} pfp-shape`}
                         onClick={() => {setUserPanelOpen(!userPanelOpen)}}></img>
                 </div>
                 <div className={`${styles.userDropdown} ${userPanelOpen ? styles.open : ""}`}>
                   <div className={`${styles.userDisplay} ${styles.titleFont}`}>
-                    <img src={avatar} alt="User Avatar" className="pfp"></img>
+                    <img src={avatar} alt="User Avatar" className="pfp pfp-shape"></img>
                     <span>{username}</span>
                   </div>
                   <div className={`${styles.options} ${styles.bodyFont}`}>
-                    <div>
+                    <Link href={`/user/${user.id}`}>
                       <FontAwesomeIcon className={styles.optionIcon} icon={faUser} />
                       <span className="bodyFont">View Profile</span>
-                    </div>
-                    <div>
+                    </Link>
+                    <Link href="/account">
                       <FontAwesomeIcon className={styles.optionIcon} icon={faGear} />
                       <span className="bodyFont">Account</span>
-                    </div>
+                    </Link>
                     <div>
                       <FontAwesomeIcon className={styles.optionIcon} icon={faInfo} />
                       <span className="bodyFont">About Us</span>

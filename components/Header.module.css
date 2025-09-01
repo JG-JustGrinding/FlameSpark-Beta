@@ -119,11 +119,9 @@
     max-height: 100%;
     aspect-ratio: 1 / 1;
     width: auto;
-    border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.2);
     height: 40px;
     cursor: pointer;
-    object-fit: cover;
 }
 
 .header .authButtons .inbox {
@@ -184,10 +182,12 @@
     flex-direction: column;
 }
 
-.header .userDropdown .options div{
+.header .userDropdown .options div, .header .userDropdown .options a{
     display: flex;
     gap: 5px;
     margin: 15px 0px;
+    font-weight: normal;
+    text-decoration: none;
     user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;

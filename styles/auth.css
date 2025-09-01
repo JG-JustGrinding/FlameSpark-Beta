@@ -27,11 +27,6 @@ html, body {
     display: none;
 }
 
-.error-message{
-    color: var(--error-color);
-    font-weight: bold;
-}
-
 .container {
     width: 60%;
     height: 100%;

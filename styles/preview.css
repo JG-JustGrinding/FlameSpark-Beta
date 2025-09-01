@@ -1,0 +1,215 @@
+html, body {
+    background-color: var(--white);
+}
+
+.main-container{
+    display: flex;
+    flex-direction: column;
+    padding: 100px 10%;
+}
+
+.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.top .left {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.project-logo {
+    border-radius: 50%;
+}
+
+.images {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+}
+
+.current-image {
+    aspect-ratio: 16 / 9;
+    width: 85%;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.current-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.side-images {
+    width: 15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.side-images h2 {
+    margin: 0;
+}
+
+.side-images-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    width: 100%;
+    gap: 10px;
+    max-height: 700px;
+}
+
+.side-image-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: rgba(0, 0, 0, 0.1);
+    max-height: 125px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.side-image-container img {
+    object-fit: contain;
+    height: 100%;
+}
+
+.project-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 15px;
+    margin-top: 45px;
+}
+
+.project-info * {
+    margin: 0px;
+    padding: 0px;
+}
+
+.project-info .tags {
+    display: flex;
+    gap: 10px;
+}
+
+.tag {
+    padding: 5px 10px;
+    border: 1px solid var(--black);
+    color: var(--black);
+    border-radius: 999px;
+}
+
+.join-button {
+    color: var(--white);
+    padding-left: 3rem;
+    padding-right: 3rem;
+}
+
+.join-button.red {
+    background-color: var(--flamespark-red);
+}
+
+.join-button.blue {
+    background-color: var(--flamespark-blue);
+}
+
+.current-image{
+    position: relative;
+}
+
+.arrows {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.arrow {
+    height: 30%;
+    width: 7%;
+    background-color: rgba(0, 0, 0, 0.5)
+}
+
+.arrow.left {
+    position: absolute;
+    left: 0;
+    top: 35%;
+}
+
+.arrow.right {
+    position: absolute;
+    right: 0;
+    top: 35%;
+}
+
+.creator-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: n;
+}
+
+.creator-info .name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.creator-info .name:not(:hover) {
+    color: var(--black);
+}
+
+.creator-info img {
+    width: 32px;
+    height: 32px;
+}
+
+@media(max-width: 768px) {
+    .main-container{
+        padding: 25px;
+    }
+
+    .images {
+        flex-direction: column;
+    }
+
+    .current-image{
+        width: 100%;
+    }
+
+    .side-images {
+        width: 100%;
+        max-height: 100px;
+    }
+
+    .side-images-container {
+        max-height: inherit;
+        flex-direction: row;
+    }
+
+    .side-image-container {
+        max-height: inherit;
+        width: auto;
+        height: 100%;
+    }
+
+    .join-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .project-title {
+        font-size: 1.5rem;
+    }
+}
