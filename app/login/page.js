@@ -82,7 +82,7 @@ export default function LoginPage() {
                 <div className="container">
                     <div className="top-bar">
                         <button className="left button button-shape bodyFont">Log In</button>
-                        <Link href="/signup" className="right button button-shape bodyFont off">Sign Up</Link>
+                        <a href="/signup" className="right button button-shape bodyFont off">Sign Up</a>
                     </div>
 
                     <h1 className="titleFont header-size">Log In to FlameSpark</h1>

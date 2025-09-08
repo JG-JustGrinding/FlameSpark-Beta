@@ -8,11 +8,19 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { useUser } from "@/lib/useUser";
+import Link from "next/link";
+const PAGE_SIZE = 10;
 
 export default function Home() {
   const [errorMessage, setErrorMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
   const searchParams = useSearchParams();
+  const [projects, setProjects] = useState([]);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const { user } = useUser();
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -43,6 +51,66 @@ export default function Home() {
 
       checkUser();
     }, [searchParams]);
+
+  useEffect(() => {
+    fetchProjects(0).then(() => {
+      ensureFill(); // <- auto-fill screen if not enough projects
+    });
+  }, []);
+
+  const ensureFill = async () => {
+    while (document.body.scrollHeight <= window.innerHeight && hasMore) {
+      await loadMoreProjects();
+    }
+  };
+
+  const loadMoreProjects = async () => {
+    if (!loading && hasMore) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      await fetchProjects();
+    }
+  };
+
+  useEffect(() => {
+    const handleScroll = debounce(() => {
+      if (
+      window.innerHeight + window.scrollY >=
+      document.documentElement.scrollHeight - 300
+      ) {
+        loadMoreProjects();
+      }
+    }, 150); // ms
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  });
+
+
+  const fetchProjects = async () => {
+    const { data, error } = await supabase.rpc("random_projects", { limit_count: PAGE_SIZE });
+
+    if (error) {
+      setLoading(false);
+      return;
+    }
+
+    if (data.length < PAGE_SIZE) 
+    {
+      setHasMore(false);
+    }
+
+    setProjects((prev) => [...prev, ...data]);
+    setLoading(false);
+  };
+
+  function debounce(func, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => func.apply(this, args), delay);
+  };
+}
 
   return (
     <>
@@ -110,22 +178,26 @@ export default function Home() {
             <p className="bodyFont body-size label">Find amazing new projects to be part of</p>
           </div>
           <div className="content">
-            <div className="project">
+            {projects.map((project, i) => (
+            <a href={`project/${project.id}/preview`} key={i} className="project">
               <div className="cover-image-wrapper">
-                <img className="cover-image" src="https://th.bing.com/th/id/R.ede46a9dfee948097c32754539f748b5?rik=DtAKs02lpfOoNQ&riu=http%3a%2f%2fcdn.wallpapersafari.com%2f2%2f99%2fjfFvcC.jpg&ehk=ERm69cf8%2bCml3Q1JkF8%2bBDbZiNBoF1C1iNhDQZKcISM%3d&risl=&pid=ImgRaw&r=0" alt="Cover image"></img>
+                <img className="cover-image" src={project.cover_image} alt="Cover image"></img>
               </div>
-              <span className="bodyFont tagline label"><i>A project about...</i></span>
+              <span className="bodyFont tagline label"><i>{project.tagline}</i></span>
               <div className="project-info">
-                <img className="project-icon" src="https://tse2.mm.bing.net/th/id/OIP.9YCks5t7F6UKg-KB1U-OXAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Project Icon"></img>
+                <img className="project-icon" src={project.icon} alt="Project Icon"></img>
                 <div className="project-nameandtags">
-                  <span className="project-name titleFont bold">Project name</span>
+                  <span className="project-name titleFont bold">{project.title}</span>
                   <div className="tags bodyFont label caption-size">
-                    <span className="text">tag 1 tag 2 tag 3</span>
+                    <span className="text">{project.tags?.join(", ")}</span>
                   </div>
                 </div>
               </div>
-            </div>
+            </a>
+            ))}
           </div>
+          {loading && <p className="bodyFont body-size bold no-more">Loading...</p>}
+          {!hasMore && <p className="bodyFont body-size bold no-more">No more projects...</p> }
         </div>
       </main>
     </>

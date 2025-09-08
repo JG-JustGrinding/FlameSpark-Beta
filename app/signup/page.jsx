@@ -7,10 +7,11 @@ import "../../styles/auth.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faTag, faLock } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faTag, faLock, faKey } from "@fortawesome/free-solid-svg-icons";
 
 export default function SignupPage() {
   const router = useRouter();
+  const [accessKey, setAccessKey] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -99,9 +100,9 @@ export default function SignupPage() {
 
         <div className="container">
           <div className="top-bar">
-            <Link href="/login" className="left button button-shape bodyFont off">
+            <a href="/login" className="left button button-shape bodyFont off">
               Log In
-            </Link>
+            </a>
             <button className="right button button-shape bodyFont">Sign Up</button>
           </div>
 
@@ -110,6 +111,21 @@ export default function SignupPage() {
           {error && <p className="titleFont">{error}</p>}
 
           <div className="auth-content">
+
+            <div className="input-container">
+              <div className="label">
+                <FontAwesomeIcon icon={faKey} />
+                <p className="bodyFont body-size bold">Access Key</p>
+              </div>
+              <input
+                className="bodyFont input-field"
+                type="password"
+                placeholder="Enter text here..."
+                value={accessKey}
+                onChange={(e) => setAccessKey(e.target.value)}
+              />
+            </div>
+
             <div className="email-and-user">
               <div className="input-container">
                 <div className="label">

@@ -191,4 +191,13 @@ body {
   .card {
     padding: 16px;
   }
+
+  .tagInputRow {
+    gap: 10px;
+    flex-direction: column;
+  }
+
+  .tagInputRow button {
+    margin: 0;
+  }
 }

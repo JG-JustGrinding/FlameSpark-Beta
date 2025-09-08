@@ -5,64 +5,19 @@ import styles from "./Header.module.css";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import '../lib/fontawesome'
+import { useUser } from "@/lib/useUser";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faInbox, faUser, faGear, faInfo, faPencil } from '@fortawesome/free-solid-svg-icons'
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 
-export default function Header({ forceAuthRedirect = false }) {
+
+export default function Header({ forceAuthRedirect = false, isDashboardHeader = false, project = null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [userSet, setUserSet] = useState(false);
   const router = useRouter();
-  const [avatar, setAvatar] = useState(null);
-  const [username, setUsername] = useState(null);
   const [userPanelOpen, setUserPanelOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    fetchUser();
-  }, []);
-
-  useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data }) => {
-      const currentUser = data.session?.user || null;
-      setUser(currentUser);
-      setUserSet(true);
-
-      if (currentUser) {
-        setAvatar(currentUser.user_metadata?.avatar_url || "/profile_icon_colored.svg");
-        setUsername(currentUser.user_metadata?.username || "No Username");
-      }
-    });
-
-    // Listen for auth state changes
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      const currentUser = session?.user || null;
-      setUser(currentUser);
-      setUserSet(true);
-
-      if (currentUser) {
-        setAvatar(currentUser.user_metadata?.avatar_url || "/profile_icon_colored.svg");
-        setUsername(currentUser.user_metadata?.username || "No Username");
-      } else {
-        setAvatar(null);
-        setUsername(null);
-      }
-    });
-
-    return () => listener.subscription.unsubscribe();
-  }, []);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    router.push("/"); // redirect to homepage after logout
-  };
+  const { user, userSet, avatar, username, handleLogout } = useUser();
 
   useEffect(() => {
     if (userSet && user == null && forceAuthRedirect) {
@@ -71,19 +26,28 @@ export default function Header({ forceAuthRedirect = false }) {
   }, [userSet, user, forceAuthRedirect]);
 
   return (
-    <header className={styles.header}>
+    <header className={`${styles.header} titleFont`}>
       {/* Logo */}
       <a href="">Logo</a>
 
-      {/* Desktop nav */}
+      {isDashboardHeader && 
+      <>
+        {project &&
+        <>
+
+        </>
+        }
+      </>
+      }
+
+      {!isDashboardHeader && (<>
       <nav className={styles.navLinks}>
-        <Link href="/">Discover</Link>
+        <a href="/">Discover</a>
         <a href="#">Home</a>
         <a href="#">Quick Find</a>
-        <Link href="/create">Create</Link>
+        <a href="/create">Create</a>
       </nav>
 
-      {/* Hamburger (mobile) */}
       <div
         className={styles.hamburger}
         onClick={() => setMobileOpen(true)}
@@ -91,15 +55,14 @@ export default function Header({ forceAuthRedirect = false }) {
         <FontAwesomeIcon icon={faBars} className={styles.menuButton} />
       </div>
 
-      {/* Mobile menu */}
       <div
         className={`${styles.mobileMenu} ${mobileOpen ? styles.open : ""}`}
       >
         <nav className={styles.navLinksMobile}>
-          <a href="#">Discover</a>
+          <a href="/">Discover</a>
           <a href="#">Home</a>
           <a href="#">Quick Find</a>
-          <a href="#">Create</a>
+          <a href="/create">Create</a>
         </nav>
         <div
           className={styles.closeButton}
@@ -109,14 +72,14 @@ export default function Header({ forceAuthRedirect = false }) {
         </div>
       </div>
 
-      {/* Search */}
       <div className={styles.searchContainer}>
         <input placeholder="Search here..." />
         <button className={styles.searchIconContainer}>
           <Image src="/search.svg" alt="Search" width={20} height={20} />
         </button>
       </div>
-      
+      </>)}
+
       {/* Auth buttons */}
       <div className={styles.authButtons}>
           {userSet && (
@@ -134,22 +97,14 @@ export default function Header({ forceAuthRedirect = false }) {
                     <span>{username}</span>
                   </div>
                   <div className={`${styles.options} ${styles.bodyFont}`}>
-                    <Link href={`/user/${user.id}`}>
+                    <a href={`/user/${user.id}`}>
                       <FontAwesomeIcon className={styles.optionIcon} icon={faUser} />
                       <span className="bodyFont">View Profile</span>
-                    </Link>
-                    <Link href="/account">
+                    </a>
+                    <a href="/account">
                       <FontAwesomeIcon className={styles.optionIcon} icon={faGear} />
                       <span className="bodyFont">Account</span>
-                    </Link>
-                    <div>
-                      <FontAwesomeIcon className={styles.optionIcon} icon={faInfo} />
-                      <span className="bodyFont">About Us</span>
-                    </div>
-                    <div>
-                      <FontAwesomeIcon className={styles.optionIcon} icon={faPencil} />
-                      <span className="bodyFont">Contact Us</span>
-                    </div>
+                    </a>
                     <button className={`${styles.logoutButton} bodyFont`}
                             onClick={handleLogout}>
                       Logout
@@ -160,8 +115,8 @@ export default function Header({ forceAuthRedirect = false }) {
                 </>
               ) : (
                 <>
-                  <Link href="/login"><button className={`${styles.logIn} ${styles.animate}`}>Log In</button></Link>
-                  <Link href="/signup"><button className={`${styles.signUp} ${styles.animate}`}>Sign Up</button></Link>
+                  <a href="/login"><button className={`${styles.logIn} ${styles.animate}`}>Log In</button></a>
+                  <a href="/signup"><button className={`${styles.signUp} ${styles.animate}`}>Sign Up</button></a>
                 </>
               )}
             </>

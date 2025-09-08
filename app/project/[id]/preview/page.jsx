@@ -190,10 +190,10 @@ export default function ProjectPreview(){
                     </div>
                     <div className="creator-info">
                       <span className="bodyFont body-size">Created By: </span>
-                      <Link className="name" href={`/user/${creatorInfo?.id}`}>
+                      <a className="name" href={`/user/${creatorInfo?.id}`}>
                         <img className="creator-pfp pfp-shape" src={creatorInfo?.avatar_url}></img>
                         <span className="titleFont body-size bold">{creatorInfo?.username ? creatorInfo?.username : "No Username" }</span>
-                      </Link>
+                      </a>
                     </div>
                 </div>
             </main>

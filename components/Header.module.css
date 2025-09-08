@@ -8,7 +8,6 @@
     padding: 15px;
     background-color: var(--white);
     gap: 5px;
-    font-family: 'Lato', 'Montserrat', sans-serif;
     z-index: 999;
     height: 70px;
 }
@@ -24,6 +23,14 @@
         justify-content: space-around;
         gap: 35px;
     }
+
+    .header .dashboardNav {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        gap: 35px;
+    }
+
 
     .header a {
         font-weight: bold;

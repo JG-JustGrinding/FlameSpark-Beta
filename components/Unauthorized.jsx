@@ -1,8 +1,15 @@
 "use client";
 import Header from "@/components/Header";
 import styles from "@/styles/ErrorPage.module.css";
+import { useRouter } from "next/navigation";
 
 export default function Unauthorized() {
+  const Router = useRouter();
+  
+  const toDiscover = () => {
+    Router.push("/");
+  }
+
   return (
     <div className={styles.container}>
       <Header />
@@ -19,7 +26,7 @@ export default function Unauthorized() {
             If you believe this is an error, please try checking the URL or contacting us.<br/>
             In the meantime, you can go back to our discover page or to another section of FlameSpark.
           </p>
-          <button className="bodyFontBold">Go to Discover</button>
+          <button className="bodyFontBold" onClick={toDiscover}>Go to Discover</button>
         </div>
       </main>
     </div>

@@ -1,0 +1,176 @@
+.create-panel .backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 4000;
+}
+
+.create-panel .panel-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    height: 80%;
+    max-width: 1000px;
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    transform: translate(-50%, -50%);
+    z-index: 4100;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.create-panel .close-button {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 2rem;
+}
+
+.create-panel .top-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-bottom: 1px solid #ccc;
+    padding: 1.5rem 1.5rem 0px 1.5rem;
+}
+
+.create-panel .post-options {
+    display: flex;
+    gap: 10px;
+}
+
+.create-panel .post-options span{
+    padding: 10px;
+}
+
+.create-panel .selected {
+    color: var(--black);
+    cursor: default;
+}
+
+.create-panel .post-options span.selected{
+    color: var(--black);
+    font-weight: bold;
+    border-bottom: 2px solid var(--black);
+    cursor: default;
+}
+
+.create-panel .content {
+    height: 100%;
+    display: flex;
+    overflow-y: auto;
+}
+
+.multipost-manager {
+    height: 100%;
+    border-right: 1px solid #ccc;
+}
+
+.multipost-manager .top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+}
+
+.multipost-manager .post-sections {
+    max-height: 100%;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding-top: 15px;
+    gap: 15px;
+}
+
+.multipost-manager .post-sections span {
+    width: 100%;
+    text-align: center;
+}
+
+.create-panel .create-content {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+}
+
+.create-panel .create-content .post-type-options {
+    height: 100%;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.post-type-options .option {
+    font-size: 1.5rem;
+}
+
+.post-type-options .option.selected {
+    font-size: 1.75rem;
+}
+
+.create-content .create-actions {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.create-actions .actions {
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.create-actions .actions .right {
+    display: flex;
+    gap: 10px;
+}
+
+.create-content .creation-container {
+    padding: 10px 15px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: auto;
+}
+
+button.create {
+    background-color: var(--flamespark-red);
+    color: var(--white);
+}
+
+button.create:disabled {
+    background-color: rgba(35, 35, 35, .5);
+    cursor: default;
+}
+
+button.remove {
+    background-color: var(--flamespark-blue);
+    color: var(--white);
+}
+
+.capped-input {
+    width: 100%;
+    margin: 0;
+}
+
+.mt {
+    margin-top: 5px;
+}

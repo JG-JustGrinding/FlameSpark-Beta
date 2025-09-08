@@ -1,0 +1,19 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.counter {
+  font-size: .8rem;
+  text-align: right;
+}
+
+.hide {
+  display: none;
+}

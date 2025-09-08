@@ -90,7 +90,7 @@ export default function UserPage() {
                     <div className="relations-content">
                         {selectedIndex == 0 &&
                             projects.map((proj) => (
-                                <Link className="project-link" key={proj.id} href={`/project/${proj.id}/preview`} target="_blank">
+                                <a className="project-link" key={proj.id} href={`/project/${proj.id}/preview`}>
                                 <div className="project" >
                                 <div className="cover-image-wrapper">
                                     <img
@@ -113,16 +113,16 @@ export default function UserPage() {
                                         {proj.title}
                                     </span>
                                     <div className="tags bodyFont label caption-size">
-                                        <span className="text">{proj.tags?.join(" ")}</span>
+                                        <span className="text">{proj.tags?.join(", ")}</span>
                                     </div>
                                     </div>
                                 </div>
                             </div>
-                            </Link>
+                            </a>
                         ))}
                         {selectedIndex == 1 &&
                             joinedProjects.map((proj) => (
-                                <Link className="project-link" key={proj.id} href={`/project/${proj.id}/preview`} target="_blank">
+                                <a className="project-link" key={proj.id} href={`/project/${proj.id}/preview`}>
                                 <div className="project" >
                                 <div className="cover-image-wrapper">
                                     <img
@@ -145,12 +145,12 @@ export default function UserPage() {
                                         {proj.title}
                                     </span>
                                     <div className="tags bodyFont label caption-size">
-                                        <span className="text">{proj.tags?.join(" ")}</span>
+                                        <span className="text">{proj.tags?.join(", ")}</span>
                                     </div>
                                     </div>
                                 </div>
                             </div>
-                            </Link>
+                            </a>
                         ))}
                     </div>
                 </div>

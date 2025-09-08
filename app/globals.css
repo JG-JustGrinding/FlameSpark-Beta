@@ -8,6 +8,7 @@
     --flamespark-green-accented: #04A777;
     --flamespark-blue-accented: #4C6584;
     --flamespark-background: #19193B;
+    --flamespark-tinted-page: #FCE6E3;
     --success-color: #04A777;
     --warning-color: #F08A2E;
     --error-color: #E72D3A;
@@ -96,6 +97,23 @@ body {
 .success-message{
     color: var(--success-color);
     font-weight: bold;
+}
+
+.hide {
+  display: none;
+}
+
+.no-select-pointer {
+  user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+
+.reset {
+  margin: 0;
+  padding: 0;
 }
 
 img,

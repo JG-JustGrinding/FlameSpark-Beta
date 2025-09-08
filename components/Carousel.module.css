@@ -1,0 +1,95 @@
+.carouselContainer {
+    position: relative;
+    max-width: 800px;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: var(--shadow);
+    width: 100%;
+}
+
+.imageWrapper {
+  position: relative;
+  height: 450px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: start;
+}
+
+.image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.image.active {
+  opacity: 1;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 2;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+}
+
+.nav.left {
+  left: 10px;
+}
+
+.nav.right {
+  right: 10px;
+}
+
+.nav:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.dotsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-top: 2px solid white;
+    padding: 10px 0;
+    background-color: var(--flamespark-background);
+}
+
+.dot {
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  margin: 0 4px;
+  background-color: #bbb;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active {
+    width: 15px;
+    height: 15px;
+}
+
+.dot:hover,
+.dot.active {
+  background-color: #fff;
+}
