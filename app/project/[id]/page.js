@@ -6,18 +6,20 @@ import { getProject } from "@/lib/projectFunctions";
 import { useParams } from "next/navigation";
 import '@/lib/fontawesome'
 import { useUser } from "@/lib/useUser";
-import { isUserOwner, createPost } from "@/lib/projectFunctions";
+import { isUserOwner, createPost, getProjectPosts } from "@/lib/projectFunctions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faArrowDown, faLink, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import { faT, faImage, faVideo, faVolumeLow, faPoll } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
 import "@/styles/project.css"
 import "@/styles/projectCreatePanel.css"
+import ProjectPost from "@/components/ProjectPost";
 import Carousel from "@/components/Carousel";
 import CappedInput from "@/components/CappedInput";
 
 export default function ProjectPage(){
     const [project, setProject] = useState(null);
+    const [projectPosts, setProjectPosts] = useState([]);
     const [error, setError] = useState(false);
     const [creationError, setCreationError] = useState("");
     const [creatingPost, setCreatingPost] = useState(false);
@@ -31,7 +33,6 @@ export default function ProjectPage(){
                 const value = await getProject(id);
                 setProject(value);
             } catch (error) {
-                console.log(error.message);
                 setError(true);
             }
         }
@@ -45,6 +46,19 @@ export default function ProjectPage(){
             </>
         )
     }
+
+    useEffect(() => {
+        async function run(){
+            try {
+                const value = await getProjectPosts(id);
+                setProjectPosts(value);
+            } catch (error) {
+
+            }
+        }
+
+        run();
+    }, [id])
 
     useEffect(() => {
         const checkIsOwner = async () => {
@@ -142,8 +156,7 @@ export default function ProjectPage(){
                                     <h1 className="titleFont title-size">{project?.title}</h1>
                                 </div>
                                 <div className="filters titleFont">
-                                    <button className="button-shape selected">All</button>
-                                    <button className="button-shape">Recent</button>
+                                    <button className="button-shape selected">Recent</button>
                                     <button className="button-shape">Oldest</button>
                                     <button className="button-shape">Top</button>
                                 </div>
@@ -153,74 +166,10 @@ export default function ProjectPage(){
                                 </div>}
                             </div>
                             <div className="post-container">
-                                <div className="post card text">
-                                    <div className="post-top">
-                                        <img className="icon pfp-shape" alt="post-icon" src={project?.icon}></img>
-                                        <div className="info">
-                                            <div className="title-info">
-                                                <div className="title-desc">
-                                                    <div className="title-date">
-                                                        <span className="post-title titleFont header-size">Post Title</span>
-                                                        <span className="post-date label-color bodyFont">2 days ago</span>
-                                                    </div>
-                                                    <span className="post-title bodyFont body-size label-color reset">Post Desc</span>
-                                                </div>
-                                            </div>
-                                            <span className="date-created"></span>
-                                        </div>
-                                    </div>
-                                    <span className="label-color caption-size bodyFont">1 of 1</span>
-                                    <div className="post-content">
-                                        <div className="content">
-                                            <p className="text-post bodyFont body-size">This is a text post</p>
-                                            <img className="" alt="image post"></img>
-                                            <audio controls className=""></audio>
-                                            <video controls className=""></video>
-                                            <ul className="poll">
-                                                <li>
-                                                    <div className="poll-option">
-                                                        <div className="color">
-                                                            <span className="bodyFont">Poll Option 1</span>
-                                                        </div>
-                                                        <div className="percent label-color bodyFont caption-size">
-                                                            <span className="hide">0%</span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div className="poll-option">
-                                                        <div className="color">
-                                                            <span className="bodyFont">Poll Option 2</span>
-                                                        </div>
-                                                        <div className="percent label-color bodyFont caption-size">
-                                                            <span className="hide">0%</span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                            <ul className="links bodyFont">
-                                                <li>
-                                                    <a target="_blank"><FontAwesomeIcon icon={faLink}/> This is a link</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div className="actions hide caption-size">
-                                            <button className="button-shape bodyFont">Back</button>
-                                            <button className="button-shape bodyFont">Next</button>
-                                        </div>
-                                    </div>
-                                    <div className="post-bottom bodyFont">
-                                        <div className="rating">
-                                            <FontAwesomeIcon className="vote" icon={faArrowUp}/>
-                                            <span className="bold bad">0</span>
-                                            <FontAwesomeIcon className="vote" icon={faArrowDown}/>
-                                        </div>
-                                        <div className="comments">
-                                            <FontAwesomeIcon icon={faComment}/>
-                                            <span className="bold">0</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                <ProjectPost icon={project?.icon} postTitle="Post Title" postDescription="Post Description"></ProjectPost>                
+                                {projectPosts.map((post, i) => (
+                                    <ProjectPost key={i} icon={project?.icon} postTitle={post.title} postDescription={post.description}></ProjectPost>                
+                                ))}
                             </div>
                         </div>
                         <div className="side-section">
