@@ -1,7 +1,15 @@
+.wrapper {
+  display: flex;
+}
+
 .field {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.field input, .field textarea {
+  width: 100%;
 }
 
 .field textarea {

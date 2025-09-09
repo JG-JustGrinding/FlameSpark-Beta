@@ -4,12 +4,14 @@ import React, { useState, useEffect } from 'react';
 import "./CappedInput.css"
 
 const CappedInput = ({
+  children,
   label,
   value,
   onChange,
   placeholder = 'Enter text here...',
   maxLength = 100,
   isTextArea = false,
+  hideCounter = false,
   className = '',
   id,
 }) => {
@@ -17,6 +19,7 @@ const CappedInput = ({
     <div className={`field capped-input ${className}`}>
       {label && <label htmlFor={id} className="bodyFont">{label}</label>}
 
+    <div className='wrapper'>
       {isTextArea ? (
         <textarea
           id={id}
@@ -37,8 +40,10 @@ const CappedInput = ({
           className="bodyFont input-field"
         />
       )}
+      {children}
+      </div>
 
-      <span className={`counter bodyFont label-color`}>
+      <span className={`counter bodyFont label-color ${hideCounter ? "hide" : ""}`}>
         {value.length}/{maxLength}
       </span>
     </div>

@@ -327,7 +327,7 @@ export default function CreatePage() {
               </div>
 
             <label className={`${styles.mt} bodyFont`}>Preview Images (up to {MAX_PREVIEW_IMAGES})</label>
-            {previewImages.length > 0 && <span className="label-color">{previewImages.length} {previewImages.length != 1 ? "Images" : "Image"}</span>}
+            {previewImages.length > 0 && <span className="label-color bodyFont">{previewImages.length} {previewImages.length != 1 ? "Images" : "Image"}</span>}
             <input type="file" accept="image/*" className="bodyFont input-field" multiple  onChange={handlePreviewChange} />
             <div className={styles.previewImages}>
               {previewImages.map((img, i) => (

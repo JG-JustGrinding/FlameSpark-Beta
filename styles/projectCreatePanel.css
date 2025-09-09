@@ -174,3 +174,189 @@ button.remove {
 .mt {
     margin-top: 5px;
 }
+
+.Image-Post-Field{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.poll-creator {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.poll-creator-input .input-field {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.poll-creator-input .add-button {
+    border-radius: 0px 5px 5px 0px;
+    background-color: var(--flamespark-red);
+    color: var(--white);
+    border: 1px solid var(--black);
+    min-width: 40px;
+}
+
+.poll-options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.poll-options-container .poll-option {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--black);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.poll-option .remove {
+    font-size: 1.2rem;
+}
+
+.audio-uploader .audio-field {
+    display: flex;
+}
+
+.audio-uploader .upload-field {
+    width: 150px;
+    height: 150px;
+    border-radius: 5px 0px 0px 5px;
+    border: 1px dotted var(--black);
+    border-right: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+    position: relative;
+}
+
+.audio-uploader .upload-field input {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0%;
+}
+
+.audio-uploader .upload-field .audio-icon {
+    font-size: 2rem;
+}
+
+.audio-uploader .audio-field .audio-display {
+    width: 100%;
+    max-width: 400px;
+    border-radius: 0px 5px 5px 0px;
+    border: 1px solid var(--black);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    position: relative;
+}
+
+.audio-display audio {
+    width: 100%;
+}
+
+.audio-display .file-name {
+    position: absolute;
+    bottom: 1px;
+    text-align: center;
+}
+
+.creation-container .video-preview {
+    max-width: 560px;
+    aspect-ratio: 16 / 9;
+    margin-bottom: 30px;
+}
+
+.links-creator {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.links-creator .links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.links-creator .links-container .link {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--black);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.link .content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.links-container .link .link-icon {
+    font-size: 1.5rem;
+}
+
+.links-container .link .link-properties {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 90%;
+}
+
+.links-container .link .link-properties div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.link-properties input {
+    width: 100%;
+}
+
+.postImages {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.postImageContainer {
+  max-width: 250px;
+  max-height: 250px;
+  background-color: var(--shadow);
+}
+
+.postImages img {
+  object-fit: contain;
+}
+
+.postImageContainer button {
+  width: 100%;
+  background-color: var(--flamespark-red-accented);
+  color: var(--white);
+  padding: 0.5rem 0rem;
+  font-size: 0.8rem;
+}
+
+.sixteennine {
+  aspect-ratio: 16 / 9;
+}
+
+.squareRatio {
+  aspect-ratio: 1 / 1;
+}
