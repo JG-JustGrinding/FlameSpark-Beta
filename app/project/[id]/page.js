@@ -44,14 +44,6 @@ export default function ProjectPage(){
         run();
     }, [id]);
 
-    if (error){
-        return (
-            <>
-                <ErrorComponent/>
-            </>
-        )
-    }
-
     useEffect(() => {
         async function run(){
             try {
@@ -136,6 +128,14 @@ export default function ProjectPage(){
         setCreationError("");
     }, [creationSelectionIndex, postMainTypeIndex, currentPostIndex])
     
+    if (error){
+        return (
+            <>
+                <ErrorComponent/>
+            </>
+        )
+    }
+
     const MAX_POST_IMAGES = 3;
     const MAX_POLL_OPTIONS = 4;
     const MAX_LINKS = 5;

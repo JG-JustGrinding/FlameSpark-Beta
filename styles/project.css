@@ -4,8 +4,9 @@ h1, img {
 }
 
 body {
-    background-color: var(--flamespark-tinted-page);
+    height: 100%;
 }
+
 
 .container {
     width: 100%;
