@@ -9,11 +9,10 @@
 
 .imageWrapper {
   position: relative;
-  height: 450px;
   width: 100%;
   display: flex;
-  justify-content: flex-start;
-  align-items: start;
+  justify-content: center;
+  align-items: center;
 }
 
 .image {
@@ -22,14 +21,12 @@
   object-fit: contain;
   opacity: 0;
   transition: opacity 0.4s ease-in-out;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   pointer-events: none;
+  display: none;
 }
 
 .image.active {
+  display: block;
   opacity: 1;
   z-index: 1;
   pointer-events: auto;

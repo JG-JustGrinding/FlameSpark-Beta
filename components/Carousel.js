@@ -20,7 +20,7 @@ const Carousel = ({ images = [] }) => {
   };
 
   return (
-    <div className={`${styles.carouselContainer} unhidden`}>
+    <div className={`${styles.carouselContainer}`}>
       <div className={styles.imageWrapper}>
         {images.map((src, i) => (
           <img

@@ -6,7 +6,8 @@ import { getProject } from "@/lib/projectFunctions";
 import { useParams } from "next/navigation";
 import '@/lib/fontawesome'
 import { useUser } from "@/lib/useUser";
-import { isUserOwner, createPost, getProjectPosts, extractYouTubeId } from "@/lib/projectFunctions";
+import { useRouter } from "next/navigation";
+import { isUserOwner, createPost, getProjectPosts, uploadPostFile, deletePostFile, extractYouTubeId } from "@/lib/projectFunctions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faArrowDown, faLink, faCircleXmark, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { faT, faImage, faVideo, faVolumeLow, faPoll, faFileUpload } from '@fortawesome/free-solid-svg-icons'
@@ -14,18 +15,22 @@ import { faComment } from '@fortawesome/free-regular-svg-icons'
 import "@/styles/project.css"
 import "@/styles/projectCreatePanel.css"
 import ProjectPost from "@/components/ProjectPost";
-import Carousel from "@/components/Carousel";
 import CappedInput from "@/components/CappedInput";
 
 export default function ProjectPage(){
     const [project, setProject] = useState(null);
     const [projectPosts, setProjectPosts] = useState([]);
+    const [projectPostsSet, setProjectPostsSet] = useState(false);
+    const filters = ["Recent", "Oldest", "Top"];
+    const [selectedFilter, setSelectedFilter] = useState(0);
+    const [refetchingPosts, setRefetchingPosts] = useState(false);
     const [error, setError] = useState(false);
     const [creationError, setCreationError] = useState("");
     const [creatingPost, setCreatingPost] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
     const { user } = useUser();
     const { id } = useParams();
+    const router = useRouter();
 
     useEffect(() => {
         async function run(){
@@ -52,6 +57,7 @@ export default function ProjectPage(){
             try {
                 const value = await getProjectPosts(id);
                 setProjectPosts(value);
+                setProjectPostsSet(true);
             } catch (error) {
 
             }
@@ -78,6 +84,35 @@ export default function ProjectPage(){
         checkIsOwner();
     }, [user]);
 
+    const setFilter = (index) => {
+        if (index < 0 || index >= filters.length){
+            return;
+        }
+
+        const same = index == selectedFilter;
+
+        setSelectedFilter(index);
+        if (!same)
+        {
+            handleRefetchPosts(index);
+        }
+    }
+
+    const handleRefetchPosts = async (index) => {
+        setRefetchingPosts(true);
+
+        try {
+            setProjectPostsSet(false);
+            setProjectPosts([]);
+
+            const value = await getProjectPosts(id, filters[index]);
+            setProjectPosts(value);
+            setProjectPostsSet(true);
+        } catch (error) {
+
+        }
+    }
+
     const [panelOpen, SetPanelOpen] = useState(false);
     const [creationSelectionIndex, setCreationSelectionIndex] = useState(0);
     const [postMainTypeIndex, setPostMainTypeIndex] = useState(0);
@@ -97,9 +132,14 @@ export default function ProjectPage(){
     ]);
     const [currentPollText, setCurrentPollText] = useState("");
 
+    useEffect(() => {
+        setCreationError("");
+    }, [creationSelectionIndex, postMainTypeIndex, currentPostIndex])
+    
     const MAX_POST_IMAGES = 3;
     const MAX_POLL_OPTIONS = 4;
     const MAX_LINKS = 5;
+    const MAX_MULTIPOST_SECTIONS = 3;
 
     const setPostTitle = (title) => {
         const updatedPosts = [...posts];
@@ -128,30 +168,48 @@ export default function ProjectPage(){
         setPosts(updatedPosts);
     }
 
+    const addNewPostSection = () => {
+        if (posts?.length >= MAX_MULTIPOST_SECTIONS)
+        {
+            return;
+        }
+
+        const newPost = {postTitle: "", postDescription: "", postType: "text", textContent: "", imageContent: [], pollContent: [], audioContent: null, videoContent: "", linkContent: []}
+        setPosts(prevPosts => [...prevPosts, newPost]);
+    }
+
+    const removePostSection = (index) => {
+        if (currentPostIndex == index) {
+            setCurrentPostIndex(posts.length - 2);
+        }
+        
+        setPosts(prevPosts => prevPosts.filter((_, i) => i !== index));
+    }
+
     const handlePostImageChange = (e, postIndex) => {
         if (e.target.files) {
-            const newFiles = Array.from(e.target.files);
+                const newFiles = Array.from(e.target.files);
 
-            const newEntries = newFiles.map((file) => ({
-            image: URL.createObjectURL(file),
-            imageUpload: file,
+                const newEntries = newFiles.map((file) => ({
+                image: URL.createObjectURL(file),
+                imageUpload: file,
             }));
 
             setPosts((prevPosts) => {
-            const updatedPosts = [...prevPosts];
-            const targetPost = updatedPosts[postIndex];
+                const updatedPosts = [...prevPosts];
+                const targetPost = updatedPosts[postIndex];
 
-            const combined = [...targetPost.imageContent, ...newEntries].slice(
-                0,
-                MAX_POST_IMAGES
-            );
+                const combined = [...targetPost.imageContent, ...newEntries].slice(
+                    0,
+                    MAX_POST_IMAGES
+                );
 
-            updatedPosts[postIndex] = {
-                ...targetPost,
-                imageContent: combined,
-            };
+                updatedPosts[postIndex] = {
+                    ...targetPost,
+                    imageContent: combined,
+                };
 
-            return updatedPosts;
+                return updatedPosts;
             });
         }
     };
@@ -246,7 +304,7 @@ export default function ProjectPage(){
 
             updatedPosts[postIndex] = {
             ...targetPost,
-            linkContent: [...targetPost.linkContent, {name: "New Link", url: ""}],
+            linkContent: [...targetPost.linkContent, {name: "New Link", url: "https://"}],
             };
 
             return updatedPosts;
@@ -294,40 +352,208 @@ export default function ProjectPage(){
     const createSinglePost = async () => {
         setCreationError("");
         setCreatingPost(true);
+        let FilePaths = [];
         try {
             const post = posts[0];
 
-            const content = await handlePost(post);
+            const { contentObject, filePaths } = await handlePostContent(post);
+            FilePaths = filePaths;
 
-            const postContent = { postType: post.postType, content }
-            //await createPost(id, post.postTitle, post.postDescription, postContent, false);
+            if (post.postType == null || post.postType == "")
+            {
+                throw new Error("Post content error");
+            }
+
+            if (contentObject == null)
+            {
+                throw new Error("Post content error");
+            }
+
+            await createPost(id, post.postTitle, post.postDescription, [ contentObject ], false);
+            window.location.reload();
         } catch (error)
         {
+            for (const path of FilePaths) {
+                try {
+                    await deletePostFile(path);
+                } catch (deleteError) {
+
+                }
+            }
+
             setCreationError(error.message);
-        } finally {
             setCreatingPost(false);
+        } finally {
+
         }
     }
 
-    const handlePost = async (post) => {
-        let content = [];
+    const createMultiPost = async () => {
+        setCreationError("");
+        setCreatingPost(true);
+        let FilePaths = [];
+        let contentObjects = [];
 
-        if (post.postType == "text")
+        try {
+            if (posts.length == 0)
+            {
+                throw new Error("No posts to create");
+            }
+
+            const postName = posts[0].postTitle;
+            const postDescription = posts[0].postDescription;
+            
+            for (let i = 0; i < posts.length; i++)
+            {
+                const post = posts[i];
+                const { contentObject, filePaths } = await handlePostContent(post);
+                FilePaths.push(filePaths);
+
+                if (post.postType == null || post.postType == "")
+                {
+                    throw new Error("Post content error");
+                }
+
+                if (contentObject == null)
+                {
+                    throw new Error("Post content error");
+                }
+
+                contentObjects.push(contentObject);
+            }
+
+            if (contentObjects.length == 0)
+            {
+                throw new Error("No posts to create");
+            }
+
+            await createPost(id, postName, postDescription, contentObjects, false);
+            window.location.reload();
+        } catch (error)
         {
+            for (const path of FilePaths) {
+                try {
+                    await deletePostFile(path);
+                } catch (deleteError) {
 
-        } else if (post.postType == "image") {
+                }
+            }
 
-        } else if (post.postType == "poll") {
-            
-        } else if (post.postType == "audio") {
-            
-        } else if (post.postType == "video") {
-            
-        } else if (post.postType == "link") {
-            
+            setCreationError(error.message);
+            setCreatingPost(false);
+        } finally {
+
+        }
+    }
+
+    const handlePostContent = async (post) => {
+        let content = { contentType: "", content: null };
+        let rollbackPaths = [];
+
+        try {
+            if (post.postType == "text")
+            {
+                content.contentType = post.postType
+                content.content = post.textContent;
+            } else if (post.postType == "image") 
+            {
+                content.contentType = post.postType;
+
+                const uploadedUrls = [];
+                for (const image of post.imageContent) {
+                    const { uploadedUrl, filePath } = await uploadPostFile(image.imageUpload, id, 2, `The image '${image.imageUpload.name}' is too large. The maximum upload size for an image is 2MB.`);
+                    uploadedUrls.push(uploadedUrl);
+                    rollbackPaths.push(filePath);
+                }
+
+                content.content = uploadedUrls;
+            } else if (post.postType == "poll") {
+                content.contentType = post.postType;
+
+                content.content = post.pollContent;                
+            } else if (post.postType == "audio") {
+
+                if (post.audioContent?.audioUpload == null)
+                {
+                    throw new Error("No audio file. Please upload an audio file to create your post.");
+                }
+
+                content.contentType = post.postType;
+                
+                const { uploadedUrl, filePath } = await uploadPostFile(post.audioContent.audioUpload, id, 5, "The audio file exceeds the maximum size limit of 5MB.");
+                content.content = uploadedUrl;
+                rollbackPaths.push(filePath);
+            } else if (post.postType == "video") {
+                content.contentType = post.postType;
+
+                if (!post.videoContent){
+                    throw new Error("Please input a YouTube link");
+                }
+
+                content.content = post.videoContent;
+            } else if (post.postType == "link") {
+                content.contentType = post.postType;
+
+                if (!post.linkContent)
+                {
+                    throw new Error("Post content error");
+                }
+
+                if (post.linkContent.length <= 0)
+                {
+                    throw new Error("No links. Please include at least 1 link in your post.");
+                }
+
+                for (const link of post.linkContent)
+                {
+                    if (!checkURLStart(link.url))
+                    {
+                        throw new Error("Please ensure each URL starts with https:// or http://");
+                    }
+
+                    if (!checkURLAfter(link.url))
+                    {
+                        throw new Error("Please ensure each URL is a valid URL");
+                    }
+                }
+
+                content.content = post.linkContent;
+            }
+        } catch (error) {
+            // rollback urls
+            for (const path of rollbackPaths) {
+                try {
+                    await deletePostFile(path);
+                } catch (deleteError) {
+                    // console.error("Rollback failed for", url, deleteError);
+                }
+            }
+
+            throw (error);
         }
 
-        return content;
+        return { contentObject: content, filePaths: rollbackPaths }
+    }
+
+    function checkURLStart(url) {
+        if (!url)
+        {
+            return false;
+        }
+
+        const hasHttp = /^https?:\/\//i.test(url);
+
+        return hasHttp;
+    }
+
+    function checkURLAfter(url){
+        try {
+            const parsedUrl = new URL(url);
+            // Basic check: hostname should have at least one dot (.)
+            return parsedUrl.hostname.includes('.');
+        } catch {
+            return false;
+        }
     }
 
     return (
@@ -346,9 +572,12 @@ export default function ProjectPage(){
                                     <h1 className="titleFont title-size">{project?.title}</h1>
                                 </div>
                                 <div className="filters titleFont">
-                                    <button className="button-shape selected">Recent</button>
-                                    <button className="button-shape">Oldest</button>
-                                    <button className="button-shape">Top</button>
+                                    {filters.map((filter, index) => (
+                                        <button 
+                                            key={index} 
+                                            className={`button-shape ${selectedFilter === index ? "selected" : ""}`}
+                                            onClick={() => setFilter(index)}>{filter}</button>
+                                    ))}
                                 </div>
                                 {isOwner && 
                                 <div className="project-actions">
@@ -356,9 +585,9 @@ export default function ProjectPage(){
                                 </div>}
                             </div>
                             <div className="posts-container">
-                                <ProjectPost icon={project?.icon} postTitle="Post Title" postDescription="Post Description"></ProjectPost>                
+                                {(projectPostsSet && projectPosts?.length == 0) && <span className="bodyFont bold no-posts-text">{isOwner ? "No posts yet. Create a post to get started!" : "No posts yet. Stay tuned to support the creator and view their progress!"}</span>}
                                 {projectPosts.map((post, i) => (
-                                    <ProjectPost key={i} icon={project?.icon} postTitle={post.title} postDescription={post.description}></ProjectPost>                
+                                    <ProjectPost key={i} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at}></ProjectPost>                
                                 ))}
                             </div>
                         </div>
@@ -405,7 +634,7 @@ export default function ProjectPage(){
                                         className={`label-color no-select-pointer ${currentPostIndex == i ? "selected" : ""}`}
                                         onClick={() => {setCurrentPostIndex(i); setPostMainTypeIndex(postTypes.findIndex(type => type.id === post.postType))}}>Post {(i + 1)}</span>
                                     ))}
-                                    { posts.length < 3 && <span className="label-color no-select-pointer bold mt">Add New</span> }
+                                    { posts.length < MAX_MULTIPOST_SECTIONS && <span className="label-color no-select-pointer bold mt" onClick={() => addNewPostSection()}>Add New</span> }
                                 </div>
                             </div>
                         }
@@ -422,9 +651,12 @@ export default function ProjectPage(){
                                 </div>
                                 <div className="create-actions">
                                     <div className="creation-container">
-                                        <h2 className="titleFont reset">{postTypes[postMainTypeIndex].name} Post</h2>
+                                        <h2 className="titleFont reset">{postTypes[postMainTypeIndex].name} Post{(creationSelectionIndex == 1 && currentPostIndex != 0) ? ` (Section ${currentPostIndex + 1})`: ""}</h2>
+                                        {(creationSelectionIndex == 0 || (creationSelectionIndex == 1 && currentPostIndex == 0)) &&
+                                        <>
                                         <CappedInput label="Post Title (Optional)" maxLength={100} value={posts[currentPostIndex].postTitle} onChange={(e) => setPostTitle(e.target.value)} id="post-name"/>
                                         <CappedInput label="Post Description (Optional)" maxLength={200} value={posts[currentPostIndex].postDescription} onChange={(e) => setPostDescription(e.target.value)} id="post-description"/>
+                                        </>}
 
                                         <CappedInput className={`${posts[currentPostIndex].postType == "text" ? "" : "hide"}`} label="Text Content" maxLength={1500} value={posts[currentPostIndex].textContent} 
                                         onChange={(e) => {
@@ -452,7 +684,7 @@ export default function ProjectPage(){
 
                                         <div className={`poll-creator ${posts[currentPostIndex].postType == "poll" ? "" : "hide"}`}>
                                             <CappedInput className="poll-creator-input" label="Poll Options" hideCounter={true} maxLength={50} value={currentPollText} onChange={(e) => setCurrentPollText(e.target.value)} id="post-poll-text">
-                                                {posts[currentPostIndex].pollContent.length < MAX_POLL_OPTIONS && <button className="add-button no-select-pointer" onClick={() => {addNewPollOption(currentPollText)}}><FontAwesomeIcon icon={faPlus}/></button> }
+                                            {posts[currentPostIndex].pollContent.length < MAX_POLL_OPTIONS && <button className="add-button no-select-pointer" onClick={() => {addNewPollOption(currentPollText)}}><FontAwesomeIcon icon={faPlus}/></button> }
                                             </CappedInput>
                                             <div className="poll-options-container">
                                                 {posts[currentPostIndex].pollContent.map((content, i) => (
@@ -538,8 +770,8 @@ export default function ProjectPage(){
                                     <div className="actions bodyFont">
                                         <button className="button-shape" onClick={() => { cancelCreation(); SetPanelOpen(false) }}>Cancel</button>
                                         <div className="right">
-                                            {creationSelectionIndex == 1 && <button className="button-shape remove">Remove Post Part</button>}
-                                            <button className="button-shape create" onClick={() => {createSinglePost()}} disabled={creatingPost}>{creatingPost ? "Creating..." : "Create Post"}</button>
+                                            {(creationSelectionIndex == 1 && posts?.length > 1) && <button className="button-shape remove"onClick={() => {removePostSection(currentPostIndex)}}>Remove Post Part</button>}
+                                            <button className="button-shape create" onClick={() => {if (creationSelectionIndex == 0) {createSinglePost()} else if (creationSelectionIndex == 1) {createMultiPost()} }} disabled={creatingPost}>{creatingPost ? "Creating..." : "Create Post"}</button>
                                         </div>
                                     </div>
                                 </div>
