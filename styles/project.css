@@ -1,5 +1,5 @@
 body {
-    background-color: var(--flamespark-tinted-page);
+    background-color: var(--flamespark-tinted-page-alt);
 }
 
 h1, img {
@@ -12,7 +12,7 @@ h1, img {
     display: flex;
     justify-content: center;
     flex: 1;
-    background-color: var(--flamespark-tinted-page);
+    background-color: var(--flamespark-tinted-page-alt);
 }
 
 .main {
