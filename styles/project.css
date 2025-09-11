@@ -1,17 +1,18 @@
+body {
+    background-color: var(--flamespark-tinted-page);
+}
+
 h1, img {
     margin: 0;
     padding: 0;
 }
 
-body {
-    height: 100%;
-}
-
-
 .container {
     width: 100%;
     display: flex;
     justify-content: center;
+    flex: 1;
+    background-color: var(--flamespark-tinted-page);
 }
 
 .main {
@@ -133,6 +134,11 @@ body {
 
 .posts .post {
     width: 100%;
+}
+
+.posts .post p {
+    margin: 0;
+    padding: 0;
 }
 
 .post .post-top {

@@ -557,7 +557,7 @@ export default function ProjectPage(){
     }
 
     return (
-        <>
+        <div className="project-page">
             <Header/>
             <div className="container">
                 <main className="main">
@@ -781,6 +781,6 @@ export default function ProjectPage(){
                 </div>
                 }
             </div>
-        </>
+        </div>
     )
 }

@@ -1,4 +1,4 @@
-html, body {
+.project-page {
     display: flex;
     flex-direction: column;
 }
@@ -6,7 +6,6 @@ html, body {
 .main-container{
     display: flex;
     flex-direction: row;
-    flex: 1;
     background-color: var(--white);
 }
 
