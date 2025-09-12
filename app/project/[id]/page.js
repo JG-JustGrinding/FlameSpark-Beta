@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 import '@/lib/fontawesome'
 import { useUser } from "@/lib/useUser";
 import { useRouter } from "next/navigation";
-import { isUserOwner, createPost, getProjectPosts, uploadPostFile, deletePostFile, extractYouTubeId } from "@/lib/projectFunctions";
+import { isUserOwner, createPost, getProjectPosts, fetchPosts, uploadPostFile, deletePostFile, extractYouTubeId } from "@/lib/projectFunctions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faArrowDown, faLink, faCircleXmark, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { faT, faImage, faVideo, faVolumeLow, faPoll, faFileUpload } from '@fortawesome/free-solid-svg-icons'
@@ -31,6 +31,7 @@ export default function ProjectPage(){
     const { user } = useUser();
     const { id } = useParams();
     const router = useRouter();
+
 
     useEffect(() => {
         async function run(){
