@@ -565,6 +565,16 @@ export default function ProjectPage(){
                     <div className="sections">
                         <div className="side">
                             <div className="navbar"></div>
+                            
+                            <div className="card red bodyFont">
+                                <h2>Sumting goes here (I think)</h2>
+                            </div>
+                            <div className="card bodyFont">
+                                <span>{project?.description}</span>
+                            </div>
+                            <div className="card bodyFont">
+                                <button className="button-shape bodyFont">Leave Project</button>
+                            </div>
                         </div>
                         <div className="posts">
                             <div className="topbar">
@@ -593,12 +603,6 @@ export default function ProjectPage(){
                             </div>
                         </div>
                         <div className="side-section">
-                            <div className="card red bodyFont">
-                                <h2>Sumting goes here (I think)</h2>
-                            </div>
-                            <div className="card bodyFont">
-                                <span>{project?.description}</span>
-                            </div>
                             <div className="card bodyFont">
                                 <span className="titleFont">Other Projects</span>
                                 <div className="project-span no-select-pointer">
