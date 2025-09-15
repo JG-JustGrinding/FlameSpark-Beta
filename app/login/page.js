@@ -48,9 +48,8 @@ export default function LoginPage() {
         },
     });
 
-    setLoading(false);
-
     if (error) {
+        setLoading(false);
         setError(error.message);
     } else {
         router.push("/");    

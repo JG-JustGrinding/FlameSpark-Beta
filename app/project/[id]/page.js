@@ -7,20 +7,21 @@ import { useParams } from "next/navigation";
 import '@/lib/fontawesome'
 import { useUser } from "@/lib/useUser";
 import { useRouter } from "next/navigation";
-import { isUserOwner, createPost, getProjectPosts, fetchPosts, uploadPostFile, deletePostFile, extractYouTubeId } from "@/lib/projectFunctions";
+import { isUserOwner, isUserJoined, createPost, fetchPosts, uploadPostFile, deletePostFile, extractYouTubeId } from "@/lib/projectFunctions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faArrowDown, faLink, faCircleXmark, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { faT, faImage, faVideo, faVolumeLow, faPoll, faFileUpload } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
 import "@/styles/project.css"
+import "@/styles/ProjectPost.css";
 import "@/styles/projectCreatePanel.css"
 import ProjectPost from "@/components/ProjectPost";
+import { Paginator } from "@/lib/infinitePostFeed";
 import CappedInput from "@/components/CappedInput";
+import InfiniteScroll from "@/lib/infinitePostFeed";
 
 export default function ProjectPage(){
     const [project, setProject] = useState(null);
-    const [projectPosts, setProjectPosts] = useState([]);
-    const [projectPostsSet, setProjectPostsSet] = useState(false);
     const filters = ["Recent", "Oldest", "Top"];
     const [selectedFilter, setSelectedFilter] = useState(0);
     const [refetchingPosts, setRefetchingPosts] = useState(false);
@@ -28,6 +29,7 @@ export default function ProjectPage(){
     const [creationError, setCreationError] = useState("");
     const [creatingPost, setCreatingPost] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
+    const [hasJoined, setHasJoined] = useState(false);
     const { user } = useUser();
     const { id } = useParams();
     const router = useRouter();
@@ -46,20 +48,6 @@ export default function ProjectPage(){
     }, [id]);
 
     useEffect(() => {
-        async function run(){
-            try {
-                const value = await getProjectPosts(id);
-                setProjectPosts(value);
-                setProjectPostsSet(true);
-            } catch (error) {
-
-            }
-        }
-
-        run();
-    }, [id])
-
-    useEffect(() => {
         const checkIsOwner = async () => {
             if (user == null){
                 setIsOwner(false);
@@ -71,6 +59,13 @@ export default function ProjectPage(){
                 setIsOwner(isTheUserAnOwner);
             } catch (error) {
                 setIsOwner(false);
+            }
+
+            try {
+                const hasTheUserJoined = await isUserJoined(user.id, id);
+                setHasJoined(hasTheUserJoined);
+            } catch (error) {
+                setHasJoined(false);
             }
         }
 
@@ -85,25 +80,6 @@ export default function ProjectPage(){
         const same = index == selectedFilter;
 
         setSelectedFilter(index);
-        if (!same)
-        {
-            handleRefetchPosts(index);
-        }
-    }
-
-    const handleRefetchPosts = async (index) => {
-        setRefetchingPosts(true);
-
-        try {
-            setProjectPostsSet(false);
-            setProjectPosts([]);
-
-            const value = await getProjectPosts(id, filters[index]);
-            setProjectPosts(value);
-            setProjectPostsSet(true);
-        } catch (error) {
-
-        }
     }
 
     const [panelOpen, SetPanelOpen] = useState(false);
@@ -564,16 +540,10 @@ export default function ProjectPage(){
                 <main className="main">
                     <div className="sections">
                         <div className="side">
-                            <div className="navbar"></div>
-                            
-                            <div className="card red bodyFont">
-                                <h2>Sumting goes here (I think)</h2>
-                            </div>
-                            <div className="card bodyFont">
-                                <span>{project?.description}</span>
-                            </div>
-                            <div className="card bodyFont">
-                                <button className="button-shape bodyFont">Leave Project</button>
+                            <div className="project-navbar">
+                                <div>
+                                    
+                                </div>
                             </div>
                         </div>
                         <div className="posts">
@@ -596,13 +566,26 @@ export default function ProjectPage(){
                                 </div>}
                             </div>
                             <div className="posts-container">
-                                {(projectPostsSet && projectPosts?.length == 0) && <span className="bodyFont bold no-posts-text">{isOwner ? "No posts yet. Create a post to get started!" : "No posts yet. Stay tuned to support the creator and view their progress!"}</span>}
-                                {projectPosts.map((post, i) => (
-                                    <ProjectPost key={i} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at}></ProjectPost>                
-                                ))}
+                                <Paginator
+                                    fetchFunction={fetchPosts}
+                                    projectId={id}
+                                    renderItem={(post, idx) => (
+                                      <ProjectPost key={idx || post.id} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at}></ProjectPost>  
+                                    )}
+                                    limit={5}
+                                    filter={filters[selectedFilter]}
+                                    noneFoundMessage={isOwner ? "No posts yet. Create a post to get started!" : "No posts yet. Stay tuned to support the creator and view their progress!"}/>
                             </div>
                         </div>
                         <div className="side-section">
+                            <div className="card bodyFont">
+                                <span>{project?.description}</span>
+                            </div>
+                            <div className="card bodyFont">
+                                {(!isOwner && hasJoined) && <button className="button-shape bodyFont button-red-harsh">Leave Project</button>}
+                                {(!isOwner && !hasJoined) && <button className="button-shape bodyFont button-red">Join Project</button>}
+                                {isOwner && <button className="button-shape bodyFont button-yellow">Project Dashboard</button>}
+                            </div>
                             <div className="card bodyFont">
                                 <span className="titleFont">Other Projects</span>
                                 <div className="project-span no-select-pointer">

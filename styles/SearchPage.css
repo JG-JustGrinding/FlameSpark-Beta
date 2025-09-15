@@ -1,0 +1,35 @@
+.title {
+    padding-bottom: 45px;
+    margin-bottom: 45px;
+    border-bottom: 1px solid #ccc;
+}
+
+.search {
+    display: flex;
+    flex-direction: column;
+}
+
+.filters {
+    display: flex;
+    gap: 15px;
+}
+
+.search-filter {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: .25rem .5rem;
+    margin-bottom: 45px;
+}
+
+.search-filter:hover {
+    border: 1px solid var(--black);
+}
+
+.user-display {
+    max-width: 100%;
+}
+
+.paginator-load-more, .paginator-no-more {
+    align-items: center;
+    width: 100%;
+}

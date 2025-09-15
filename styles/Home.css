@@ -1,0 +1,196 @@
+.home-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.nothing-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nothing-here-message {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    background-color: var(--white);
+    padding: 25px;
+    border-radius: 5px;
+    box-shadow: 0 8px 16px var(--shadow);
+    max-height: 500px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+}
+
+.nothing-here-message span, .nothing-here-message h1 {
+    margin: 0;
+    padding: 0;
+}
+
+.nothing-here-message h2 {
+    font-size: 2rem;
+}
+
+.nothing-here-message .text {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.discover-button {
+    background-color: var(--flamespark-red);
+    color: var(--white);
+}
+
+.post-row {
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
+    justify-content: space-between;
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.post-row .post {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    max-height: 100%;
+    min-height: 400px;
+    min-width: 40%;
+    border: 1px solid var(--black);
+    border-radius: 15px;
+    padding: 10px 15px;
+    gap: 10px;
+}
+
+.post .post-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.post .post-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.post-header .post-title {
+    font-size: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.post-header .post-description {
+    font-size: 1rem;
+}
+
+.post .post-content {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.post .post-content .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0px;
+    flex: 1;
+}
+
+.post .post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post-footer .post-project {
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.post-footer .post-project:not(:hover) {
+    color: var(--black);
+    text-decoration: none;
+}
+
+.post .actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.post-project .post-project-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.post-footer .post-stats {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.post {
+    --shadow-offset-x: 0px;
+    --shadow-offset-y: 2px;
+    --shadow-blur-radius: 4px;
+    --shadow-spread-radius: 2px;
+}
+
+.post.image {
+    box-shadow: var(--shadow-offset-x) var(--shadow-offset-y) var(--shadow-blur-radius) var(--shadow-spread-radius) var(--flamespark-red);
+}
+
+.post.text {
+    box-shadow: var(--shadow-offset-x) var(--shadow-offset-y) var(--shadow-blur-radius) var(--shadow-spread-radius) var(--flamespark-orange);
+}
+
+.post.audio {
+    box-shadow: var(--shadow-offset-x) var(--shadow-offset-y) var(--shadow-blur-radius) var(--shadow-spread-radius) var(--flamespark-blue);
+}
+
+.post.poll {
+    box-shadow: var(--shadow-offset-x) var(--shadow-offset-y) var(--shadow-blur-radius) var(--shadow-spread-radius) var(--flamespark-green);
+}
+
+.post.video {
+    box-shadow: var(--shadow-offset-x) var(--shadow-offset-y) var(--shadow-blur-radius) var(--shadow-spread-radius) var(--flamespark-orange-accented);
+}
+
+.post.link {
+    box-shadow: var(--shadow-offset-x) var(--shadow-offset-y) var(--shadow-blur-radius) var(--shadow-spread-radius) var(--flamespark-green-accented);
+}
+
+.post.multi-content-post {
+    box-shadow: var(--shadow-offset-x) var(--shadow-offset-y) var(--shadow-blur-radius) var(--shadow-spread-radius) var(--flamespark-background);
+}
+
+.paginator-load-more, .paginator-no-more {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+@media(max-width: 800px) {
+    .post-row .post {
+        min-width: 90%;
+        min-height: 300px;
+    }
+
+    .post-row {
+        padding: 10px;
+    }
+}

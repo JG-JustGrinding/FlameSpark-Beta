@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "./Header.module.css";
 import { supabase } from "@/lib/supabaseClient";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import '../lib/fontawesome'
 import { useUser } from "@/lib/useUser";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -15,9 +15,24 @@ import Link from "next/link";
 export default function Header({ forceAuthRedirect = false, isDashboardHeader = false, project = null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const [userPanelOpen, setUserPanelOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const { user, userSet, avatar, username, handleLogout } = useUser();
+
+  const search = () => {
+    if (!searchQuery.trim()) return;
+  
+    const url = `/search?q=${encodeURIComponent(searchQuery)}`;
+
+    if (pathname === '/search') {
+        window.location.href = url;
+      } else {
+        router.push(url);
+    }
+  }
 
   useEffect(() => {
     if (userSet && user == null && forceAuthRedirect) {
@@ -43,7 +58,7 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
       {!isDashboardHeader && (<>
       <nav className={styles.navLinks}>
         <a href="/">Discover</a>
-        <a href="#">Home</a>
+        <a href="/home">Home</a>
         <a href="#">Quick Find</a>
         <a href="/create">Create</a>
       </nav>
@@ -60,7 +75,7 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
       >
         <nav className={styles.navLinksMobile}>
           <a href="/">Discover</a>
-          <a href="#">Home</a>
+          <a href="/home">Home</a>
           <a href="#">Quick Find</a>
           <a href="/create">Create</a>
         </nav>
@@ -72,9 +87,9 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
         </div>
       </div>
 
-      <div className={styles.searchContainer}>
-        <input placeholder="Search here..." />
-        <button className={styles.searchIconContainer}>
+      <div className={`${styles.searchContainer} ${searchOpen ? "" : "hide"}`}>
+        <input placeholder="Search here..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && search()} />
+        <button className={styles.searchIconContainer} onClick={() => {search()}}>
           <Image src="/search.svg" alt="Search" width={20} height={20} />
         </button>
       </div>

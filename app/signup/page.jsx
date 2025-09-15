@@ -58,9 +58,8 @@ export default function SignupPage() {
       },
     });
 
-    setLoading(false);
-
     if (error) {
+      setLoading(false);
       setError(error.message);
     } else {
         router.push("/?show=verify_email");    

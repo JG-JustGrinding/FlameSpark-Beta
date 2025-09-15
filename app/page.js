@@ -1,9 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import "./page.css";
-import Header from "@/components/Header";
-import SidePanel from "@/components/SidePanel";
+import PrimaryPageLayout from "@/components/PrimaryPageLayout";
+import PrimaryProject from "@/components/PrimaryProject";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -12,7 +11,7 @@ import { useUser } from "@/lib/useUser";
 import Link from "next/link";
 const PAGE_SIZE = 10;
 
-export default function Home() {
+export default function Discover() {
   const [errorMessage, setErrorMessage] = useState("");
   const [warningMessage, setWarningMessage] = useState("");
   const searchParams = useSearchParams();
@@ -168,38 +167,15 @@ export default function Home() {
         </div>
       )}
 
-      <Header />
-
-      <main className="main-container">
-        <SidePanel />
-        <div className="container">
-          <div className="title">
-            <h1 className="titleFont header-size">Discover</h1>
-            <p className="bodyFont body-size label">Find amazing new projects to be part of</p>
-          </div>
+      <PrimaryPageLayout title="Discover" description="Find amazing new projects to be part of">
           <div className="content">
             {projects.map((project, i) => (
-            <a href={`project/${project.id}/preview`} key={i} className="project">
-              <div className="cover-image-wrapper">
-                <img className="cover-image" src={project.cover_image} alt="Cover image"></img>
-              </div>
-              <span className="bodyFont tagline label"><i>{project.tagline}</i></span>
-              <div className="project-info">
-                <img className="project-icon" src={project.icon} alt="Project Icon"></img>
-                <div className="project-nameandtags">
-                  <span className="project-name titleFont bold">{project.title}</span>
-                  <div className="tags bodyFont label caption-size">
-                    <span className="text">{project.tags?.join(", ")}</span>
-                  </div>
-                </div>
-              </div>
-            </a>
+              <PrimaryProject project={project} key={i}/>
             ))}
           </div>
           {loading && <p className="bodyFont body-size bold no-more">Loading...</p>}
           {!hasMore && <p className="bodyFont body-size bold no-more">No more projects...</p> }
-        </div>
-      </main>
+      </PrimaryPageLayout>
     </>
   );
 }

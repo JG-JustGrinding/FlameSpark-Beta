@@ -9,7 +9,7 @@
     background-color: var(--white);
     gap: 5px;
     z-index: 999;
-    height: 70px;
+    height: var(--header-height);
 }
 
     .header a:not(:hover) {
@@ -154,7 +154,7 @@
 
 .header .userDropdown {
     position: absolute;
-    top: 70px;
+    top: var(--header-height);
     right: 0px;
     background-color: var(--white);
     box-shadow: 

@@ -17,6 +17,7 @@
     --black: #000000;
     --white: #ffffff;
     --flamespark-red-tinted: #DF4B32; /*For buttons because accented red is too harsh*/
+    --header-height: 70px;
 }
 
 html {

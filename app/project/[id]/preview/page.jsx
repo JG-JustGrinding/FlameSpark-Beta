@@ -114,7 +114,7 @@ export default function ProjectPreview(){
       router.push("/login");
       return;
     }
-
+    
     if (!isJoined)
     {
       try {

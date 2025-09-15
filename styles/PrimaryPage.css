@@ -11,6 +11,7 @@
 
 .container {
     padding: 50px 75px;
+    width: 100%;
 }
 
 .container .title {
@@ -60,6 +61,41 @@
     height: 100%;
     object-fit: cover;
     display: block;
+}
+
+.user {
+    justify-content: center;
+    text-align: center;
+    width: auto;
+    padding: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user:hover {
+    background-color: rgba(0, 0, 0, 0.05)
+}
+
+.user .cover-image-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.user img {
+    object-fit: contain;
+    border-radius: 50%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    display: flex;
+}
+
+.user .bio-snippet {
+    display: flex;
+    max-width: 100%;
+    white-space: nowrap;
 }
 
 .project .tagline {
