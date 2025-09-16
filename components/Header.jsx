@@ -42,8 +42,17 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
 
   return (
     <header className={`${styles.header} titleFont`}>
+
       {/* Logo */}
-      <a href="">Logo</a>
+      <div className={styles.logoContainer}>
+        <div className={styles.hamburger} onClick={() => setMobileOpen(true)}>
+          <FontAwesomeIcon icon={faBars} className={styles.menuButton} />
+        </div>
+
+        <a className={styles.logoA} href="/">
+          <img src="/logo_NoPadding_Transparent.png" alt="FlameSpark logo"></img>
+        </a>
+      </div>
 
       {isDashboardHeader && 
       <>
@@ -59,16 +68,9 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
       <nav className={styles.navLinks}>
         <a href="/">Discover</a>
         <a href="/home">Home</a>
-        <a href="#">Quick Find</a>
+        <a href="#">Explore</a>
         <a href="/create">Create</a>
       </nav>
-
-      <div
-        className={styles.hamburger}
-        onClick={() => setMobileOpen(true)}
-      >
-        <FontAwesomeIcon icon={faBars} className={styles.menuButton} />
-      </div>
 
       <div
         className={`${styles.mobileMenu} ${mobileOpen ? styles.open : ""}`}
@@ -76,7 +78,7 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
         <nav className={styles.navLinksMobile}>
           <a href="/">Discover</a>
           <a href="/home">Home</a>
-          <a href="#">Quick Find</a>
+          <a href="#">Explore</a>
           <a href="/create">Create</a>
         </nav>
         <div
@@ -87,12 +89,26 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
         </div>
       </div>
 
-      <div className={`${styles.searchContainer} ${searchOpen ? "" : "hide"}`}>
+      <div className={`${styles.searchContainer} ${styles.hiddenMobile}`}>
         <input placeholder="Search here..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && search()} />
         <button className={styles.searchIconContainer} onClick={() => {search()}}>
           <Image src="/search.svg" alt="Search" width={20} height={20} />
         </button>
       </div>
+
+      {searchOpen && <div className={`${styles.mobileSearch}`}>
+        <p className="bodyFont label-color no-select-pointer" onClick={() => setSearchOpen(false)}>X</p>
+        <div className={`${styles.searchContainer}`}>
+          <input placeholder="Search here..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && search()} />
+          <button className={styles.searchIconContainer} onClick={() => {search()}}>
+            <Image src="/search.svg" alt="Search" width={20} height={20} />
+          </button>
+        </div>
+      </div>}
+
+      <button className={`${styles.mobileSearchButton} ${styles.mobileOnly}`} onClick={() => setSearchOpen(true)}>
+        <Image src="/search.svg" alt="Search" width={20} height={20} />
+      </button>
       </>)}
 
       {/* Auth buttons */}

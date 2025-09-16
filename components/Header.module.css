@@ -12,6 +12,26 @@
     height: var(--header-height);
 }
 
+.header .logoContainer {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    max-height: var(--header-height);
+}
+
+.header .logoContainer .logoA {
+    object-fit: contain;
+}
+
+.logoA img {
+    object-fit: contain;
+    max-height: 35px;
+}
+
+.header .mobileOnly {
+    display: none;
+}
+
     .header a:not(:hover) {
         text-decoration: none;
         color: var(--black);
@@ -276,6 +296,43 @@
             font-size: 1.1rem;
         }
 
+    .header .mobileSearch {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--white);
+        display: flex;
+        justify-content: space-between;
+        margin: 0px 15px;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .header .mobileSearch .searchContainer {
+        flex: 1;
+    }
+
+    .header p {
+        font-size: 1.2rem;
+    }
+
+    .header .mobileSearchButton {
+        background-color: var(--black);
+        height: auto;
+        aspect-ratio: 1 / 1;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: none;
+        border-radius: 50%
+    }
+
+.hide {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .header .navLinks {
         display: none;
@@ -286,6 +343,14 @@
         }
 
     .header .hamburger {
+        display: flex;
+    }
+
+    .header .hiddenMobile {
+        display: none;
+    }
+
+    .header .mobileOnly {
         display: flex;
     }
 }

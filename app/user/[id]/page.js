@@ -4,6 +4,7 @@ import "@/styles/UserPage.css"
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useParams } from "next/navigation";
+import { Paginator } from "@/lib/infinitePostFeed";
 import Link from "next/link";
 import { getUserJoinedProjects } from "@/lib/projectFunctions";
 

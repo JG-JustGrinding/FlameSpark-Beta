@@ -93,9 +93,10 @@
 }
 
 .user .bio-snippet {
-    display: flex;
-    max-width: 100%;
+    width: 100%;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .project .tagline {
