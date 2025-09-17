@@ -10,7 +10,6 @@ import { Paginator } from "@/lib/infinitePostFeed";
 import { useUser } from "@/lib/useUser";
 
 export default function Home() {
-    const hasHomePosts = true;
     const { user, userSet } = useUser();
     const seedRef = useRef(Math.floor(Math.random() * 1000000)); // random integer seed
     const seed = seedRef.current;
@@ -25,10 +24,10 @@ export default function Home() {
     }
 
   return (
-    <PrimaryPageLayout useTitle={hasHomePosts} title="Home" description="Get updates on followed projects">
+    <PrimaryPageLayout title="Home" description="Get updates on followed projects">
         <div className="home-content">
             
-            {(!hasHomePosts || (userSet && !user) || noItems) && <div className="nothing-container">
+            {((userSet && !user) || noItems) && <div className="nothing-container">
                 <div className="nothing-here-message">
                     <div className="text">
                         <h1 className="nothing-title titleFont bold">Nothing Here... Yet</h1>

@@ -68,7 +68,7 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
       <nav className={styles.navLinks}>
         <a href="/">Discover</a>
         <a href="/home">Home</a>
-        <a href="#">Explore</a>
+        <a href="/explore">Explore</a>
         <a href="/create">Create</a>
       </nav>
 
@@ -78,7 +78,7 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
         <nav className={styles.navLinksMobile}>
           <a href="/">Discover</a>
           <a href="/home">Home</a>
-          <a href="#">Explore</a>
+          <a href="/explore">Explore</a>
           <a href="/create">Create</a>
         </nav>
         <div
