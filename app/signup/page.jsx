@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Header from "@/components/Header";
-import "../../styles/auth.css";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faTag, faLock, faKey } from "@fortawesome/free-solid-svg-icons";
+import "@/styles/auth.css";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -102,7 +102,7 @@ export default function SignupPage() {
             <a href="/login" className="left button button-shape bodyFont off">
               Log In
             </a>
-            <button className="right button button-shape bodyFont">Sign Up</button>
+            <button className="right button button-shape bodyFont cursor-default">Sign Up</button>
           </div>
 
           <h1 className="titleFont header-size">Sign Up for FlameSpark</h1>

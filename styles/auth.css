@@ -169,9 +169,13 @@ html, body {
     text-decoration-line: none;
 }
 
-.auth-button-off {
-    background-color: #CDCDCD;
-    color: rgba(0, 0, 0, 0.3);
+.auth-button:disabled {
+    background-color: rgba(35, 35, 35, .5);
+    border: 1px solid rgba(35, 35, 35, .5);
+    cursor: default;
+}
+
+.cursor-default {
     cursor: default;
 }
 
@@ -186,7 +190,7 @@ html, body {
     
     .container {
         width: 100%;
-	padding: 15px 30px;
+	    padding: 15px 30px;
     }
 }
 

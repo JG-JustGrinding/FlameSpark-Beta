@@ -80,7 +80,7 @@ export default function LoginPage() {
                 </div>
                 <div className="container">
                     <div className="top-bar">
-                        <button className="left button button-shape bodyFont">Log In</button>
+                        <button className="left button button-shape bodyFont cursor-default">Log In</button>
                         <a href="/signup" className="right button button-shape bodyFont off">Sign Up</a>
                     </div>
 
