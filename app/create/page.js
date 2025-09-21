@@ -320,7 +320,7 @@ export default function CreatePage() {
               </div>
 
             <label className={`${styles.mt} bodyFont`}>Project Logo</label>
-              <div className={`${styles.fileAndImage}`}>
+              <div className={`${styles.fileAndImage} ${styles.projectLogo}`}>
                 <input type="file" accept="image/*" onChange={handleIconChange}
                         className="bodyFont input-field"/>
                 <img src={iconImage} className={`${styles.displayImage} ${styles.squareRatio} ${iconImage ? styles.solid : styles.dashed} ${styles.profileIcon}`}/>

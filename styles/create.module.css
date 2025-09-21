@@ -118,6 +118,10 @@ body {
   width: auto;
 }
 
+.projectLogo {
+  max-width: 150px;
+}
+
 .sixteennine {
   aspect-ratio: 16 / 9;
 }

@@ -107,6 +107,10 @@
     flex: 1;
 }
 
+.post .content.hide {
+    display: none;
+}
+
 .post .post-footer {
     display: flex;
     justify-content: space-between;

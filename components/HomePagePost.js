@@ -1,19 +1,22 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
-import { faLink } from '@fortawesome/free-solid-svg-icons';
+import { faL, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { timeAgo } from "@/lib/projectFunctions";
 import { extractYouTubeId } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
 
-const HomePagePost = ({title = "", description = "", dateCreated, postContent, projectName = "", projectIcon = "", projectId, votes = 0, comments = 0, className=""}) => {
+const HomePagePost = ({title = "", description = "", dateCreated, postContent, projectName = "", projectIcon = "", projectId, votes = 0, comments = 0, className="", goToPreview = false, disableContent = false, currentPostIndex = 0, postIndex = 0, previousIndex}) => {
     const dateDifference = timeAgo(dateCreated);
     const [currentPostPartIndex, setCurrentPostPartIndex] = useState(0);
     const [currentPostContent, setCurrentPostContent] = useState(null);
     
+    const audioRef = useRef(null);
+    const iframeRef = useRef(null);
+
     useEffect(() => {
         if (postContent?.length > 0) {
             setCurrentPostContent(postContent[currentPostPartIndex % postContent.length]);
@@ -32,6 +35,26 @@ const HomePagePost = ({title = "", description = "", dateCreated, postContent, p
         }
     };
 
+    useEffect(() => {
+        if ((currentPostIndex != postIndex) && (previousIndex == postIndex)) {
+            resetMedia();
+        }
+    }, [previousIndex]);
+
+    const resetMedia = () => {
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+            audioRef.current.load();
+        }
+
+        // Reset iframe (force reload by changing src)
+        if (iframeRef.current) {
+            const src = iframeRef.current.src;
+            iframeRef.current.src = src;
+        }
+    };
+
     return (
         <div className={`post` + (className ? ` ${className}` : "")}>
             <div className="post-header">
@@ -43,7 +66,7 @@ const HomePagePost = ({title = "", description = "", dateCreated, postContent, p
             </div>
             {postContent?.length > 1 && <span className="label-color caption-size bodyFont">{currentPostPartIndex + 1} of {postContent?.length}</span>}
             <div className="post-content">
-                <div className="content">
+                <div className={`content${disableContent ? " hide" : ""}`}>
                     {currentPostContent?.contentType == "text" && <p className="text-post bodyFont body-size">{currentPostContent?.content}</p>}
                     {currentPostContent?.contentType === "image" && (
                     <>
@@ -57,7 +80,7 @@ const HomePagePost = ({title = "", description = "", dateCreated, postContent, p
                         )}
                     </>
                     )}
-                    {currentPostContent?.contentType == "audio" && <audio controls className="" src={currentPostContent?.content}></audio>}
+                    {currentPostContent?.contentType == "audio" && <audio controls className="" src={currentPostContent?.content} ref={audioRef}></audio>}
                     {currentPostContent?.contentType == "video" && 
                         <iframe
                         className="video"
@@ -66,6 +89,7 @@ const HomePagePost = ({title = "", description = "", dateCreated, postContent, p
                         )}`}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
+                        ref={iframeRef}
                         />
                     }
                     {currentPostContent?.contentType == "poll" && <ul className="poll">
@@ -96,7 +120,7 @@ const HomePagePost = ({title = "", description = "", dateCreated, postContent, p
                 </div>
             </div>
             <div className="post-footer">
-                <a className="post-project" href={`project/${projectId}`}>
+                <a className="post-project" href={`project/${projectId}` + (goToPreview ? "/preview" : "")}>
                     <img className="post-project-icon pfp-shape" src={projectIcon} alt="Project Icon"></img>
                     <span className="post-project-name bodyFont bold">{projectName}</span>
                 </a>

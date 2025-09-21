@@ -3,12 +3,30 @@
 import { useRef, useEffect, useState } from "react";
 import PrimaryPageLayout from "@/components/PrimaryPageLayout";
 import "@/styles/ExplorePage.css";
+import "@/styles/ProjectPost.css";
+import "@/styles/Home.css";
+import HomePagePost from "@/components/HomePagePost";
+import { fetchExplorePagePosts } from "@/lib/projectFunctions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 export default function ExplorePage() {
-  const carouselRef = useRef(null);
+    const carouselRef = useRef(null);
     const [currentCard, setCurrentCard] = useState(0);
+    const [previousCard, setPreviousCard] = useState(0);
+    const prevCardIndexRef = useRef();
+    const [posts, setPosts] = useState([]);
+    const [page, setPage] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    const isLoadingRef = useRef(false);
+    const currentCardRef = useRef(-1);
+    const seedRef = useRef(Math.random() * 2 - 1);
+    const seed = seedRef.current;
+
+    const postBufferRef = useRef([]);
+    const BUFFER_THRESHOLD = 3;   // tweak as needed
+    const FETCH_SIZE = 5;        // fetch this many at once
 
     const scrollLeft = () => {
             const carousel = carouselRef.current;
@@ -24,90 +42,137 @@ export default function ExplorePage() {
       carousel.scrollBy({ left: carousel.clientWidth, behavior: 'smooth' });
     };
 
-  useEffect(() => {
-  const carousel = carouselRef.current;
+    useEffect(() => {
+    // Get previous value
+      const prevIndex = prevCardIndexRef.current;
 
-  const setActiveCard = () => {
-    const cards = Array.from(carousel.children);
-    const center = carousel.scrollLeft + carousel.clientWidth / 2;
-    cards.forEach(card => card.classList.remove('active'));
+      setPreviousCard(prevIndex);
+      
+      // Now update the ref to the current value
+      prevCardIndexRef.current = currentCard;
+  }, [currentCard]);
 
-    // find card whose center is closest to container center
-    let closest = cards[0];
-    let closestDistance = Math.abs((cards[0].offsetLeft + cards[0].offsetWidth/2) - center);
+const fetchPosts = async () => {
+  
+  if (loading || isLoadingRef.current == true || !hasMore) return;
+  setLoading(true);
+  isLoadingRef.current = true;
 
-    for (let i = 0; i < cards.length; i++) {
-      const card = cards[i];
-      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-      const distance = Math.abs(cardCenter - center);
-      if (distance < closestDistance) {
-        closest = card;
-        closestDistance = distance;
-        setCurrentCard(i);
-      }
+  try {
+    const newPosts = await fetchExplorePagePosts(null, page, FETCH_SIZE, seed);
+    setPage(prev => prev + 1);
+
+    // update buffer synchronously
+    postBufferRef.current = [...postBufferRef.current, ...newPosts];
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+  } finally {
+    setLoading(false);
+  isLoadingRef.current = false;
+  }
+};
+
+// --- consume function ---
+const showNextPost = () => {
+  if (postBufferRef.current.length === 0) {
+    fetchPosts();
+    return;
+  }
+
+  const [next, ...rest] = postBufferRef.current;
+  postBufferRef.current = rest;
+
+  setPosts(prev => [...prev, next]);
+
+  if (rest.length < BUFFER_THRESHOLD) {
+    fetchPosts();
+  }
+};
+
+useEffect(() => {
+  fetchPosts().then(() => {
+    // load the very first post right away
+    if (postBufferRef.current.length > 0) {
+      showNextPost();
     }
+  });
+}, []);
 
-    closest.classList.add('active');
+// --- watch card index ---
+useEffect(() => {
+  // When user scrolls right and reaches the end of "posts",
+  // consume the next item from the buffer.
+  if (currentCard >= posts.length - 2) {
+    showNextPost();
+  }
+}, [currentCard, posts.length]);
+
+useEffect(() => {
+  const carousel = carouselRef.current;
+  if (!carousel) return;
+
+  let rafId = null;
+
+  const onScroll = () => {
+    // debounce/fuse events into one frame
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      const cards = Array.from(carousel.children);
+      if (cards.length === 0) return;
+
+      const center = carousel.scrollLeft + carousel.clientWidth / 2;
+
+      // find the closest card index (single pass)
+      let closestIndex = 0;
+      let closestDistance = Infinity;
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const distance = Math.abs(cardCenter - center);
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = i;
+        }
+      }
+
+      // only update once if changed
+      if (closestIndex !== currentCardRef.current) {
+        setCurrentCard(closestIndex);
+        currentCardRef.current = closestIndex;
+      }
+
+      // update active class
+      cards.forEach((card, i) => {
+        card.classList.toggle("active", i === closestIndex);
+      });
+    });
   };
 
-  setActiveCard();
-  carousel.addEventListener('scroll', setActiveCard);
+  // initial snap check
+  onScroll();
 
-  return () => carousel.removeEventListener('scroll', setActiveCard);
-}, []);
+  // attach listener
+  carousel.addEventListener("scroll", onScroll, { passive: true });
+
+  // cleanup
+  return () => {
+    carousel.removeEventListener("scroll", onScroll);
+    if (rafId) cancelAnimationFrame(rafId);
+  };
+}, [posts.length]);
 
     return (
         <PrimaryPageLayout useTitle={false} noContainerPadding={true} title="Explore" description="Encounter new projects by scrolling through posts">
         <div className="carousel-container">
-            {currentCard !== 0 && <button className="nav left" onClick={scrollLeft}>&#8249;</button>}
+            {currentCard != 0 && <button className="nav left" onClick={scrollLeft}>&#10094;</button>}
             <div className="carousel" ref={carouselRef}>
-                <div className="card">
-                    <img src="https://picsum.photos/400/300?random=1" alt="Post" />
-                    <h2>Post Title 1</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    <div className="actions">
-                    <button>Like</button>
-                    <button>Comment</button>
-                    </div>
+              {posts.map((post, i) => (
+                <div className="card" key={i}>
+                  <HomePagePost goToPreview={true} title={post.post_title} description={post.post_description} postContent={post.post_content} projectIcon={post.project_icon} projectName={post.project_title} projectId={post.project_ide || post.project_id} dateCreated={post.post_created_at} currentPostIndex={currentCard} postIndex={i} previousIndex={previousCard}/>
                 </div>
-                <div className="card">
-                    <img src="https://picsum.photos/400/300?random=2" alt="Post" />
-                    <h2>Post Title 2</h2>
-                    <p>Another interesting caption here.</p>
-                    <div className="actions">
-                    <button>Like</button>
-                    <button>Comment</button>
-                    </div>
-                </div>
-                <div className="card">
-                    <img src="https://picsum.photos/400/300?random=3" alt="Post" />
-                    <h2>Post Title 3</h2>
-                    <p>This is a card in the carousel.</p>
-                    <div className="actions">
-                    <button>Like</button>
-                    <button>Comment</button>
-                    </div>
-                </div>
-                <div className="card">
-                    <img src="https://picsum.photos/400/300?random=4" alt="Post" />
-                    <h2>Post Title 4</h2>
-                    <p>This is the a in the carousel.</p>
-                    <div className="actions">
-                    <button>Like</button>
-                    <button>Comment</button>
-                    </div>
-                </div>
-                <div className="card">
-                    <img src="https://picsum.photos/400/300?random=5" alt="Post" />
-                    <h2>Post Title 5</h2>
-                    <p>This is a card in the carousel.</p>
-                    <div className="actions">
-                    <button>Like</button>
-                    <button>Comment</button>
-                    </div>
-                </div>
+              ))}
             </div>
-            <button className="nav right" onClick={scrollRight}>&#8250;</button>
+            {(posts.length > 0 && currentCard != posts.length - 1) && <button className="nav right" onClick={scrollRight}>&#10095;</button>}
         </div>
         </PrimaryPageLayout>
     )

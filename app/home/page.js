@@ -11,7 +11,7 @@ import { useUser } from "@/lib/useUser";
 
 export default function Home() {
     const { user, userSet } = useUser();
-    const seedRef = useRef(Math.floor(Math.random() * 1000000)); // random integer seed
+    const seedRef = useRef(Math.floor(Math.random() * 1000000));
     const seed = seedRef.current;
     const [noItems, setNoItems] = useState(false);
 
