@@ -1,4 +1,4 @@
-.create-panel .backdrop {
+.create-panel .backdrop, .panel .backdrop {
     position: fixed;
     top: 0;
     left: 0;
@@ -9,13 +9,16 @@
 }
 
 .create-panel .panel-content {
+    background: var(--white);
+}
+
+.create-panel .panel-content, .panel .panel-content {
     position: fixed;
     top: 50%;
     left: 50%;
     width: 80%;
     height: 80%;
     max-width: 1000px;
-    background: var(--white);
     border-radius: 10px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
     transform: translate(-50%, -50%);
@@ -25,7 +28,7 @@
     flex-direction: column;
 }
 
-.create-panel .close-button {
+.create-panel .close-button, .panel .close-button {
     position: absolute;
     right: 15px;
     top: 15px;

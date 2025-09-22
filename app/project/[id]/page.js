@@ -5,11 +5,12 @@ import { useState, useEffect } from "react";
 import { getProject } from "@/lib/projectFunctions";
 import { useParams } from "next/navigation";
 import '@/lib/fontawesome'
+import { fetchRandomProjects } from "@/lib/projectFunctions";
 import { useUser } from "@/lib/useUser";
 import { useRouter } from "next/navigation";
 import { isUserOwner, isUserJoined, createPost, fetchPosts, uploadPostFile, deletePostFile, extractYouTubeId } from "@/lib/projectFunctions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faArrowDown, faLink, faCircleXmark, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faArrowDown, faLink, faCircleXmark, faPlus, faDiamond, faStar, faClock, faHourglass, faLayerGroup, faListCheck, faTimeline, faGlobe } from '@fortawesome/free-solid-svg-icons'
 import { faT, faImage, faVideo, faVolumeLow, faPoll, faFileUpload } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
 import "@/styles/project.css"
@@ -23,17 +24,21 @@ import InfiniteScroll from "@/lib/infinitePostFeed";
 export default function ProjectPage(){
     const [project, setProject] = useState(null);
     const filters = ["Recent", "Oldest", "Top"];
+    const filterIcons = [faClock, faHourglass, faStar];
     const [selectedFilter, setSelectedFilter] = useState(0);
+    const pages = ["Posts", "To-Do List", "Timeline", "Community"];
+    const pageIcons = [faLayerGroup, faListCheck, faTimeline, faGlobe];
+    const [selectedPage, setSelectedPage] = useState(0);
     const [refetchingPosts, setRefetchingPosts] = useState(false);
     const [error, setError] = useState(false);
     const [creationError, setCreationError] = useState("");
     const [creatingPost, setCreatingPost] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
     const [hasJoined, setHasJoined] = useState(false);
+    const [otherProjects, setOtherProjects] = useState([]);
     const { user } = useUser();
     const { id } = useParams();
     const router = useRouter();
-
 
     useEffect(() => {
         async function run(){
@@ -79,7 +84,32 @@ export default function ProjectPage(){
 
         const same = index == selectedFilter;
 
+        if (same)
+        {
+            return;
+        }
+
+        window.scrollTo(0, 0);
+
         setSelectedFilter(index);
+    }
+
+    
+    const setPage = (index) => {
+        if (index < 0 || index >= pages.length){
+            return;
+        }
+
+        const same = index == selectedPage;
+
+        if (same)
+        {
+            return;
+        }
+
+        window.scrollTo(0, 0);
+
+        setSelectedPage(index);
     }
 
     const [panelOpen, SetPanelOpen] = useState(false);
@@ -105,6 +135,22 @@ export default function ProjectPage(){
         setCreationError("");
     }, [creationSelectionIndex, postMainTypeIndex, currentPostIndex])
     
+    useEffect(() => {
+        (async () => {  
+            if (error)
+            {
+                return
+            }
+
+            try {
+                const projects = await fetchRandomProjects(10);
+                setOtherProjects(projects);
+            } catch (err) {
+
+            }
+        })();
+    }, []);
+
     if (error){
         return (
             <>
@@ -540,10 +586,22 @@ export default function ProjectPage(){
                 <main className="main">
                     <div className="sections">
                         <div className="side">
-                            <div className="project-navbar">
-                                <div>
-                                    
-                                </div>
+                            <div className="card bodyFont side-filters">
+                                <span className="titleFont cardTitle bold">Sort By</span>
+                                {filters.map((filter, index) => (
+                                    <div key={index} onClick={() => setFilter(index)} className={`no-select-pointer filter ${selectedFilter === index ? "selected" : "label-color"}`}>
+                                        <FontAwesomeIcon className="icon" icon={filterIcons[index]}/>
+                                        <span className="bodyFont">{filter}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="card bodyFont side-filters">
+                                {pages.map((page, index) => (
+                                    <div key={index} onClick={() => setPage(index)} className={`no-select-pointer filter ${selectedPage === index ? "selected" : "label-color"}`}>
+                                        <FontAwesomeIcon className="icon" icon={pageIcons[index]}/>
+                                        <span className="bodyFont">{page}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                         <div className="posts">
@@ -551,14 +609,6 @@ export default function ProjectPage(){
                                 <div className="project-info">
                                     <img className="project-icon" src={project?.icon}/>
                                     <h1 className="titleFont title-size">{project?.title}</h1>
-                                </div>
-                                <div className="filters titleFont">
-                                    {filters.map((filter, index) => (
-                                        <button 
-                                            key={index} 
-                                            className={`button-shape ${selectedFilter === index ? "selected" : ""}`}
-                                            onClick={() => setFilter(index)}>{filter}</button>
-                                    ))}
                                 </div>
                                 {isOwner && 
                                 <div className="project-actions">
@@ -579,6 +629,7 @@ export default function ProjectPage(){
                         </div>
                         <div className="side-section">
                             <div className="card bodyFont">
+                                <h2 className="titleFont cardTitle">Project Description</h2>
                                 <span>{project?.description}</span>
                             </div>
                             <div className="card bodyFont">
@@ -587,11 +638,16 @@ export default function ProjectPage(){
                                 {isOwner && <button className="button-shape bodyFont button-yellow">Project Dashboard</button>}
                             </div>
                             <div className="card bodyFont">
-                                <span className="titleFont">Other Projects</span>
-                                <div className="project-span no-select-pointer">
-                                    <img className="pfp-shape" alt="project icon"></img>
-                                    <span>Project Name</span>
-                                </div>
+                                <span className="titleFont cardTitle bold">Other Projects</span>
+                                {otherProjects.map((project, i) => (
+                                <a className="project-span" href={`/project/${project.id}/preview`} target="_blank" key={i}>
+                                    <img className="pfp-shape" alt="project icon" src={project.icon}></img>
+                                    <div className="side-project-info">
+                                        <span className="titleFont bold">{project.title}</span>
+                                        <span className="caption-size"><i>{project.tagline}</i></span>
+                                    </div>
+                                </a>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -758,12 +814,51 @@ export default function ProjectPage(){
                                     <div className="actions bodyFont">
                                         <button className="button-shape" onClick={() => { cancelCreation(); SetPanelOpen(false) }}>Cancel</button>
                                         <div className="right">
-                                            {(creationSelectionIndex == 1 && posts?.length > 1) && <button className="button-shape remove"onClick={() => {removePostSection(currentPostIndex)}}>Remove Post Part</button>}
+                                            {(creationSelectionIndex == 1 && posts?.length > 1) && <button className="button-shape remove"onClick={() => {removePostSection(currentPostIndex)}}>Remove Post Section</button>}
                                             <button className="button-shape create" onClick={() => {if (creationSelectionIndex == 0) {createSinglePost()} else if (creationSelectionIndex == 1) {createMultiPost()} }} disabled={creatingPost}>{creatingPost ? "Creating..." : "Create Post"}</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                }
+                {selectedPage == 1 &&
+                <div className="panel coming-soon-panel">
+                    <div className="backdrop"></div>
+                    <div className="panel-content">
+                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setSelectedPage(0)}/>
+                        <h2 className="titleFont title header-size reset">Coming Soon!</h2>
+                        <span className="bodyFont bold body">To-Do Lists...</span>
+                        <div>
+                            <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
+                        </div>
+                    </div>
+                </div>
+                }
+                {selectedPage == 2 &&
+                <div className="panel coming-soon-panel">
+                    <div className="backdrop"></div>
+                    <div className="panel-content">
+                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setSelectedPage(0)}/>
+                        <h2 className="titleFont title header-size reset">Coming Soon!</h2>
+                        <span className="bodyFont bold body">Timelines...</span>
+                        <div>
+                            <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
+                        </div>
+                    </div>
+                </div>
+                }
+                {selectedPage == 3 &&
+                <div className="panel coming-soon-panel">
+                    <div className="backdrop"></div>
+                    <div className="panel-content">
+                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setSelectedPage(0)}/>
+                        <h2 className="titleFont title header-size reset">Coming Soon!</h2>
+                        <span className="bodyFont bold body">The community space...</span>
+                        <div>
+                            <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
                         </div>
                     </div>
                 </div>

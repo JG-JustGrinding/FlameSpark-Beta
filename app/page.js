@@ -52,7 +52,7 @@ export default function Discover() {
     }, [searchParams]);
 
   useEffect(() => {
-    fetchProjects(0).then(() => {
+    fetchProjects().then(() => {
       ensureFill(); // <- auto-fill screen if not enough projects
     });
   }, []);
