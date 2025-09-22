@@ -143,10 +143,10 @@ export default function ProjectPage(){
             }
 
             try {
-                const projects = await fetchRandomProjects(10);
+                const projects = await fetchRandomProjects(10, [id]);
                 setOtherProjects(projects);
             } catch (err) {
-
+                
             }
         })();
     }, []);

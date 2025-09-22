@@ -87,7 +87,7 @@ export default function Discover() {
 
 
   const fetchProjects = async () => {
-    const { data, error } = await supabase.rpc("random_projects", { limit_count: PAGE_SIZE });
+    const { data, error } = await supabase.rpc("get_random_projects", { limit_count: PAGE_SIZE });
 
     if (error) {
       setLoading(false);
