@@ -12,7 +12,7 @@
     background: var(--white);
 }
 
-.create-panel .panel-content, .panel .panel-content {
+.create-panel .panel-content, .panel:not(.wrapped-panel) .panel-content {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -20,6 +20,21 @@
     height: 80%;
     max-width: 1000px;
     border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    transform: translate(-50%, -50%);
+    z-index: 4100;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapped-panel .panel-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 500px;
+    max-width: 95%;
+    min-height: 40px;
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
     transform: translate(-50%, -50%);
     z-index: 4100;

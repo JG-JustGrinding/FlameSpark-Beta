@@ -2,7 +2,7 @@
 import Header from "@/components/Header";
 import ErrorComponent from "@/components/ErrorComponent"
 import { useState, useEffect } from "react";
-import { getProject } from "@/lib/projectFunctions";
+import { getProject, leaveProject } from "@/lib/projectFunctions";
 import { useParams } from "next/navigation";
 import '@/lib/fontawesome'
 import { fetchRandomProjects } from "@/lib/projectFunctions";
@@ -36,6 +36,7 @@ export default function ProjectPage(){
     const [isOwner, setIsOwner] = useState(false);
     const [hasJoined, setHasJoined] = useState(false);
     const [otherProjects, setOtherProjects] = useState([]);
+    const [leaveProjectPanelOpen, setLeaveProjectPanelOpen] = useState(false);
     const { user } = useUser();
     const { id } = useParams();
     const router = useRouter();
@@ -579,6 +580,29 @@ export default function ProjectPage(){
         }
     }
 
+    const messages = [
+        "It won’t be the same without you!",
+        "Your presence makes all the difference!",
+        "We’d love for you to be part of this journey!",  
+        "It’s people like you who make this possible!",
+        "Thanks for believing in what we’re creating!",
+        "You’re helping make something special happen!",
+        "Together, we can create something amazing.",
+        "The journey is more fun when shared.",
+        "Thank you for being part of the journey so far!",
+        "We’re grateful for every moment you share with us!"
+    ];
+
+    function getRandomLeaveMessage() {
+        const index = Math.floor(Math.random() * messages.length);
+        return messages[index];
+    }
+
+    async function LeaveProjectFunction() {
+        await leaveProject(user?.id, id);
+        router.push("/");
+    }
+
     return (
         <div className="project-page">
             <Header/>
@@ -628,14 +652,14 @@ export default function ProjectPage(){
                             </div>
                         </div>
                         <div className="side-section">
-                            <div className="card bodyFont">
+                            <div className="card bodyFont description-card">
                                 <h2 className="titleFont cardTitle">Project Description</h2>
-                                <span>{project?.description}</span>
-                            </div>
-                            <div className="card bodyFont">
-                                {(!isOwner && hasJoined) && <button className="button-shape bodyFont button-red-harsh">Leave Project</button>}
-                                {(!isOwner && !hasJoined) && <button className="button-shape bodyFont button-red">Join Project</button>}
-                                {isOwner && <button className="button-shape bodyFont button-yellow">Project Dashboard</button>}
+                                <span className="description">{project?.description}</span>
+                                <div className="actions">
+                                    {(!isOwner && hasJoined) && <button className="button-shape bodyFont button-red-harsh" onClick={() => setLeaveProjectPanelOpen(true)}>Leave Project</button>}
+                                    {(!isOwner && !hasJoined) && <button className="button-shape bodyFont button-red">Join Project</button>}
+                                    {isOwner && <button className="button-shape bodyFont button-yellow">Project Dashboard</button>}
+                                </div>
                             </div>
                             <div className="card bodyFont">
                                 <span className="titleFont cardTitle bold">Other Projects</span>
@@ -830,7 +854,7 @@ export default function ProjectPage(){
                     <div className="panel-content">
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setSelectedPage(0)}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
-                        <span className="bodyFont bold body">To-Do Lists...</span>
+                        <span className="bodyFont bold body">We're currently in beta. Project to-do lists will launch after FlameSpark Beta gets enough members. Thank you for your support!</span>
                         <div>
                             <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
                         </div>
@@ -843,7 +867,7 @@ export default function ProjectPage(){
                     <div className="panel-content">
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setSelectedPage(0)}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
-                        <span className="bodyFont bold body">Timelines...</span>
+                        <span className="bodyFont bold body">We're currently in beta. Project timelines will launch after FlameSpark Beta gets enough members. Thank you for your support!</span>
                         <div>
                             <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
                         </div>
@@ -856,10 +880,21 @@ export default function ProjectPage(){
                     <div className="panel-content">
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setSelectedPage(0)}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
-                        <span className="bodyFont bold body">The community space...</span>
+                        <span className="bodyFont bold body">We're currently in beta. Project community spaces will launch after FlameSpark Beta gets enough members. Thank you for your support!</span>
                         <div>
                             <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
                         </div>
+                    </div>
+                </div>
+                }
+                {leaveProjectPanelOpen && 
+                <div className="panel wrapped-panel">
+                    <div className="backdrop"></div>
+                    <div className="panel-content bodyFont">
+                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setLeaveProjectPanelOpen(false)}/>
+                        <h2 className="titleFont reset">Are you sure you want to leave {project.title}?</h2>
+                        <span><i>“{getRandomLeaveMessage()}”</i></span>
+                        <button className="button-shape button-red-harsh" onClick={() => LeaveProjectFunction()}>Leave Project</button>
                     </div>
                 </div>
                 }
