@@ -583,6 +583,16 @@ export default function ProjectPage(){
         }
     }
 
+    function setOrResetMobilePanelIndex(index) {
+        if (mobilePanelIndex == index)
+        {
+            setMobilePanelIndex(0);
+            return;
+        }
+
+        setMobilePanelIndex(index);
+    }
+
     async function JoinProject() {
         if (!user)
         {
@@ -676,7 +686,7 @@ export default function ProjectPage(){
                                     noneFoundMessage={isOwner ? "No posts yet. Create a post to get started!" : "No posts yet. Stay tuned to support the creator and view their progress!"}/>
                             </div>
                         </div>
-                        <div className={`side-section${mobilePanelIndex == 1 ? " mobile" : ""}`}>
+                        <div className={`side-section desktop`}>
                             <div className="card bodyFont description-card">
                                 <h2 className="titleFont cardTitle">Project Description</h2>
                                 <span className="description">{project?.description}</span>
@@ -686,7 +696,30 @@ export default function ProjectPage(){
                                     {isOwner && <a href={`/project/${id}/dashboard`}><button className="button-shape bodyFont button-yellow">Project Dashboard</button></a>}
                                 </div>
                             </div>
-                            <div className="card bodyFont">
+                            <div className="card other bodyFont">
+                                <span className="titleFont cardTitle bold">Other Projects</span>
+                                {otherProjects.map((project, i) => (
+                                <a className="project-span" href={`/project/${project.id}/preview`} target="_blank" key={i}>
+                                    <img className="pfp-shape" alt="project icon" src={project.icon}></img>
+                                    <div className="side-project-info">
+                                        <span className="titleFont bold">{project.title}</span>
+                                        <span className="caption-size"><i>{project.tagline}</i></span>
+                                    </div>
+                                </a>
+                                ))}
+                            </div>
+                        </div>
+                        <div className={`side-section mobile-target${mobilePanelIndex == 1 ? " mobile" : " hide"}`}>
+                            <div className="card bodyFont description-card">
+                                <h2 className="titleFont cardTitle">Project Description</h2>
+                                <span className="description">{project?.description}</span>
+                                <div className="actions">
+                                    {(!isOwner && hasJoined) && <button className="button-shape bodyFont button-red-harsh" onClick={() => setLeaveProjectPanelOpen(true)}>Leave Project</button>}
+                                    {(!isOwner && !hasJoined) && <button className="button-shape bodyFont button-red" onClick={() => JoinProject()} disabled={isJoining}>{isJoining ? "Joining..." : "Join Project"}</button>}
+                                    {isOwner && <a href={`/project/${id}/dashboard`}><button className="button-shape bodyFont button-yellow">Project Dashboard</button></a>}
+                                </div>
+                            </div>
+                            <div className="card other bodyFont">
                                 <span className="titleFont cardTitle bold">Other Projects</span>
                                 {otherProjects.map((project, i) => (
                                 <a className="project-span" href={`/project/${project.id}/preview`} target="_blank" key={i}>
@@ -706,20 +739,38 @@ export default function ProjectPage(){
                         <FontAwesomeIcon icon={faHome} />
                         <span className="caption-size">Home</span>
                     </div>
-                    <div className={`section${mobilePanelIndex == 1 ? " current" : ""}`} onClick={() => setMobilePanelIndex(1)}>
+                    <div className={`section${mobilePanelIndex == 1 ? " current" : ""}`} onClick={() => setOrResetMobilePanelIndex(1)}>
                         <FontAwesomeIcon icon={faCircleInfo} />
                         <span className="caption-size">About</span>
                     </div>
-                    <div className={`section${mobilePanelIndex == 2 ? " current" : ""}`} onClick={() => setMobilePanelIndex(2)}>
+                    <div className={`section${mobilePanelIndex == 2 ? " current" : ""}`} onClick={() => setOrResetMobilePanelIndex(2)}>
                         <FontAwesomeIcon icon={filterIcons[selectedFilter]} />
                         <span className="caption-size">{filters[selectedFilter]}</span>
-                        <div className="filter-selection-panel">
-                            
-                        </div>
+                        {mobilePanelIndex == 2 && 
+                        <div className="selection-panel">
+                        {filters.map((filter, index) => (
+                            (filter !== filters[selectedFilter]) && 
+                            <div key={index} onClick={() => { setFilter(index); }} className={`no-select-pointer filter ${selectedFilter === index ? "selected" : "label-color"}`}>
+                                <FontAwesomeIcon className="icon" icon={filterIcons[index]}/>
+                                <span className="bodyFont">{filter}</span>
+                            </div>
+                        ))}
+                        </div> }
                     </div>
-                    <div className={`section${mobilePanelIndex == 3 ? " current" : ""}`} onClick={() => setMobilePanelIndex(3)}>
-                        <FontAwesomeIcon icon={faLayerGroup} />
-                        <span className="caption-size">Posts</span>
+                    <div className={`section${mobilePanelIndex == 3 ? " current" : ""}`}>
+                        <div className="section-wrapper" onClick={() => setOrResetMobilePanelIndex(3)}>
+                            <FontAwesomeIcon icon={pageIcons[selectedPage]} />
+                            <span className="caption-size">{pages[selectedPage]}</span>
+                        </div>
+                        {mobilePanelIndex == 3 && 
+                        <div className="selection-panel">
+                        {pages.map((page, index) => (
+                            (page !== pages[selectedPage]) && <div key={index} onClick={() => setPage(index)} className={`no-select-pointer filter ${selectedPage === index ? "selected" : "label-color"}`}>
+                                <FontAwesomeIcon className="icon" icon={pageIcons[index]}/>
+                                <span className="bodyFont">{page}</span>
+                            </div>
+                        ))}
+                        </div>}
                     </div>
                 </div>
                 {panelOpen &&
@@ -898,7 +949,7 @@ export default function ProjectPage(){
                 <div className="panel coming-soon-panel">
                     <div className="backdrop"></div>
                     <div className="panel-content">
-                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setSelectedPage(0)}/>
+                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
                         <span className="bodyFont bold body">We're currently in beta. Project to-do lists will launch after FlameSpark Beta gets enough members. Thank you for your support!</span>
                         <div>
@@ -911,7 +962,7 @@ export default function ProjectPage(){
                 <div className="panel coming-soon-panel">
                     <div className="backdrop"></div>
                     <div className="panel-content">
-                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setSelectedPage(0)}/>
+                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
                         <span className="bodyFont bold body">We're currently in beta. Project timelines will launch after FlameSpark Beta gets enough members. Thank you for your support!</span>
                         <div>
@@ -924,7 +975,7 @@ export default function ProjectPage(){
                 <div className="panel coming-soon-panel">
                     <div className="backdrop"></div>
                     <div className="panel-content">
-                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setSelectedPage(0)}/>
+                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
                         <span className="bodyFont bold body">We're currently in beta. Project community spaces will launch after FlameSpark Beta gets enough members. Thank you for your support!</span>
                         <div>
