@@ -22,6 +22,7 @@ h1, img {
     width: 100%;
     margin-top: 25px;
     padding: 15px 0px;
+    --mobile-nav-height: 40px;
 }
 
 .topbar {
@@ -102,7 +103,7 @@ h1, img {
     padding-left: 15px;
 }
 
-.side-section, .side {
+.side-section:not(.mobile), .side {
     width: 400px;
     display: flex;
     flex-direction: column;
@@ -274,6 +275,45 @@ h1, img {
     color: var(--white);
 }
 
+button:disabled {
+    background-color: rgba(35, 35, 35, .5);
+    cursor: default;
+}
+
+.mobile-nav {
+    position: fixed;
+    display: none;
+    background-color: var(--white);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    box-shadow: 0 -4px 6px -2px var(--shadow);
+    z-index: 900;
+    padding: 10px;
+}
+
+.mobile-nav .section {
+    position: relative;
+    display: flex;
+    flex: 1;
+    gap: 2px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    color: var(--black);
+    cursor: pointer;
+    height: var(--mobile-nav-height);
+}
+
+.section:not(.current) {
+    color: #525252;
+}
+
+.section.current {
+    transform: scale(1.1);
+}
+
 .wrapped-panel .panel-content {
     padding: 15px 55px;
     gap: 20px;
@@ -341,4 +381,34 @@ h1, img {
 .panel-content .patreon-button:active {
   transform: scale(0.95);
   background: linear-gradient(135deg, var(--flamespark-orange), var(--flamespark-red));
+}
+
+@media(max-width: 915px) {
+    .mobile-nav {
+        display: flex;
+    }
+
+    .side-section:not(.mobile), .side {
+        display: none;
+    }
+
+    .side-section.mobile {
+        position: fixed;
+        top: var(--header-height);
+        left: 0;
+        right: 0;
+        bottom: var(--mobile-nav-height);
+        display: flex;
+        background-color: rgba(0, 0, 0, 0.5);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-right: 0;
+        padding: 10px;
+    }
+
+    .posts {
+        padding: 0px 10px;
+        margin-bottom: 3.5rem;
+    }
 }

@@ -2,7 +2,7 @@
 import Header from "@/components/Header";
 import ErrorComponent from "@/components/ErrorComponent"
 import { useState, useEffect } from "react";
-import { getProject, leaveProject } from "@/lib/projectFunctions";
+import { getProject, joinProject, leaveProject } from "@/lib/projectFunctions";
 import { useParams } from "next/navigation";
 import '@/lib/fontawesome'
 import { fetchRandomProjects } from "@/lib/projectFunctions";
@@ -10,7 +10,7 @@ import { useUser } from "@/lib/useUser";
 import { useRouter } from "next/navigation";
 import { isUserOwner, isUserJoined, createPost, fetchPosts, uploadPostFile, deletePostFile, extractYouTubeId } from "@/lib/projectFunctions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faArrowDown, faLink, faCircleXmark, faPlus, faDiamond, faStar, faClock, faHourglass, faLayerGroup, faListCheck, faTimeline, faGlobe } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faArrowDown, faLink, faCircleXmark, faPlus, faDiamond, faStar, faClock, faHourglass, faLayerGroup, faListCheck, faTimeline, faGlobe, faHome, faCircleInfo } from '@fortawesome/free-solid-svg-icons'
 import { faT, faImage, faVideo, faVolumeLow, faPoll, faFileUpload } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
 import "@/styles/project.css"
@@ -37,6 +37,9 @@ export default function ProjectPage(){
     const [hasJoined, setHasJoined] = useState(false);
     const [otherProjects, setOtherProjects] = useState([]);
     const [leaveProjectPanelOpen, setLeaveProjectPanelOpen] = useState(false);
+    const [isLeaving, setIsLeaving] = useState(false);
+    const [isJoining, setIsJoining] = useState(false);
+    const [mobilePanelIndex, setMobilePanelIndex] = useState(0);
     const { user } = useUser();
     const { id } = useParams();
     const router = useRouter();
@@ -580,6 +583,23 @@ export default function ProjectPage(){
         }
     }
 
+    async function JoinProject() {
+        if (!user)
+        {
+            router.push("/login");
+            return;
+        }
+
+        try {
+            setIsJoining(true);
+            await joinProject(user?.id, id);
+            setHasJoined(true);
+        } catch (error)
+        {
+            setIsJoining(false);
+        }
+    }
+
     const messages = [
         "It won’t be the same without you!",
         "Your presence makes all the difference!",
@@ -599,8 +619,13 @@ export default function ProjectPage(){
     }
 
     async function LeaveProjectFunction() {
-        await leaveProject(user?.id, id);
-        router.push("/");
+        try {
+            setIsLeaving(true);
+            await leaveProject(user?.id, id);
+            router.push("/");
+        } catch {
+            setIsLeaving(false);
+        }
     }
 
     return (
@@ -651,14 +676,14 @@ export default function ProjectPage(){
                                     noneFoundMessage={isOwner ? "No posts yet. Create a post to get started!" : "No posts yet. Stay tuned to support the creator and view their progress!"}/>
                             </div>
                         </div>
-                        <div className="side-section">
+                        <div className={`side-section${mobilePanelIndex == 1 ? " mobile" : ""}`}>
                             <div className="card bodyFont description-card">
                                 <h2 className="titleFont cardTitle">Project Description</h2>
                                 <span className="description">{project?.description}</span>
                                 <div className="actions">
                                     {(!isOwner && hasJoined) && <button className="button-shape bodyFont button-red-harsh" onClick={() => setLeaveProjectPanelOpen(true)}>Leave Project</button>}
-                                    {(!isOwner && !hasJoined) && <button className="button-shape bodyFont button-red">Join Project</button>}
-                                    {isOwner && <button className="button-shape bodyFont button-yellow">Project Dashboard</button>}
+                                    {(!isOwner && !hasJoined) && <button className="button-shape bodyFont button-red" onClick={() => JoinProject()} disabled={isJoining}>{isJoining ? "Joining..." : "Join Project"}</button>}
+                                    {isOwner && <a href={`/project/${id}/dashboard`}><button className="button-shape bodyFont button-yellow">Project Dashboard</button></a>}
                                 </div>
                             </div>
                             <div className="card bodyFont">
@@ -676,6 +701,27 @@ export default function ProjectPage(){
                         </div>
                     </div>
                 </main>
+                <div className="mobile-nav bodyFont">
+                    <div className={`section${mobilePanelIndex == 0 ? " current" : ""}`} onClick={() => setMobilePanelIndex(0)}>
+                        <FontAwesomeIcon icon={faHome} />
+                        <span className="caption-size">Home</span>
+                    </div>
+                    <div className={`section${mobilePanelIndex == 1 ? " current" : ""}`} onClick={() => setMobilePanelIndex(1)}>
+                        <FontAwesomeIcon icon={faCircleInfo} />
+                        <span className="caption-size">About</span>
+                    </div>
+                    <div className={`section${mobilePanelIndex == 2 ? " current" : ""}`} onClick={() => setMobilePanelIndex(2)}>
+                        <FontAwesomeIcon icon={filterIcons[selectedFilter]} />
+                        <span className="caption-size">{filters[selectedFilter]}</span>
+                        <div className="filter-selection-panel">
+                            
+                        </div>
+                    </div>
+                    <div className={`section${mobilePanelIndex == 3 ? " current" : ""}`} onClick={() => setMobilePanelIndex(3)}>
+                        <FontAwesomeIcon icon={faLayerGroup} />
+                        <span className="caption-size">Posts</span>
+                    </div>
+                </div>
                 {panelOpen &&
                 <div className="create-panel">
                     <div className="backdrop"></div>
@@ -894,7 +940,7 @@ export default function ProjectPage(){
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setLeaveProjectPanelOpen(false)}/>
                         <h2 className="titleFont reset">Are you sure you want to leave {project.title}?</h2>
                         <span><i>“{getRandomLeaveMessage()}”</i></span>
-                        <button className="button-shape button-red-harsh" onClick={() => LeaveProjectFunction()}>Leave Project</button>
+                        <button className="button-shape button-red-harsh" onClick={() => LeaveProjectFunction()} disabled={isLeaving}>{isLeaving ? "Leaving..." : "Leave Project"}</button>
                     </div>
                 </div>
                 }
