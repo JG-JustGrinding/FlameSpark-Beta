@@ -836,7 +836,9 @@ export default function ProjectPage(){
                                         <div className={`${posts[currentPostIndex].postType == "image" ? "" : "hide"} Image-Post-Field`}>
                                             <label className={`bodyFont`}>Images (up to {MAX_POST_IMAGES})</label>
                                             {posts[currentPostIndex].imageContent.length > 0 && <span className="label-color bodyFont">{posts[currentPostIndex].imageContent.length} {posts[currentPostIndex].imageContent.length != 1 ? "Images" : "Image"}</span>}
-                                            <input type="file" accept="image/*" className="bodyFont input-field" multiple onChange={(e) => {handlePostImageChange(e, currentPostIndex)}} />
+                                            <div className="image-file-field">
+                                                <input type="file" accept="image/*" className="bodyFont input-field" multiple onChange={(e) => {handlePostImageChange(e, currentPostIndex)}} />
+                                            </div>
                                             <div className="postImages">
                                                 {posts[currentPostIndex].imageContent.map((content, i) => (
                                                 <div key={i} className="postImageContainer">

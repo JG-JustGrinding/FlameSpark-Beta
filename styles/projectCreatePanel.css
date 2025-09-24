@@ -199,6 +199,16 @@ button.remove {
     gap: 10px;
 }
 
+.Image-Post-Field .image-file-field {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.Image-Post-Field .input-field {
+    box-sizing: border-box;
+    width: 100%;
+}
+
 .poll-creator {
     display: flex;
     flex-direction: column;
@@ -381,6 +391,15 @@ button.remove {
 
 @media(max-width: 768px)
 {
+    .post-type-options {
+        padding: 5px;
+        min-width: 50px;
+    }
+
+    .create-panel .panel-content{
+        width: 95%;
+    }
+
     .panel:not(.wrapped-panel) .panel-content {
         height: auto;
         min-height: 50%;
