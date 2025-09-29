@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabaseClient";
 import "@/styles/dashboard.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe } from '@fortawesome/free-solid-svg-icons'
+import CappedInput from "@/components/CappedInput";
 
 export default function ProjectPage(){
     const { id } = useParams();
@@ -21,11 +22,14 @@ export default function ProjectPage(){
     const items = [];
     const unlockableItems = [];
 
-    function PushItem(name, icon, itemArray) {
-        itemArray.push({name, icon});
+    // details
+    const [projectTitle, setProjectTitle] = useState("");
+
+    function PushItem(name, icon, itemArray, fullName = undefined) {
+        itemArray.push({name, icon, fullName});
     }
 
-    PushItem("Details", faPencil, items);
+    PushItem("Details", faPencil, items, "Project Details");
     PushItem("Analytics", faChartBar, items);
     PushItem("Posts", faLayerGroup, items);
 
@@ -68,6 +72,10 @@ export default function ProjectPage(){
       }
 
       setProject(project);
+
+      // set project values
+      setProjectTitle(project?.title);
+
       setLoading(false);
     };
 
@@ -83,10 +91,18 @@ export default function ProjectPage(){
 
     return (
         <>
-            <Header isDashboardHeader={true} />
             <div className="container">
                 <aside className="sidebar bodyFont">
                     <ul>
+                        <li className="project-display">
+                            <a href={`/project/${project?.id}`}>
+                                <img className="pfp-shape" src={project?.icon} alt="Project icon"/>
+                                <h2 className="reset titleFont">{project?.title}</h2>
+                            </a>
+                        </li>
+                        
+                        <li className="line-break"><span/></li>
+
                         <li className="item create-post-button">
                             <FontAwesomeIcon icon={faPlus}/> 
                             Create New Post
@@ -108,11 +124,18 @@ export default function ProjectPage(){
                         ))}
                     </ul>
                 </aside>
-                <main className="main-content">
-                    <h1>Main Content</h1>
-                    <p>Some content goes here...</p>
-                    <p>More content...</p>
-                </main>
+                <div className="container-content">
+                    <Header isDashboardHeader={true} />
+
+                    <main className="main-content">
+                        {selectedIndex < items.length && <h1 className="titleFont">{items[selectedIndex].fullName || items[selectedIndex].name}</h1>}
+                        {selectedIndex == 0 && 
+                        <div className="content-section details">
+                            <CappedInput value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} maxLength={30} label="Project Title" id="project-title"></CappedInput>
+                        </div>
+                        }
+                    </main>
+                </div>
             </div>
         </>
     )

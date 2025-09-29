@@ -12,12 +12,12 @@ import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 
 
-export default function Header({ forceAuthRedirect = false, isDashboardHeader = false, project = null }) {
+export default function Header({ forceAuthRedirect = false, isDashboardHeader = false, searchFieldText = "", project = null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const [userPanelOpen, setUserPanelOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchFieldText);
   const [searchOpen, setSearchOpen] = useState(false);
 
   const { user, userSet, avatar, username, handleLogout } = useUser();

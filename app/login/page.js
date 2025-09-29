@@ -117,7 +117,7 @@ export default function LoginPage() {
                             <input id="remember-me-checkbox" className="checkbox red" type="checkbox" defaultChecked />
                             <label htmlFor="remember-me-checkbox" className="bodyFont body-size">Remember Me</label>
                         </div>
-                        <button className={`button-shape input-button bodyFont red ${loading ? "auth-button-off" : ""}`}
+                        <button className={`button-shape input-button bodyFont red auth-button`}
                         onClick={handleLogin}
                         disabled={loading}
                         >

@@ -25,7 +25,7 @@ export default function Search() {
     }
   
     return (
-        <PrimaryPageLayout title={`Search Results for '${searchQuery}'`} description={loading ? "Loading..." : `${itemCount} Result${itemCount != 1 ? "s" : ""}`}>
+        <PrimaryPageLayout title={`Search Results for '${searchQuery}'`} description={loading ? "Loading..." : `${itemCount} Result${itemCount != 1 ? "s" : ""}`} searchFieldText={query}>
             <div className="search">
                 <div className="filters">
                     <select className="search-filter bodyFont" id="filter"
@@ -45,10 +45,10 @@ export default function Search() {
                             ) : item.type === "user" ? (
                             <a href={`/user/${item.id}`} key={idx} className="project user">
                                 <div className="cover-image-wrapper">
-                                    <img src={item.raw_user_meta_data?.avatar_url || "/profile_icon_colored.svg"} alt="profile-picture"/>
+                                    <img src={item.avatar_url || "/profile_icon_colored.svg"} alt="profile-picture"/>
                                 </div>
-                                <span className="bodyFont bold">{item.raw_user_meta_data?.username || "No Username"}</span>
-                                {item.raw_user_meta_data?.bio && <span className="bodyFont label-color bio-snippet">{item.raw_user_meta_data?.bio}</span>}
+                                <span className="bodyFont bold">{item.username || "No Username"}</span>
+                                {item.bio && <span className="bodyFont label-color bio-snippet">{item.bio}</span>}
                             </a>
                             ) : <></>
                         )}

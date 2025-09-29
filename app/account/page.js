@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Header from "@/components/Header";
 import "../../styles/account.css";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/lib/useUser";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTag, faBook, faHeart } from "@fortawesome/free-solid-svg-icons";
@@ -14,56 +15,65 @@ export default function AccountPage() {
   const [avatar, setAvatar] = useState(null);
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
-  const [interests, setInterests] = useState("");
+  const [interestsField, setInterestsField] = useState("");
+  const [interestsArray, setInterestsArray] = useState([]);
   const [savingInfo, setSavingInfo] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, userSet, avatar: current_avatar, username: currentUsername, bio: currentBio, interests: currentInterests, setAvatar: setCurrentAvatar } = useUser();
+  const fileInputRef = useRef(null);
+  const [newProfilePending, setNewProfilePending] = useState(false);
+  const [newAvatarFile, setNewAvatarFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [profileError, setProfileError] = useState("");
+  const [profileSuccess, setProfileSuccess] = useState("");
   const [profileInfoError, setProfileInfoError] = useState("");
   const [profileInfoSuccess, setProfileInfoSuccess] = useState("");
 
-  useEffect(() => {
-      const checkUser = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session?.user == null) {
-          router.push("/login");
-      }
-      };
-      checkUser();
-  }, [router, supabase]);
+  const MAX_INTERESTS_COUNT = 5;
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      const currentUser = data.session?.user || null;
-      setUser(currentUser);
+    if (userSet && !user) {
+      router.push("/login");
+    }
+  }, [userSet, user, router]);
 
-      if (currentUser) {
-        setAvatar(currentUser.user_metadata?.avatar_url || "/profile_icon_colored.svg");
-        setUsername(currentUser.user_metadata?.username || "No Username");
-        setBio(currentUser.user_metadata?.bio || "");
-        setInterests(currentUser.user_metadata?.interests || "");
+  useEffect(() => {
+
+    if (user) {
+      if (userSet && !newProfilePending)
+      {
+        setAvatar(current_avatar || "/profile_icon_colored.svg");
       }
-    });
+      setUsername(currentUsername || "No Username");
+      setBio(currentBio || "");
+      setInterestsArray(currentInterests || []);
+    } else {
+      setAvatar(null);
+      setUsername(null);
+      setBio(null);
+      setInterestsArray([]);
+    }
+    }, [user, userSet, current_avatar, currentUsername, currentBio, currentInterests]);
 
-    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
-      const currentUser = session?.user || null;
-      setUser(currentUser);
+    async function onNewAvatarUploaded(event) {
+      URL.revokeObjectURL(avatar);
 
-      if (currentUser) {
-        setAvatar(currentUser.user_metadata?.avatar_url || "/profile_icon_colored.svg");
-        setUsername(currentUser.user_metadata?.username || "No Username");
-        setBio(currentUser.user_metadata?.bio || "");
-        setInterests(currentUser.user_metadata?.interests || "");
-      } else {
-        setAvatar(null);
-        setUsername(null);
-        setBio(null);
-        setInterests(null);
-      }
-    });
+      setNewProfilePending(true);
 
-    return () => listener.subscription.unsubscribe();
-  }, []);
+      const file = event.target.files[0];
+      if (!file) return;
+      const newUrl = URL.createObjectURL(file);
+      setAvatar(newUrl);
+      setProfileSuccess("");
+      setNewAvatarFile(file);
+    }
+
+    async function cancelNewAvatar(){
+      setAvatar(current_avatar || "/profile_icon_colored.svg");
+      setNewProfilePending(false);
+      fileInputRef.current.value = '';
+      setProfileSuccess("");
+      setNewAvatarFile(null);
+    }
 
     async function uploadAvatar(event) {
     try {
@@ -75,23 +85,17 @@ export default function AccountPage() {
       setUploading(true);
       setProfileError("");
       setProfileInfoSuccess("");
+      setProfileSuccess("");
 
-      const file = event.target.files[0];
+      const file = newAvatarFile;
+
       if (!file) return;
 
-      const fileExt = file.name.split(".").pop();
-      const fileName = `${user.id}.${fileExt}`;
-      const filePath = `${fileName}`;
+        const oldAvatarUrl = current_avatar;
 
-      // Delete old avatar
-      const oldAvatarUrl = user.user_metadata?.avatar_url;
-      if (oldAvatarUrl) {
-        const url = new URL(oldAvatarUrl);
-        const oldPath = url.pathname.split("/storage/v1/object/public/Avatars/")[1];
-        if (oldPath) {
-          await supabase.storage.from("Avatars").remove([oldPath]);
-        }
-      }
+        const fileExt = file.name.split(".").pop();
+        const fileName = `${user.id}.${Date.now()}.${fileExt}`;
+        const filePath = `${fileName}`;
 
       // Upload to Supabase Storage
       let { error: uploadError } = await supabase.storage
@@ -100,8 +104,8 @@ export default function AccountPage() {
 
         if (uploadError)
         {
-            setProfileError("Error: " + uploadError.message);
-            return;
+          setProfileError("Error: " + uploadError.message);
+          return;
         }
 
         const { data: publicUrlData } = supabase.storage
@@ -110,9 +114,12 @@ export default function AccountPage() {
 
         const publicUrl = publicUrlData.publicUrl;
 
-        const { data, error } = await supabase.auth.updateUser({
-        data: { avatar_url: publicUrl }
-        });
+        const dataToUpdate = { avatar_url: publicUrl };
+
+        const { data, error } = await supabase
+        .from("profiles")
+        .update(dataToUpdate)
+        .eq("id", user.id);
 
         if (error)
         {
@@ -120,10 +127,26 @@ export default function AccountPage() {
             return;
         }
 
+        // Delete old avatar
+        if (oldAvatarUrl) {
+          const url = new URL(oldAvatarUrl);
+          const oldPath = url.pathname.split("/storage/v1/object/public/Avatars/")[1];
+          if (oldPath) {
+            await supabase.storage.from("Avatars").remove([oldPath]);
+          }
+        }
+
+      setProfileSuccess("Profile picture updated");
+      setCurrentAvatar(publicUrl);
+      fileInputRef.current.value = '';
     } catch (error) {
         setProfileError("Error: " + error.message);
+        setAvatar(current_avatar || "/profile_icon_colored.svg");
+        fileInputRef.current.value = '';
+        setNewAvatarFile(null);
     } finally {
       setUploading(false);
+      setNewProfilePending(false);
     }
   }
 
@@ -138,11 +161,12 @@ export default function AccountPage() {
       const dataToUpdate = {};
       if (username !== undefined) dataToUpdate.username = username;
       if (bio !== undefined) dataToUpdate.bio = bio;
-      if (interests !== undefined) dataToUpdate.interests = interests;
+      if (interestsArray !== undefined) dataToUpdate.interests = interestsArray;
 
-      const { data, error } = await supabase.auth.updateUser({
-        data: dataToUpdate
-      });
+      const { data, error } = await supabase
+      .from("profiles")
+      .update(dataToUpdate)
+      .eq("id", user.id);
 
       if (error)
       {
@@ -157,7 +181,41 @@ export default function AccountPage() {
       setSavingInfo(false)
     }
   }
-  
+
+  useEffect(() => {
+    if (!interestsField)
+    {
+      return;
+    }
+
+    if (interestsField.endsWith(','))
+    {
+      addInterest();
+    }
+
+  }, [interestsField])
+
+  const addInterest = () => {
+    let interest = interestsField.replace(/,/g, "");
+
+    interest = interest.trim().replace(/\s+/g, " ");
+
+    if (interest.length <= 0)
+    {
+      setTagInput("");
+      return;
+    }
+
+    if (interest && interestsArray.length < MAX_INTERESTS_COUNT) {
+      setInterestsArray([...interestsArray, interest]);
+      setInterestsField("");
+    }
+  };
+
+  const removeInterest = (index) => {
+    setInterestsArray(interestsArray.filter((_, i) => i !== index));
+  };
+
   return (
     <>
       <Header />
@@ -184,10 +242,15 @@ export default function AccountPage() {
                         <img className="pfp-shape" src={avatar} alt="profile picture"/>
                         <div className="right">
                             {profileError && <p className="error-message titleFont">{profileError}</p>}
+                            {profileSuccess && <p className="success-message titleFont">{profileSuccess}</p>}
                             <span className="bodyFont bold">Profile Picture</span>
-                            <div className="change-container">
-                                <p className="label bodyFont">Change Image:</p>
-                                <input className="bodyFont button-shape changeButton" type="file" accept="image/*" onChange={uploadAvatar} disabled={uploading}/>
+                            <div className="change-container bodyFont">
+                                <p className="label">Change Image:</p>
+                                <div className="options">
+                                  <input className="button-shape changeButton" type="file" accept="image/*" ref={fileInputRef} onChange={onNewAvatarUploaded} disabled={uploading}/>
+                                  {newProfilePending && <button className="button-shape save-pfp-button" disabled={uploading} onClick={uploadAvatar}>{uploading ? "Saving..." : "Save"}</button> }
+                                  {(newProfilePending && !uploading) && <button className="button-shape cancel-pfp-button" onClick={cancelNewAvatar}>Cancel</button> }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -222,11 +285,28 @@ export default function AccountPage() {
                                 <FontAwesomeIcon icon={faHeart}/>
                                 <p className="label-color bodyFont body-size">Interests (comma separated, e.g. "Art, Gaming")</p>
                             </div>
-                            <input className="bodyFont input-field" type="text" placeholder="Enter text here..." value={interests == null ? "" : interests} onChange={(e) => {
-                                                                                                                                                    setInterests(e.target.value);
-                                                                                                                                                    setProfileInfoSuccess("");
-                                                                                                                                                    setProfileInfoError("");
-                                                                                                                                                  }} />
+                            <input className="bodyFont input-field" type="text" placeholder="Enter text here..." disabled={interestsArray.length >= MAX_INTERESTS_COUNT}
+                             value={interestsField == null ? "" : interestsField} 
+                             onChange={(e) => {
+                                              setInterestsField(e.target.value);
+                                              setProfileInfoSuccess("");
+                                              setProfileInfoError("");
+                                              }}    
+                              onKeyDown={(e) => e.key === "Enter" && addInterest()} 
+                              />
+                            <div className="interests">
+                                {interestsArray.map((interest, i) => (
+                                  <span key={i} className="interest bodyFont">
+                                    {interest}
+                                    <span
+                                      className={`no-select-pointer bodyFont`}
+                                      onClick={() => removeInterest(i)}
+                                    >
+                                      ✕
+                                    </span>
+                                  </span>
+                                ))}
+                              </div>
                         </div>
                         <div className="save-button-container">
                             <button className="button-shape bodyFont" onClick={saveProfileInfo} disabled={savingInfo}>{`${savingInfo ? "Saving..." : "Save"}`}</button>

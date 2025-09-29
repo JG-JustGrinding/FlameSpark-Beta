@@ -108,13 +108,30 @@ html, body {
     border: 1px solid var(--flamespark-blue);
     color: var(--flamespark-blue);
     font-size: .8rem;
-    margin: 0px;
+    margin: 0px 10px 5px 0px;
 }
 
 .content-view .profile .changeButton:disabled {
     border: 1px solid rgba(35, 35, 35, .5);
     color: rgba(35, 35, 35, .5);
     cursor: default;
+}
+
+.content-view .profile .save-pfp-button {
+    background-color: var(--flamespark-green);
+    color: var(--white);
+    font-size: .8rem;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+.content-view .profile .save-pfp-button:disabled {
+    background-color: rgba(35, 35, 35, .5);
+    cursor: default;
+}
+
+.content-view .profile .cancel-pfp-button {
+    font-size: .8rem;
 }
 
 .content-view .profile .save-button-container {
@@ -156,6 +173,28 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+.interests {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.interest {
+  background-color: rgba(0,0,0,0.1);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  display: flex;
+  gap: 10px;
+}
+
+input:disabled {
+    color: #696969;
+    border-color: #696969;
+    opacity: .8;
 }
 
 @media(max-width:768px) {

@@ -6,7 +6,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { useParams } from "next/navigation";
 import { Paginator } from "@/lib/infinitePostFeed";
 import Link from "next/link";
-import { getUserJoinedProjects } from "@/lib/projectFunctions";
+import { getUser, getUserJoinedProjects } from "@/lib/projectFunctions";
 
 export default function UserPage() {
     const { id } = useParams();
@@ -22,11 +22,11 @@ export default function UserPage() {
 
     const fetchData = async () => {
       try {
-        const { data: userData, error: userError } = await supabase
-          .rpc("get_public_user", { user_id: id }); 
+        const { data: userData, error: userError } = await getUser(id);
 
         if (userError) throw userError;
-        setUser(userData[0]);
+
+        setUser(userData);
 
         const { data: projectData, error: projectError } = await supabase
           .from("projects")
@@ -59,13 +59,13 @@ export default function UserPage() {
 
     return (
         <>
-            <Header />
+            <Header/>
             <div className="banner"></div>
             {error && <span className="error-message bodyFont">{error}</span> }
             <main className="main-container">
                 <div className="user-info">
                     <div className="profile-info">
-                        <img alt="Profile picture" src={user?.avatar_url} className="profile-image"></img>
+                        <img alt="Profile picture" src={user?.avatar_url ? user.avatar_url : "/profile_icon_colored.svg"} className="profile-image"></img>
                         <div className="info-container">
                             <h1 className="titleFont">{user?.username ? user.username : "No Username"}</h1>
                             <p className="bio bodyFont">{user?.bio}</p>

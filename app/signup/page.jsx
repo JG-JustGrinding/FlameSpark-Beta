@@ -184,7 +184,7 @@ export default function SignupPage() {
             </div>
 
             <button
-              className={`button-shape input-button bodyFont blue ${loading ? "auth-button-off" : ""}`}
+              className={`button-shape input-button bodyFont blue auth-button`}
               onClick={handleSignup}
               disabled={loading}
             >
@@ -192,7 +192,7 @@ export default function SignupPage() {
             </button>
 
             <div className="bottom-section">
-              <button onClick={handleGoogleLogin} className="button-shape input-button bodyFont clear auth-button">
+              <button onClick={handleGoogleLogin} className="button-shape input-button bodyFont clear">
                 <img src="/logo_google.png" alt="Google Logo" />
                 Signup with Google
               </button>

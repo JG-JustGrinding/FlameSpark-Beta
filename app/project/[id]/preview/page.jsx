@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import ErrorPage from "@/components/error";
 import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
+import { getUser } from "@/lib/projectFunctions";
 import "@/styles/preview.css"
 import { useRouter } from "next/navigation";
 import { isUserJoinedOrOwner, joinProject, getProjectCreator } from "@/lib/projectFunctions";
@@ -77,11 +78,10 @@ export default function ProjectPreview(){
 
         setPreviewMedia(updatedMedia);
 
-        const { data: userData, error: userError } = await supabase
-          .rpc("get_public_user", { user_id: projectData.owner_id }); 
-
+        const { data: userData, error: userError } = await getUser(projectData.owner_id);
+        
         if (userError) throw userError;
-        setCreatorInfo(userData[0]);
+        setCreatorInfo(userData);
       } catch (err) {
         setError(err.message || "Failed to load project");
         router.push("/project-not-found")

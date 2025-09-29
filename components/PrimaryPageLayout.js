@@ -2,10 +2,10 @@ import "@/styles/PrimaryPage.css";
 import Header from "./Header";
 import SidePanel from "./SidePanel";
 
-const Layout = ({ children, useTitle = true, title = "", description = "", noContainerPadding = false }) => {
+const Layout = ({ children, useTitle = true, title = "", description = "", searchFieldText = "", noContainerPadding = false }) => {
   return (
 <>
-      <Header />
+      <Header searchFieldText={searchFieldText} />
 
       <main className="main-container">
         <SidePanel />

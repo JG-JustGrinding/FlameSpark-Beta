@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Link from "next/link";
 import Header from "@/components/Header";
@@ -24,6 +24,8 @@ export default function CreatePage() {
 
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState("");
+
+  const fileInputRef = useRef(null);
 
   const [coverImage, setCoverImage] = useState(null);
   const [iconImage, setIconImage] = useState(null);
@@ -64,9 +66,27 @@ export default function CreatePage() {
   });
   //
 
+  useEffect(() => {
+    if (tagInput.endsWith(','))
+    {
+      handleAddTag();
+    }
+
+  }, [tagInput])
+
   const handleAddTag = () => {
-    if (tagInput && tags.length < MAX_TAG_COUNT) {
-      setTags([...tags, tagInput]);
+    let tag = tagInput.replace(/,/g, "");
+
+    tag = tag.trim().replace(/\s+/g, " ");
+
+    if (tag.length <= 0)
+    {
+      setTagInput("");
+      return;
+    }
+
+    if (tag && tags.length < MAX_TAG_COUNT) {
+      setTags([...tags, tag]);
       setTagInput("");
     }
   };
@@ -105,6 +125,8 @@ export default function CreatePage() {
 
       setPreviewImages(combined);
       setPreviewUpload(combinedFiles);
+
+      fileInputRef.current.value = '';
     }
   };
 
@@ -291,6 +313,7 @@ export default function CreatePage() {
                 onChange={(e) => setTagInput(e.target.value)}
                 placeholder="Enter text here..."
                 className="bodyFont input-field"
+                onKeyDown={(e) => e.key === "Enter" && handleAddTag()} 
               />
               <button type="button" className="button-shape bodyFont" onClick={handleAddTag}>
                 Add
@@ -328,7 +351,7 @@ export default function CreatePage() {
 
             <label className={`${styles.mt} bodyFont`}>Preview Images (up to {MAX_PREVIEW_IMAGES})</label>
             {previewImages.length > 0 && <span className="label-color bodyFont">{previewImages.length} {previewImages.length != 1 ? "Images" : "Image"}</span>}
-            <input type="file" accept="image/*" className="bodyFont input-field" multiple  onChange={handlePreviewChange} />
+            <input type="file" accept="image/*" className="bodyFont input-field" multiple ref={fileInputRef} onChange={handlePreviewChange} />
             <div className={styles.previewImages}>
               {previewImages.map((img, i) => (
                 <div key={i} className={styles.previewImageContainer}>

@@ -169,7 +169,7 @@ html, body {
     text-decoration-line: none;
 }
 
-.auth-button:disabled {
+.container .auth-button:disabled {
     background-color: rgba(35, 35, 35, .5);
     border: 1px solid rgba(35, 35, 35, .5);
     cursor: default;

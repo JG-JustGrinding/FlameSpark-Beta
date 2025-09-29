@@ -17,8 +17,8 @@
   top: 0;
   height: 100%;
   overflow-y: auto;
+  max-width: 18%;
 }
-
 
 .sidebar ul {
   list-style: none;
@@ -56,6 +56,33 @@
     border-radius: 5px;
 }
 
+.sidebar .project-display {
+  padding: 0;
+  text-align: start;
+}
+
+.sidebar .project-display a {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: var(--white);
+    width: 100%;
+}
+
+.sidebar .project-display img {
+  width: 50px;
+  height: 50px;
+}
+
+.container-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 .create-post-button {
     background-color: var(--flamespark-red);
     color: var(--white);
@@ -72,4 +99,8 @@
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+}
+
+.main-content .content-section {
+  margin-top: 20px;
 }
