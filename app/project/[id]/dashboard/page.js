@@ -134,6 +134,11 @@ export default function ProjectPage(){
                             <CappedInput value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} maxLength={30} label="Project Title" id="project-title"></CappedInput>
                         </div>
                         }
+                        {selectedIndex == 1 && 
+                        <div className="content-section analytics">
+                            <span className="bodyFont">Views</span>
+                        </div>
+                        }
                     </main>
                 </div>
             </div>
