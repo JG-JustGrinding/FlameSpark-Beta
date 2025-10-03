@@ -3,14 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import '@/lib/fontawesome'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faArrowDown, faLink } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
 import { extractYouTubeId, timeAgo } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
+import PanelOverlay from './PanelOverlay';
 
-const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = null, dateCreated}) => {
+const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = null, dateCreated, isOwner = false, isPinned = false}) => {
     const [currentPostPartIndex, setCurrentPostPartIndex] = useState(0);
     const [currentPostContent, setCurrentPostContent] = useState(null);
+    const [adminPanelOpen, setAdminPanelOpen] = useState(false);
+    const [deletePanelOpen, setDeletePanelOpen] = useState(false);
     const dateDifference = timeAgo(dateCreated);
 
     useEffect(() => {
@@ -32,6 +35,7 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
     };
     
     return (
+    <>
     <div className="post card text">
         <div className={`post-top ${(!postTitle && !postDescription) ? "align-center" : ""}`}>
             <img className="icon pfp-shape" alt="post-icon" src={icon}></img>
@@ -46,6 +50,30 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
                     </div>
                 </div>
                 <span className="date-created"></span>
+            </div>
+            <div className={`project-top-actions`}>
+                <div className='admin'>
+                    <FontAwesomeIcon icon={faEllipsisH} className={`no-select-pointer icon${adminPanelOpen ? " open" : ""}`} onClick={() => setAdminPanelOpen(value => !value)}/>
+                    {adminPanelOpen &&
+                    <div className="post-admin-panel bodyFont">
+                        <ul>
+                            <li className="no-select-pointer" onClick={() => {setAdminPanelOpen(false)}}>
+                                <FontAwesomeIcon icon={faThumbTack} />
+                                <span>Pin Post</span>
+                            </li>
+                            <li className="no-select-pointer" onClick={() => setAdminPanelOpen(false)}>
+                                <FontAwesomeIcon icon={faPenToSquare} />
+                                <span>Edit Post</span>
+                            </li>
+                            <li className="no-select-pointer" onClick={() => {setDeletePanelOpen(true); setAdminPanelOpen(false)}}>
+                                <FontAwesomeIcon icon={faEraser} />
+                                <span>Delete Post</span>
+                            </li>
+                        </ul>
+                    </div>
+                    }
+                </div>
+                {isPinned && <FontAwesomeIcon icon={faThumbTack} />}
             </div>
         </div>
         {postContent?.length > 1 && <span className="label-color caption-size bodyFont">{currentPostPartIndex + 1} of {postContent?.length}</span>}
@@ -114,6 +142,22 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
             </div>
         </div>
     </div>
+    <PanelOverlay isOpen={deletePanelOpen} onClose={() => setDeletePanelOpen(false)}>
+        <h3 className='reset'>Delete Post</h3>
+        <span>Are you sure you want to delete this post? This cannot be undone!</span>
+        <div className='post-display'>
+            <FontAwesomeIcon icon={faT}/>
+            <div className='post-info'>
+                <span className='titleFont bold'>{postTitle}</span>
+                <span className='bodyFont label-color'>{postDescription}</span>
+            </div>
+        </div>
+        <div className='options'>
+            <button className='button-shape' onClick={() => setDeletePanelOpen(false)}>Cancel</button>
+            <button className='button-shape'>Delete</button>
+        </div>
+    </PanelOverlay>
+    </>
     )
 }
 

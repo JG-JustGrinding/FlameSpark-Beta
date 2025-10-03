@@ -679,7 +679,7 @@ export default function ProjectPage(){
                                     fetchFunction={fetchPosts}
                                     projectId={id}
                                     renderItem={(post, idx) => (
-                                      <ProjectPost key={idx || post.id} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at}></ProjectPost>  
+                                      <ProjectPost key={idx || post.id} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at} isOwner={isOwner}></ProjectPost>  
                                     )}
                                     limit={5}
                                     filter={filters[selectedFilter]}

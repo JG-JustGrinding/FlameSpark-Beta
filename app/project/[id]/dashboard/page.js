@@ -2,13 +2,14 @@
 import Header from "@/components/Header";
 import Unauthorized from "@/components/Unauthorized";
 import ErrorComponent from "@/components/ErrorComponent"
+import DashboardCard from "@/components/DashboardCard";
 import { useUser } from "@/lib/useUser";
 import { useRouter, useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import "@/styles/dashboard.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock } from '@fortawesome/free-solid-svg-icons'
 import CappedInput from "@/components/CappedInput";
 
 export default function ProjectPage(){
@@ -24,6 +25,9 @@ export default function ProjectPage(){
 
     // details
     const [projectTitle, setProjectTitle] = useState("");
+    const [projectTagline, setProjectTagline] = useState("");
+    const [projectDescription, setProjectDescription] = useState("");
+    const [projectTags, setProjectTags] = useState([]);
 
     function PushItem(name, icon, itemArray, fullName = undefined) {
         itemArray.push({name, icon, fullName});
@@ -101,7 +105,7 @@ export default function ProjectPage(){
                             </a>
                         </li>
                         
-                        <li className="line-break"><span/></li>
+                        <li className="line-break full"><span/></li>
 
                         <li className="item create-post-button">
                             <FontAwesomeIcon icon={faPlus}/> 
@@ -122,6 +126,23 @@ export default function ProjectPage(){
                             <span>{item.name}</span>
                             </li>
                         ))}
+
+                        <li className="line-break"><span/></li>
+
+                        <div className="flamepoints-display">
+                            <div className="points-title bodyFont">
+                                <FontAwesomeIcon icon={faFireFlameCurved} className="icon"/>
+                                <span>0 FlamePoints</span>
+                            </div>
+                            <div className="bar">
+                                <div className="background"></div>
+                                <div className="fill"></div>
+                            </div>
+                            <span className="bodyFont caption-size">0 FlamePoints Until Next Reward</span>
+                            <button className="bodyFont button-shape red-color">
+                                Learn More
+                            </button>
+                        </div>
                     </ul>
                 </aside>
                 <div className="container-content">
@@ -132,11 +153,30 @@ export default function ProjectPage(){
                         {selectedIndex == 0 && 
                         <div className="content-section details">
                             <CappedInput value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} maxLength={30} label="Project Title" id="project-title"></CappedInput>
+                            <CappedInput value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} maxLength={30} label="Project Description" id="project-description"></CappedInput>
                         </div>
                         }
                         {selectedIndex == 1 && 
                         <div className="content-section analytics">
-                            <span className="bodyFont">Views</span>
+                            <div className="dashboard-grid">
+                                <DashboardCard title="Views" value="10000" className="full" />
+                                <DashboardCard title="Supporters" value="2000" className="full" />
+                                <DashboardCard title="Total Posts" value="20" className="medium" />
+                                <DashboardCard title="Total Likes" value="0" className="medium" />
+                                <DashboardCard title="Average Post Interval" value="0" className="medium" />
+                                <DashboardCard title="Like-Dislike Ratio" value="0" className="medium" />
+                            </div>
+                        </div>
+                        }
+                        {selectedIndex == 2 && 
+                        <div className="content-section posts">
+                        </div>
+                        }
+                        {selectedIndex > items.length - 1 && 
+                        <div className="content-section locked">
+                            <h2 className="title">This Feature Hasn’t Been Released Yet</h2>
+                            <p className="body">Something about becoming a member</p>
+                            <FontAwesomeIcon icon={faLock} className="label-color icon"/>
                         </div>
                         }
                     </main>

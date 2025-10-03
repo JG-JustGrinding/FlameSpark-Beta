@@ -104,3 +104,96 @@
 .main-content .content-section {
   margin-top: 20px;
 }
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.dashboard-card {
+  background: var(--white);
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.dashboard-card h3 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--black);
+}
+
+.dashboard-card p {
+  margin: 8px 0 0;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.dashboard-card.small {
+  grid-column: span 1;
+}
+
+.dashboard-card.medium {
+  grid-column: span 2;
+}
+
+.dashboard-card.large {
+  grid-column: span 3;
+}
+
+.dashboard-card.full {
+  grid-column: span 4;
+}
+
+.flamepoints-display {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,.5);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flamepoints-display .points-title .icon {
+  font-size: 1.2rem;
+  margin-right: 5px;
+  color: var(--flamespark-red);
+}
+
+.bar {
+  height: 8px;
+  width: 100%;
+}
+
+.bar .background {
+  background-color: #888888;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.content-section.locked {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.content-section.locked .title {
+  font-size: 2rem;
+}
+
+.content-section.locked .body {
+  font-size: 1rem;
+}
+
+.content-section.locked .icon {
+  font-size: 5rem;
+}

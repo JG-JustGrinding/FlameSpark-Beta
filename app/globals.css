@@ -106,6 +106,11 @@ body {
     font-weight: bold;
 }
 
+.button-shape.red-color {
+  background-color: var(--flamespark-red);
+  color: var(--white);
+}
+
 .hide {
   display: none;
 }
