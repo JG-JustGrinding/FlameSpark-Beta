@@ -262,6 +262,7 @@ h1, img {
     width: 1rem;
     height: 1rem;
     position: relative;
+    min-width: max-content;
 }
 
 .post .post-top .project-top-actions .icon {
@@ -288,6 +289,7 @@ h1, img {
     border-radius: 5px;
     padding: 10px;
     min-width: max-content;
+    z-index: 5;
 }
 
 .post-admin-panel li, .post-admin-panel ul {
@@ -345,6 +347,84 @@ h1, img {
 
 .coming-soon-panel {
     color: var(--white);
+}
+
+.overlay-panel .post-display {
+    display: flex;
+    gap: 30px;
+    padding: 30px;
+    border: 1px #525252 solid;
+    border-radius: 5px;
+    margin: 30px 0px 15px 0px;
+    align-items: center;
+}
+
+.overlay-panel .post-display .icon {
+    font-size: 1.5rem;
+}
+
+.overlay-panel .post-display .post-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.overlay-panel .confirm-checkbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.overlay-panel .confirm-checkbox .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.overlay-panel .confirm-checkbox .checkbox .box {
+    width: 25px;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid #525252;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: transparent;
+}
+
+.overlay-panel .confirm-checkbox .checkbox.checked .box {
+    background-color: #525252;
+    color: var(--white);
+}
+
+.overlay-panel .confirm-checkbox .checkbox span {
+    flex: 1;
+}
+
+.overlay-panel .error-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px 0;
+}
+
+.overlay-panel .options{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.overlay-panel .options .delete-button{
+    background-color: var(--flamespark-red-accented);
+    color: var(--white);
+}
+
+.overlay-panel .options .delete-button:disabled{
+    background-color: #525252;
+    color: var(--white);
+    opacity: 0.5;
 }
 
 button:disabled {

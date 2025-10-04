@@ -4,6 +4,7 @@ import ErrorComponent from "@/components/ErrorComponent"
 import { useState, useEffect } from "react";
 import { getProject, joinProject, leaveProject } from "@/lib/projectFunctions";
 import { useParams } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 import '@/lib/fontawesome'
 import { fetchRandomProjects } from "@/lib/projectFunctions";
 import { useUser } from "@/lib/useUser";
@@ -23,6 +24,7 @@ import InfiniteScroll from "@/lib/infinitePostFeed";
 
 export default function ProjectPage(){
     const [project, setProject] = useState(null);
+    const [updateItem, setUpdateItem] = useState(null); // used to update the paginator
     const filters = ["Recent", "Oldest", "Top"];
     const filterIcons = [faClock, faHourglass, faStar];
     const [selectedFilter, setSelectedFilter] = useState(0);
@@ -114,6 +116,30 @@ export default function ProjectPage(){
         window.scrollTo(0, 0);
 
         setSelectedPage(index);
+    }
+
+    async function SetPinned(post) {
+        try {
+            let pinned = !post.is_pinned;
+            const { error } = await supabase
+            .from("posts")
+            .update({
+                is_pinned: pinned,
+                pinned_at: pinned ? new Date().toISOString() : null
+            })
+            .eq("id", post.id);
+
+            if (error) throw error;
+
+            post.is_pinned = pinned;
+            post.pinned_at = pinned ? new Date().toISOString() : null;
+
+            setUpdateItem(post);
+        } catch (error) {
+
+        } finally {
+
+        }
     }
 
     const [panelOpen, SetPanelOpen] = useState(false);
@@ -679,11 +705,12 @@ export default function ProjectPage(){
                                     fetchFunction={fetchPosts}
                                     projectId={id}
                                     renderItem={(post, idx) => (
-                                      <ProjectPost key={idx || post.id} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at} isOwner={isOwner}></ProjectPost>  
+                                      <ProjectPost key={idx || post.id} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at} isOwner={isOwner} isPinned={post.is_pinned} setPinnedFunction={() => SetPinned(post)}></ProjectPost>  
                                     )}
                                     limit={5}
                                     filter={filters[selectedFilter]}
-                                    noneFoundMessage={isOwner ? "No posts yet. Create a post to get started!" : "No posts yet. Stay tuned to support the creator and view their progress!"}/>
+                                    noneFoundMessage={isOwner ? "No posts yet. Create a post to get started!" : "No posts yet. Stay tuned to support the creator and view their progress!"}
+                                    updateItem={updateItem}/>
                             </div>
                         </div>
                         <div className={`side-section desktop`}>

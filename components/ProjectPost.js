@@ -1,19 +1,22 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabaseClient';
 import '@/lib/fontawesome'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
 import { extractYouTubeId, timeAgo } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
 import PanelOverlay from './PanelOverlay';
 
-const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = null, dateCreated, isOwner = false, isPinned = false}) => {
+const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = null, dateCreated, isOwner = false, isPinned = false, setPinnedFunction = null, updatePostsFunction = null}) => {
     const [currentPostPartIndex, setCurrentPostPartIndex] = useState(0);
     const [currentPostContent, setCurrentPostContent] = useState(null);
     const [adminPanelOpen, setAdminPanelOpen] = useState(false);
     const [deletePanelOpen, setDeletePanelOpen] = useState(false);
+    const [deleteChecked, setDeleteChecked] = useState(false);
+    const [deleteErrorMessage, setDeleteErrorMessage] = useState(false);
     const dateDifference = timeAgo(dateCreated);
 
     useEffect(() => {
@@ -33,6 +36,38 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
             setCurrentPostPartIndex((prev) => (prev - 1 + postContent.length) % postContent.length);
         }
     };
+
+    function GetIconFromPostType() {
+        if (postContent?.length > 1)
+        {
+            return faLayerGroup;
+        }
+
+        switch (postContent[0]?.contentType) {
+            case "text":
+                return faT;
+            case "image":
+                return faImage;
+            case "poll":
+                return faPoll;
+            case "audio":
+                return faVolumeLow;
+            case "video":
+                return faVideo;
+            case "link":
+                return faLink;
+            default:
+                return faT;
+        }
+    }
+
+    function DeletePost(postId) {
+        // delete content (if applicable)
+
+
+        // delete post from table
+        // reload page
+    }
     
     return (
     <>
@@ -57,9 +92,9 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
                     {adminPanelOpen &&
                     <div className="post-admin-panel bodyFont">
                         <ul>
-                            <li className="no-select-pointer" onClick={() => {setAdminPanelOpen(false)}}>
+                            <li className="no-select-pointer" onClick={() => {setPinnedFunction(); setAdminPanelOpen(false)}}>
                                 <FontAwesomeIcon icon={faThumbTack} />
-                                <span>Pin Post</span>
+                                <span>{isPinned ? "Unp" : "P"}in Post</span>
                             </li>
                             <li className="no-select-pointer" onClick={() => setAdminPanelOpen(false)}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
@@ -146,15 +181,26 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
         <h3 className='reset'>Delete Post</h3>
         <span>Are you sure you want to delete this post? This cannot be undone!</span>
         <div className='post-display'>
-            <FontAwesomeIcon icon={faT}/>
+            <FontAwesomeIcon className="icon" icon={GetIconFromPostType()}/>
             <div className='post-info'>
                 <span className='titleFont bold'>{postTitle}</span>
                 <span className='bodyFont label-color'>{postDescription}</span>
             </div>
         </div>
+        <div className='confirm-checkbox bodyFont'>
+            <div className={`checkbox no-select-pointer${deleteChecked ? " checked" : ""}`} onClick={() => setDeleteChecked(!deleteChecked)}>
+                <div className="box">
+                    <FontAwesomeIcon className="icon" icon={faCheck} />
+                </div>
+                <span>Yes, I want to delete the selected post</span>
+            </div>
+        </div>
+        <div className='error-container'>
+            <span className='bodyFont error-message'>{deleteErrorMessage}</span>
+        </div>
         <div className='options'>
             <button className='button-shape' onClick={() => setDeletePanelOpen(false)}>Cancel</button>
-            <button className='button-shape'>Delete</button>
+            <button className='button-shape delete-button' disabled={!deleteChecked}>Delete</button>
         </div>
     </PanelOverlay>
     </>
