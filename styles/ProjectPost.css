@@ -115,9 +115,8 @@ ul li {
     padding: 10px;
 }
 
+
 .post-footer .rating, .post-bottom .rating {
-    background-color: rgba(55, 55, 55, 0.1);
-    color: var(--black);
     padding: .25rem .75rem;
     width: 120px;
     border-radius: 999px;
@@ -126,12 +125,17 @@ ul li {
     justify-content: space-between;
 }
 
+.post-footer .rating:not(.skeleton), .post-bottom .rating:not(.skeleton) {
+    background-color: rgba(55, 55, 55, 0.1);
+    color: var(--black);
+}
+
 .rating > * {
     padding: 5px;
     border-radius: 50%;
 }
 
-.rating .vote:not(.selected)
+.rating .vote
 {
     cursor: pointer;
 }
@@ -141,6 +145,12 @@ ul li {
     background-color: var(--shadow);
 }
 
-.rating .selected {
+.rating .selected.up {
     background-color: var(--flamespark-red);
+    color: var(--white);
+}
+
+.rating .selected.down {
+    background-color: var(--flamespark-blue);
+    color: var(--white);
 }

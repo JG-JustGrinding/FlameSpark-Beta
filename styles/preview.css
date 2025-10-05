@@ -104,9 +104,12 @@ html, body {
 }
 
 .join-button {
-    color: var(--white);
     padding-left: 3rem;
     padding-right: 3rem;
+}
+
+.join-button:not(.skeleton) {
+    color: var(--white);
 }
 
 .join-button.red {

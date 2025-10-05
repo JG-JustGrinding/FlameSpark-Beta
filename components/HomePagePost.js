@@ -6,13 +6,16 @@ import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faL, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { timeAgo } from "@/lib/projectFunctions";
-import { extractYouTubeId } from '@/lib/projectFunctions';
+import { extractYouTubeId, getPostRating, getUserRating } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
 
-const HomePagePost = ({title = "", description = "", dateCreated, postContent, projectName = "", projectIcon = "", projectId, votes = 0, comments = 0, className="", goToPreview = false, disableContent = false, currentPostIndex = 0, postIndex = 0, previousIndex}) => {
+const HomePagePost = ({postId, title = "", description = "", dateCreated, postContent, projectName = "", projectIcon = "", projectId, comments = 0, className="", rateFunction = null, goToPreview = false, disableContent = false, currentPostIndex = 0, postIndex = 0, previousIndex}) => {
     const dateDifference = timeAgo(dateCreated);
     const [currentPostPartIndex, setCurrentPostPartIndex] = useState(0);
     const [currentPostContent, setCurrentPostContent] = useState(null);
+    const [postRating, setPostRating] = useState(0);
+    const [userRating, setUserRating] = useState(0);
+    const [ratingLoading, setRatingLoading] = useState(true);
     
     const audioRef = useRef(null);
     const iframeRef = useRef(null);
@@ -54,6 +57,47 @@ const HomePagePost = ({title = "", description = "", dateCreated, postContent, p
             iframeRef.current.src = src;
         }
     };
+
+    useEffect(() => {
+        async function GetRating() {
+            try {
+                let rating = await getPostRating(postId);
+
+                const userRating = await getUserRating(postId);
+
+                if (userRating == -1)
+                {
+                    rating++;
+                }
+
+                if (userRating == 1)
+                {
+                    rating--;
+                }
+
+                setPostRating(rating);
+
+                setUserRating(userRating);
+
+                setRatingLoading(false);
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        GetRating();
+    }, []);
+
+    function UpdateRating(value) {
+        if (value == userRating)
+        {
+            setUserRating(0);
+            return;
+        }
+
+        setUserRating(value);
+
+    }
 
     return (
         <div className={`post` + (className ? ` ${className}` : "")}>
@@ -124,11 +168,11 @@ const HomePagePost = ({title = "", description = "", dateCreated, postContent, p
                     <img className="post-project-icon pfp-shape" src={projectIcon} alt="Project Icon"></img>
                     <span className="post-project-name bodyFont bold">{projectName}</span>
                 </a>
-                <div className="post-stats">
-                    <div className="rating">
-                        <FontAwesomeIcon className="vote" icon={faArrowUp}/>
-                        <span className="bold bodyFont bad">{votes}</span>
-                        <FontAwesomeIcon className="vote" icon={faArrowDown}/>
+                <div className="post-stats bodyFont">
+                    <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
+                        <FontAwesomeIcon className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateFunction(1); UpdateRating(1)}}/>
+                        <span className="bold bad">{postRating + (userRating || 0)}</span>
+                        <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
                     </div>
                     <div className="comments">
                         <FontAwesomeIcon className="comment-icon" icon={faComment}></FontAwesomeIcon>

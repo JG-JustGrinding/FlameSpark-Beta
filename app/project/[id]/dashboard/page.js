@@ -79,6 +79,8 @@ export default function ProjectPage(){
 
       // set project values
       setProjectTitle(project?.title);
+      setProjectDescription(project?.description);
+      setProjectTagline(project?.tagline);
 
       setLoading(false);
     };
@@ -138,7 +140,7 @@ export default function ProjectPage(){
                                 <div className="background"></div>
                                 <div className="fill"></div>
                             </div>
-                            <span className="bodyFont caption-size">0 FlamePoints Until Next Reward</span>
+                            <span className="bodyFont caption-size">0 FlamePoints Until Next Upgrade</span>
                             <button className="bodyFont button-shape red-color">
                                 Learn More
                             </button>
@@ -153,7 +155,10 @@ export default function ProjectPage(){
                         {selectedIndex == 0 && 
                         <div className="content-section details">
                             <CappedInput value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} maxLength={30} label="Project Title" id="project-title"></CappedInput>
-                            <CappedInput value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} maxLength={30} label="Project Description" id="project-description"></CappedInput>
+                            <CappedInput value={projectTagline} onChange={(e) => setProjectTagline(e.target.value)} maxLength={75} label="Project Description" id="project-description"></CappedInput>
+                            <CappedInput value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} maxLength={1500} isTextArea={true} label="Project Description" id="project-description"></CappedInput>
+                            <div className="line-break"/>
+                            
                         </div>
                         }
                         {selectedIndex == 1 && 

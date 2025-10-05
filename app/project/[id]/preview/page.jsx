@@ -21,7 +21,8 @@ export default function ProjectPreview(){
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [currentImage, setCurrentImage] = useState(null);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null); 
+    const [isJoinedSet, setIsJoinedSet] = useState(false);
     const [isJoined, setIsJoined] = useState(false);
     var previewImageIndex = 0;
 
@@ -29,6 +30,11 @@ export default function ProjectPreview(){
     supabase.auth.getSession().then(({ data }) => {
       const currentUser = data.session?.user || null;
       setUser(currentUser);
+
+      if (!currentUser)
+      {
+        setIsJoinedSet(true);
+      }
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
@@ -103,6 +109,7 @@ export default function ProjectPreview(){
         {
           const result = await isUserJoinedOrOwner(user.id, id);
           setIsJoined(result);
+          setIsJoinedSet(true);
         }
       };
 
@@ -148,7 +155,8 @@ export default function ProjectPreview(){
                         <h1 className="titleFont header-size project-title">{project?.title}</h1>
                     </div>
                     <div className="right">
-                        <button className={`button-shape bodyFont join-button ${isJoined ? "blue" : "red"} body-size`} onClick={viewOrJoinProject}>{isJoined ? "View Project" : "Join Project"} </button>
+                        {!isJoinedSet && <button className={`button-shape bodyFont skeleton join-button body-size cursor-default`} disabled>View Project</button>}
+                        {isJoinedSet && <button className={`button-shape bodyFont join-button ${isJoined ? "blue" : "red"} body-size`} onClick={viewOrJoinProject}>{isJoined ? "View Project" : "Join Project"} </button>}
                     </div>
                 </div>
                 <div className="images">

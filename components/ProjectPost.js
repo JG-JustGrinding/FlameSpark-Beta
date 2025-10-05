@@ -3,17 +3,26 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import '@/lib/fontawesome'
+import { getPostRating, getUserRating } from '@/lib/projectFunctions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
-import { extractYouTubeId, timeAgo } from '@/lib/projectFunctions';
+import { editPost, extractYouTubeId, timeAgo } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
 import PanelOverlay from './PanelOverlay';
+import CappedInput from './CappedInput';
 
-const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = null, dateCreated, isOwner = false, isPinned = false, setPinnedFunction = null, updatePostsFunction = null}) => {
+const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postContent = null, dateCreated, isOwner = false, isPinned = false, wasEdited = false, setPinnedFunction = null, rateFunction = null}) => {
     const [currentPostPartIndex, setCurrentPostPartIndex] = useState(0);
     const [currentPostContent, setCurrentPostContent] = useState(null);
+    const [postRating, setPostRating] = useState(0);
+    const [userRating, setUserRating] = useState(0);
+    const [ratingLoading, setRatingLoading] = useState(true);
     const [adminPanelOpen, setAdminPanelOpen] = useState(false);
+    const [editPanelOpen, setEditPanelOpen] = useState(false);
+    const [editPostTitle, setEditPostTitle] = useState(postTitle);
+    const [editPostDescription, setEditPostDescription] = useState(postDescription);
+    const [editing, setEditing] = useState(false); // when the edit button is clicked
     const [deletePanelOpen, setDeletePanelOpen] = useState(false);
     const [deleteChecked, setDeleteChecked] = useState(false);
     const [deleteErrorMessage, setDeleteErrorMessage] = useState(false);
@@ -36,6 +45,57 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
             setCurrentPostPartIndex((prev) => (prev - 1 + postContent.length) % postContent.length);
         }
     };
+
+    useEffect(() => {
+        async function GetRating() {
+            try {
+                let rating = await getPostRating(postId);
+
+                const userRating = await getUserRating(postId);
+
+                if (userRating == -1)
+                {
+                    rating++;
+                }
+
+                if (userRating == 1)
+                {
+                    rating--;
+                }
+
+                setPostRating(rating);
+
+                setUserRating(userRating);
+
+                setRatingLoading(false);
+            } catch (error) {
+                
+            }
+        }
+
+        GetRating();
+    }, []);
+
+    async function editPostFunction () {
+        try {
+            setEditing(true);
+            await editPost(postId, editPostTitle, editPostDescription);
+            window.location.reload();
+        } catch {
+
+        }
+    }
+
+    function UpdateRating(value) {
+        if (value == userRating)
+        {
+            setUserRating(0);
+            return;
+        }
+
+        setUserRating(value);
+
+    }
 
     function GetIconFromPostType() {
         if (postContent?.length > 1)
@@ -79,7 +139,7 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
                     <div className="title-desc">
                         <div className="title-date">
                             {postTitle && <span className="post-title titleFont header-size">{postTitle}</span>}
-                            <span className="post-date label-color bodyFont">{dateDifference}</span>
+                            <span className="post-date label-color bodyFont">{`${dateDifference}${wasEdited ? " (edited)" : ""}`}</span>
                         </div>
                         <span className="post-title bodyFont body-size label-color reset">{postDescription}</span>
                     </div>
@@ -87,7 +147,8 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
                 <span className="date-created"></span>
             </div>
             <div className={`project-top-actions`}>
-                <div className='admin'>
+                {isPinned && <FontAwesomeIcon icon={faThumbTack} />}
+                {isOwner && <div className='admin'>
                     <FontAwesomeIcon icon={faEllipsisH} className={`no-select-pointer icon${adminPanelOpen ? " open" : ""}`} onClick={() => setAdminPanelOpen(value => !value)}/>
                     {adminPanelOpen &&
                     <div className="post-admin-panel bodyFont">
@@ -96,7 +157,7 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
                                 <FontAwesomeIcon icon={faThumbTack} />
                                 <span>{isPinned ? "Unp" : "P"}in Post</span>
                             </li>
-                            <li className="no-select-pointer" onClick={() => setAdminPanelOpen(false)}>
+                            <li className="no-select-pointer" onClick={() => {setEditPanelOpen(true); setAdminPanelOpen(false)}}>
                                 <FontAwesomeIcon icon={faPenToSquare} />
                                 <span>Edit Post</span>
                             </li>
@@ -107,8 +168,7 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
                         </ul>
                     </div>
                     }
-                </div>
-                {isPinned && <FontAwesomeIcon icon={faThumbTack} />}
+                </div> }
             </div>
         </div>
         {postContent?.length > 1 && <span className="label-color caption-size bodyFont">{currentPostPartIndex + 1} of {postContent?.length}</span>}
@@ -166,10 +226,10 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
             </div>
         </div>
         <div className="post-bottom bodyFont">
-            <div className="rating">
-                <FontAwesomeIcon className="vote" icon={faArrowUp}/>
-                <span className="bold bad">0</span>
-                <FontAwesomeIcon className="vote" icon={faArrowDown}/>
+            <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
+                <FontAwesomeIcon className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateFunction(1); UpdateRating(1)}}/>
+                <span className="bold bad">{postRating + (userRating || 0)}</span>
+                <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
             </div>
             <div className="comments">
                 <FontAwesomeIcon icon={faComment}/>
@@ -177,6 +237,15 @@ const ProjectPost = ({icon, postTitle = "", postDescription = "", postContent = 
             </div>
         </div>
     </div>
+    <PanelOverlay isOpen={editPanelOpen} onClose={() => setEditPanelOpen(false)} panelClass='edit'>
+        <h3 className='reset'>Edit Post</h3>
+        <CappedInput label="Post Title" value={editPostTitle} onChange={(e) => setEditPostTitle(e.target.value)} id="edit-post-title" className='edit-post-input extra-margin' maxLength={100} />
+        <CappedInput label="Post Description" value={editPostDescription} onChange={(e) => setEditPostDescription(e.target.value)} id="edit-post-description" className='edit-post-input' maxLength={200} />
+        <div className='options'>
+            <button className={`button-shape${editing ? " invisible" : ""}`} disabled={editing} onClick={() => setEditPanelOpen(false)}>Cancel</button>
+            <button className='button-shape edit-button extra-margin' disabled={editing} onClick={() => editPostFunction()}>{editing ? "Saving..." : "Save Changes"}</button>
+        </div>
+    </PanelOverlay>
     <PanelOverlay isOpen={deletePanelOpen} onClose={() => setDeletePanelOpen(false)}>
         <h3 className='reset'>Delete Post</h3>
         <span>Are you sure you want to delete this post? This cannot be undone!</span>

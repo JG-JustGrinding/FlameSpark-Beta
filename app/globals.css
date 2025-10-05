@@ -111,8 +111,36 @@ body {
   color: var(--white);
 }
 
+.skeleton {
+  background-color: #e0e0e0;
+  color: transparent;
+  pointer-events: none;
+  overflow: hidden;
+  position: relative;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150px;
+  height: 100%;
+  width: 150px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.6),
+    transparent
+  );
+  animation: shimmer 1s infinite;
+}
+
 .hide {
   display: none;
+}
+
+.invisible {
+  opacity: 0;
 }
 
 .no-select-pointer {
@@ -121,6 +149,10 @@ body {
   -ms-user-select: none;
   -webkit-user-select: none;
   cursor: pointer;
+}
+
+.cursor-default {
+  cursor: default;
 }
 
 .reset {
@@ -147,4 +179,11 @@ select {
 
 input[type="file"] {
   cursor: pointer;
+}
+
+
+@keyframes shimmer {
+  100% {
+    left: 100%;
+  }
 }

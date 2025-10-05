@@ -2,7 +2,7 @@
 import Header from "@/components/Header";
 import ErrorComponent from "@/components/ErrorComponent"
 import { useState, useEffect } from "react";
-import { getProject, joinProject, leaveProject } from "@/lib/projectFunctions";
+import { getProject, joinProject, leaveProject, ratePost } from "@/lib/projectFunctions";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import '@/lib/fontawesome'
@@ -120,6 +120,7 @@ export default function ProjectPage(){
 
     async function SetPinned(post) {
         try {
+            setUpdateItem(null);
             let pinned = !post.is_pinned;
             const { error } = await supabase
             .from("posts")
@@ -138,6 +139,15 @@ export default function ProjectPage(){
         } catch (error) {
 
         } finally {
+
+        }
+    }
+
+    async function rateProjectPost(post, userId, value)
+    {
+        try {
+            await ratePost(post.id, userId, value);
+        } catch {
 
         }
     }
@@ -705,7 +715,7 @@ export default function ProjectPage(){
                                     fetchFunction={fetchPosts}
                                     projectId={id}
                                     renderItem={(post, idx) => (
-                                      <ProjectPost key={idx || post.id} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at} isOwner={isOwner} isPinned={post.is_pinned} setPinnedFunction={() => SetPinned(post)}></ProjectPost>  
+                                      <ProjectPost key={idx || post.id} postId={post.id} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at} isOwner={isOwner} isPinned={post.is_pinned} wasEdited={post.was_edited} setPinnedFunction={() => SetPinned(post)} rateFunction={rateProjectPost.bind(null, post, user?.id)}></ProjectPost>  
                                     )}
                                     limit={5}
                                     filter={filters[selectedFilter]}

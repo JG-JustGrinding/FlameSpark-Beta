@@ -414,6 +414,7 @@ h1, img {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: 5px;
 }
 
 .overlay-panel .options .delete-button{
@@ -421,10 +422,30 @@ h1, img {
     color: var(--white);
 }
 
-.overlay-panel .options .delete-button:disabled{
+.overlay-panel .options .edit-button{
+    background-color: var(--flamespark-red);
+    color: var(--white);
+}
+
+.overlay-panel .options .delete-button:disabled, .overlay-panel .options .edit-button:disabled{
     background-color: #525252;
     color: var(--white);
     opacity: 0.5;
+}
+
+
+.overlay-panel.edit {
+    max-width: 1000px;
+    width: 100%;
+}
+
+.overlay-panel .edit-post-input {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.overlay-panel .extra-margin {
+    margin-top: 20px;
 }
 
 button:disabled {

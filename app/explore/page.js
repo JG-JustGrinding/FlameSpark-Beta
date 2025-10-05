@@ -6,9 +6,10 @@ import "@/styles/ExplorePage.css";
 import "@/styles/ProjectPost.css";
 import "@/styles/Home.css";
 import HomePagePost from "@/components/HomePagePost";
-import { fetchExplorePagePosts } from "@/lib/projectFunctions";
+import { fetchExplorePagePosts, ratePost } from "@/lib/projectFunctions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "@/lib/useUser";
 
 export default function ExplorePage() {
     const carouselRef = useRef(null);
@@ -23,6 +24,7 @@ export default function ExplorePage() {
     const currentCardRef = useRef(-1);
     const seedRef = useRef(Math.random() * 2 - 1);
     const seed = seedRef.current;
+    const { user } = useUser();
 
     const postBufferRef = useRef([]);
     const BUFFER_THRESHOLD = 3;   // tweak as needed
@@ -161,6 +163,15 @@ useEffect(() => {
   };
 }, [posts.length]);
 
+    async function rateProjectPost(post, userId, value)
+    {
+        try {
+            await ratePost(post.post_id, userId, value);
+        } catch (error) {
+
+        }
+    }
+
     return (
         <PrimaryPageLayout useTitle={false} noContainerPadding={true} title="Explore" description="Encounter new projects by scrolling through posts">
         <div className="carousel-container">
@@ -168,7 +179,7 @@ useEffect(() => {
             <div className="carousel" ref={carouselRef}>
               {posts.map((post, i) => (
                 <div className="card" key={i}>
-                  <HomePagePost goToPreview={true} title={post.post_title} description={post.post_description} postContent={post.post_content} projectIcon={post.project_icon} projectName={post.project_title} projectId={post.project_ide || post.project_id} dateCreated={post.post_created_at} currentPostIndex={currentCard} postIndex={i} previousIndex={previousCard}/>
+                  <HomePagePost postId={post.post_id} goToPreview={true} title={post.post_title} description={post.post_description} postContent={post.post_content} projectIcon={post.project_icon} projectName={post.project_title} projectId={post.project_ide || post.project_id} dateCreated={post.post_created_at} rateFunction={rateProjectPost.bind(null, post, user?.id)} currentPostIndex={currentCard} postIndex={i} previousIndex={previousCard}/>
                 </div>
               ))}
             </div>
