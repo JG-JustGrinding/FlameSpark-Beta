@@ -5,7 +5,7 @@ import ErrorComponent from "@/components/ErrorComponent"
 import DashboardCard from "@/components/DashboardCard";
 import { useUser } from "@/lib/useUser";
 import { useRouter, useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import "@/styles/dashboard.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -28,6 +28,19 @@ export default function ProjectPage(){
     const [projectTagline, setProjectTagline] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
     const [projectTags, setProjectTags] = useState([]);
+    
+    const [coverImage, setCoverImage] = useState(null);
+    const [iconImage, setIconImage] = useState(null);
+    const [previewImages, setPreviewImages] = useState([]);
+
+    const [coverUpload, setCoverUpload] = useState(null);
+    const [iconUpload, setIconUpload] = useState(null);
+    const [previewUpload, setPreviewUpload] = useState([]);
+
+    const coverImageInputRef = useRef(null);
+    const iconImageInputRef = useRef(null);
+    const previewImageInputRef = useRef(null);
+    
 
     function PushItem(name, icon, itemArray, fullName = undefined) {
         itemArray.push({name, icon, fullName});
@@ -95,6 +108,47 @@ export default function ProjectPage(){
     if (notFound) return <ErrorComponent />;
     if (unauthorized) return <Unauthorized />;
 
+  const handleCoverChange = (e) => {
+    if (coverImage)
+    {
+        URL.revokeObjectURL(coverImage);
+    }
+
+    if (e.target.files && e.target.files[0]) {
+      setCoverImage(URL.createObjectURL(e.target.files[0]));
+      setCoverUpload(e.target.files[0]);
+    } else {
+      setCoverImage(null);
+      setCoverUpload(null); 
+    }
+  };
+
+  const handleIconChange = (e) => {
+    if (iconImage)
+    {
+        URL.revokeObjectURL(iconImage);
+    }
+
+    if (e.target.files && e.target.files[0]) {
+      setIconImage(URL.createObjectURL(e.target.files[0]));
+      setIconUpload(e.target.files[0]);
+    } else {
+      setIconImage(null);
+      setIconUpload(null);
+    }
+  };
+
+  const removeCoverImage = () => {
+    if (coverImage)
+    {
+        URL.revokeObjectURL(coverImage);
+    }
+
+    setCoverImage(null);
+    setCoverUpload(null);
+    coverImageInputRef.value = '';
+  }
+
     return (
         <>
             <div className="container">
@@ -155,10 +209,33 @@ export default function ProjectPage(){
                         {selectedIndex == 0 && 
                         <div className="content-section details">
                             <CappedInput value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} maxLength={30} label="Project Title" id="project-title"></CappedInput>
-                            <CappedInput value={projectTagline} onChange={(e) => setProjectTagline(e.target.value)} maxLength={75} label="Project Description" id="project-description"></CappedInput>
+                            <CappedInput value={projectTagline} onChange={(e) => setProjectTagline(e.target.value)} maxLength={75} label="Project Tagline" id="project-tagline"></CappedInput>
                             <CappedInput value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} maxLength={1500} isTextArea={true} label="Project Description" id="project-description"></CappedInput>
                             <div className="line-break"/>
-                            
+                            <div className="section-container cover-image">
+                                <span className="bodyFont">Cover Image</span>
+                                <div className="fileAndImage cover-image">
+                                    <img src={coverImage || project?.cover_image} className="sixteennine"/>
+                                    <input type="file" accept="image/*" className="bodyFont input-field" onChange={handleCoverChange} ref={coverImageInputRef} />
+                                </div>
+                                {coverImage && <div className="optionsDiv">
+                                    <button className="cancel button-shape bodyFont" onClick={() => removeCoverImage()}>Cancel</button>
+                                    <button className="cancel button-shape bodyFont red-color">Save</button>
+                                </div>}
+                            </div>
+                            <div className="line-break"/>
+                            <div className="section-container preview-images">
+                                <span className="bodyFont">Project Logo</span>
+                                <div className="fileAndImage project-icon">
+                                    <img className="pfp-shape" src={iconImage || project?.icon}/>
+                                    <input type="file" accept="image/*" className="bodyFont input-field pfp-shape" onChange={handleIconChange} ref={iconImageInputRef} />
+                                </div>
+                            </div>
+                            <div className="line-break"/>
+                            <div className="section-container preview-images">
+                                <span className="bodyFont">Preview Images</span>
+
+                            </div>
                         </div>
                         }
                         {selectedIndex == 1 && 

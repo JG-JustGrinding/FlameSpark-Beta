@@ -96,6 +96,11 @@ export default function CreatePage() {
   };
 
   const handleCoverChange = (e) => {
+    if (coverImage)
+    {
+        URL.revokeObjectURL(coverImage);
+    }
+
     if (e.target.files && e.target.files[0]) {
       setCoverImage(URL.createObjectURL(e.target.files[0]));
       setCoverUpload(e.target.files[0]);
@@ -106,6 +111,11 @@ export default function CreatePage() {
   };
 
   const handleIconChange = (e) => {
+      if (iconImage)
+    {
+        URL.revokeObjectURL(iconImage);
+    }
+
     if (e.target.files && e.target.files[0]) {
       setIconImage(URL.createObjectURL(e.target.files[0]));
       setIconUpload(e.target.files[0]);
@@ -345,7 +355,7 @@ export default function CreatePage() {
             <label className={`${styles.mt} bodyFont`}>Project Logo</label>
               <div className={`${styles.fileAndImage} ${styles.projectLogo}`}>
                 <input type="file" accept="image/*" onChange={handleIconChange}
-                        className="bodyFont input-field"/>
+                        className="bodyFont input-field pfp-shape"/>
                 <img src={iconImage} className={`${styles.displayImage} ${styles.squareRatio} ${iconImage ? styles.solid : styles.dashed} ${styles.profileIcon}`}/>
               </div>
 
