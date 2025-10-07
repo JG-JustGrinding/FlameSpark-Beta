@@ -161,6 +161,7 @@ export default function CreatePage() {
     setSuccess(false);
     let uploadedFiles = [];
     let projectId = null;
+    const timestamp = Date.now();
 
     // Basic validation
     if (!title || !tagline || !description || !coverImage || !iconImage) {
@@ -201,24 +202,24 @@ export default function CreatePage() {
       // 2. Upload files
       const coverUrl = await uploadFile(
         "project-covers",
-        `${projectId}/cover.png`,
+        `${projectId}/cover-${timestamp}.png`,
         coverUpload
       );
-      uploadedFiles.push({ bucket: "project-covers", path: `${projectId}/cover.png` });
+      uploadedFiles.push({ bucket: "project-covers", path: `${projectId}/cover-${timestamp}.png` });
 
       const iconUrl = await uploadFile(
         "project-icons",
-        `${projectId}/icon.png`,
+        `${projectId}/icon-${timestamp}.png`,
         iconUpload
       );
-      uploadedFiles.push({ bucket: "project-icons", path: `${projectId}/icon.png` });
+      uploadedFiles.push({ bucket: "project-icons", path: `${projectId}/icon-${timestamp}.png` });
 
       const previewUrls = [];
       if (previewUpload != null)
       {
         for (let i = 0; i < previewUpload.length; i++) {
           const file = previewUpload[i];
-          const path = `${projectId}/preview-${i}.png`;
+          const path = `${projectId}/preview-${timestamp}-${i}.png`;
           const url = await uploadFile(
             "project-media",
             path,

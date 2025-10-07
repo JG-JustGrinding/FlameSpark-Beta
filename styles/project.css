@@ -167,8 +167,13 @@ h1, img {
 }
 
 .card.description-card .description {
-    flex: 1;
     overflow-y: auto;
+    min-height: 50px;
+}
+
+.card.other {
+    flex: 1;
+    min-height: 40%;
 }
 
 /*

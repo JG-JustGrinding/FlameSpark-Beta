@@ -232,6 +232,11 @@
   flex-wrap: wrap;
 }
 
+.details-container .optionsDiv {
+  margin-top: 15px;
+  justify-content: end;
+}
+
 img.solid {
   border: 1px solid black;
 }
@@ -263,4 +268,17 @@ img.dashed {
 
 .squareRatio {
   aspect-ratio: 1 / 1;
+}
+
+button:disabled:not(.cancel) {
+  background-color: #525252;
+  color: var(--white);
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+.error-message {
+  margin-top: 10px;
 }

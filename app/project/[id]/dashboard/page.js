@@ -11,6 +11,7 @@ import "@/styles/dashboard.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock } from '@fortawesome/free-solid-svg-icons'
 import CappedInput from "@/components/CappedInput";
+import ArrayInputField from "@/components/ArrayInputField";
 
 export default function ProjectPage(){
     const { id } = useParams();
@@ -28,7 +29,8 @@ export default function ProjectPage(){
     const [projectTagline, setProjectTagline] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
     const [projectTags, setProjectTags] = useState([]);
-    
+    const [detailsUpdatePending, setDetailsUpdatePending] = useState(false);
+
     const [coverImage, setCoverImage] = useState(null);
     const [iconImage, setIconImage] = useState(null);
     const [previewImages, setPreviewImages] = useState([]);
@@ -37,11 +39,21 @@ export default function ProjectPage(){
     const [iconUpload, setIconUpload] = useState(null);
     const [previewUpload, setPreviewUpload] = useState([]);
 
+    const [projectDetailsError, setProjectDetailsError] = useState("");
+    const [coverImageError, setCoverImageError] = useState("");
+    const [iconError, setIconError] = useState("");
+    const [previewImagesError, setPreviewImagesError] = useState("");
+
+    // for updating details
+    const [detailsLoading, setDetailsLoading] = useState(false);
+    const [coverImageLoading, setCoverImageLoading] = useState(false);
+    const [iconLoading, setIconLoading] = useState(false);
+    const [previewImagesLoading, setPreviewImagesLoading] = useState(false);
+
     const coverImageInputRef = useRef(null);
     const iconImageInputRef = useRef(null);
     const previewImageInputRef = useRef(null);
     
-
     function PushItem(name, icon, itemArray, fullName = undefined) {
         itemArray.push({name, icon, fullName});
     }
@@ -63,15 +75,20 @@ export default function ProjectPage(){
 
     useEffect(() => {
     const fetchProject = async () => {
+        if (project)
+        {
+            return;
+        }
+
       setLoading(true);
       // fetch project by ID
-      const { data: project, error } = await supabase
+      const { data: projectData, error } = await supabase
         .from("projects")
         .select("*")
         .eq("id", id)
         .single();
 
-      if (error || !project) {
+      if (error || !projectData) {
         setNotFound(true);
         setLoading(false);
         return;
@@ -80,20 +97,21 @@ export default function ProjectPage(){
       // check authorization
       if (userSet)
       {
-        if (!user || user.id !== project.owner_id) {
+        if (!user || user.id !== projectData.owner_id) {
             setUnauthorized(true);
-            setProject(project);
+            setProject(projectData);
             setLoading(false);
             return;
         }
       }
 
-      setProject(project);
+      setProject(projectData);
 
       // set project values
-      setProjectTitle(project?.title);
-      setProjectDescription(project?.description);
-      setProjectTagline(project?.tagline);
+      setProjectTitle(projectData?.title);
+      setProjectDescription(projectData?.description);
+      setProjectTagline(projectData?.tagline);
+      setProjectTags(projectData?.tags);
 
       setLoading(false);
     };
@@ -101,10 +119,20 @@ export default function ProjectPage(){
     fetchProject();
   }, [id, user, userSet]);
 
+  useEffect(() => {
+    if (projectTitle === project.title && projectDescription === project.description && projectTagline === project.tagline && projectTags === project.tags)
+    {
+        return;
+    }
+
+    setDetailsUpdatePending(true);
+  }, [projectTitle, projectDescription, projectTagline, projectTags ])
+
     if (loading || !userSet) return (
         <>
         </>
     )
+
     if (notFound) return <ErrorComponent />;
     if (unauthorized) return <Unauthorized />;
 
@@ -146,8 +174,134 @@ export default function ProjectPage(){
 
     setCoverImage(null);
     setCoverUpload(null);
-    coverImageInputRef.value = '';
+
+    coverImageInputRef.current.value = '';
   }
+
+  const removeIconImage = () => {
+    if (iconImage)
+    {
+        URL.revokeObjectURL(iconImage);
+    }
+
+    setIconImage(null);
+    setIconUpload(null);
+    iconImageInputRef.current.value = '';
+  }
+
+  function resetProjectDetails() {
+    setProjectTitle(project?.title);
+    setProjectDescription(project?.description);
+    setProjectTagline(project?.tagline);
+    setProjectTags(project?.tags);
+    
+    setDetailsUpdatePending(false);
+  }
+
+  async function updateProjectDetails() {
+    
+  }
+
+  async function updateCoverImage() {
+    if (!coverImage || !coverUpload)
+    {
+        return;
+    }
+
+    try {
+        const timestamp = Date.now();
+        setCoverImageLoading(true);
+        setCoverImageError("");
+
+        // get old cover path before updating path
+        const parts = project?.cover_image.split('/storage/v1/object/public/')[1].split('/');
+        parts.shift();
+        const oldFilePath = parts.join('/');
+
+        // upload cover
+        const coverUrl = await uploadFile(
+            "project-covers",
+            `${id}/cover-${timestamp}.png`,
+            coverUpload
+        );
+
+        // update project
+        const { error: updateError } = await supabase
+        .from("projects")
+        .update({
+          cover_image: coverUrl,
+        })
+        .eq("id", id);
+
+        if (updateError) throw updateError;
+
+        // delete old cover
+        await supabase.storage.from("project-covers").remove([oldFilePath]);
+
+        setProject(prev => ({ ...prev, cover_image: coverUrl }));
+    } catch (error) {
+        setCoverImageError(error.message || "An error occured.");
+    } finally {
+        setCoverImage(null);
+        setCoverUpload(null);
+        setCoverImageLoading(false);
+    }
+  }
+
+  async function updateIconImage() {
+    if (!iconImage || !iconUpload)
+    {
+        return;
+    }
+
+    try {
+        const timestamp = Date.now();
+        setIconLoading(true);
+        setIconError("");
+
+        // get old icon path before updating path
+        const parts = project?.icon.split('/storage/v1/object/public/')[1].split('/');
+        parts.shift();
+        const oldFilePath = parts.join('/');
+
+        // upload cover
+        const iconUrl = await uploadFile(
+            "project-icons",
+            `${id}/icon-${timestamp}.png`,
+            iconUpload
+        );
+
+        // update project
+        const { error: updateError } = await supabase
+        .from("projects")
+        .update({
+          icon: iconUrl,
+        })
+        .eq("id", id);
+
+        if (updateError) throw updateError;
+
+        // delete old icon
+        await supabase.storage.from("project-icons").remove([oldFilePath]);
+
+        setProject(prev => ({ ...prev, icon: iconUrl }));
+    } catch (error) {
+        setIconError(error.message || "An error occured.");
+    } finally {
+        setIconImage(null);
+        setIconUpload(null);
+        setIconLoading(false);
+    }
+  }
+
+  const uploadFile = async (bucket, path, file) => {
+    const { error } = await supabase.storage.from(bucket).upload(path, file, {
+      upsert: true,
+    });
+    if (error) throw error;
+    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+    return data.publicUrl;
+  };
 
     return (
         <>
@@ -208,9 +362,17 @@ export default function ProjectPage(){
                         {selectedIndex < items.length && <h1 className="titleFont">{items[selectedIndex].fullName || items[selectedIndex].name}</h1>}
                         {selectedIndex == 0 && 
                         <div className="content-section details">
-                            <CappedInput value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} maxLength={30} label="Project Title" id="project-title"></CappedInput>
-                            <CappedInput value={projectTagline} onChange={(e) => setProjectTagline(e.target.value)} maxLength={75} label="Project Tagline" id="project-tagline"></CappedInput>
-                            <CappedInput value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} maxLength={1500} isTextArea={true} label="Project Description" id="project-description"></CappedInput>
+                            <div className="section-container details-container">
+                                <CappedInput value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} maxLength={30} label="Project Title" id="project-title"></CappedInput>
+                                <CappedInput value={projectTagline} onChange={(e) => setProjectTagline(e.target.value)} maxLength={75} label="Project Tagline" id="project-tagline"></CappedInput>
+                                <CappedInput value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} maxLength={1500} isTextArea={true} label="Project Description" id="project-description"></CappedInput>
+                                <ArrayInputField id="project-tags" array={projectTags} setArray={setProjectTags} label="Project Tags (Max maxArrayCount)" maxArrayCount={5}></ArrayInputField>
+                                {detailsUpdatePending && <div className="optionsDiv">
+                                    <button className="cancel button-shape bodyFont" disabled={detailsLoading} onClick={() => resetProjectDetails()}>Cancel</button>
+                                    <button className="button-shape bodyFont red-color" onClick={() => updateProjectDetails()} disabled={detailsLoading}>{detailsLoading ? "Saving..." : "Save"}</button>
+                                </div>}
+                            </div>
+                            {projectDetailsError && <p className="bodyFont error-message">{projectDetailsError}</p>}
                             <div className="line-break"/>
                             <div className="section-container cover-image">
                                 <span className="bodyFont">Cover Image</span>
@@ -219,10 +381,11 @@ export default function ProjectPage(){
                                     <input type="file" accept="image/*" className="bodyFont input-field" onChange={handleCoverChange} ref={coverImageInputRef} />
                                 </div>
                                 {coverImage && <div className="optionsDiv">
-                                    <button className="cancel button-shape bodyFont" onClick={() => removeCoverImage()}>Cancel</button>
-                                    <button className="cancel button-shape bodyFont red-color">Save</button>
+                                    <button className="cancel button-shape bodyFont" disabled={coverImageLoading} onClick={() => removeCoverImage()}>Cancel</button>
+                                    <button className="button-shape bodyFont red-color" onClick={() => updateCoverImage()} disabled={coverImageLoading}>{coverImageLoading ? "Saving..." : "Save"}</button>
                                 </div>}
                             </div>
+                            {coverImageError && <p className="bodyFont error-message">{coverImageError}</p>}
                             <div className="line-break"/>
                             <div className="section-container preview-images">
                                 <span className="bodyFont">Project Logo</span>
@@ -230,12 +393,18 @@ export default function ProjectPage(){
                                     <img className="pfp-shape" src={iconImage || project?.icon}/>
                                     <input type="file" accept="image/*" className="bodyFont input-field pfp-shape" onChange={handleIconChange} ref={iconImageInputRef} />
                                 </div>
+                                {iconImage && <div className="optionsDiv">
+                                    <button className="cancel button-shape bodyFont" onClick={() => removeIconImage()} disabled={iconLoading}>Cancel</button>
+                                    <button className="button-shape bodyFont red-color" onClick={() => updateIconImage()} disabled={iconLoading}>{iconLoading ? "Saving..." : "Save"}</button>
+                                </div>}
                             </div>
+                            {iconError && <p className="bodyFont error-message">{iconError}</p>}
                             <div className="line-break"/>
                             <div className="section-container preview-images">
                                 <span className="bodyFont">Preview Images</span>
-
+                                
                             </div>
+                            {previewImagesError && <p className="bodyFont error-message">{previewImagesError}</p>}
                         </div>
                         }
                         {selectedIndex == 1 && 

@@ -35,6 +35,7 @@ export default function ProjectPage(){
     const [error, setError] = useState(false);
     const [creationError, setCreationError] = useState("");
     const [creatingPost, setCreatingPost] = useState(false);
+    const [projectActionSet, setProjectActionSet] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
     const [hasJoined, setHasJoined] = useState(false);
     const [otherProjects, setOtherProjects] = useState([]);
@@ -42,7 +43,7 @@ export default function ProjectPage(){
     const [isLeaving, setIsLeaving] = useState(false);
     const [isJoining, setIsJoining] = useState(false);
     const [mobilePanelIndex, setMobilePanelIndex] = useState(0);
-    const { user } = useUser();
+    const { user, userSet } = useUser();
     const { id } = useParams();
     const router = useRouter();
 
@@ -62,6 +63,12 @@ export default function ProjectPage(){
         const checkIsOwner = async () => {
             if (user == null){
                 setIsOwner(false);
+
+                if (userSet)
+                {
+                    setProjectActionSet(true);  
+                }
+                
                 return;
             }
 
@@ -77,11 +84,13 @@ export default function ProjectPage(){
                 setHasJoined(hasTheUserJoined);
             } catch (error) {
                 setHasJoined(false);
+            } finally {
+                setProjectActionSet(true);
             }
         }
 
         checkIsOwner();
-    }, [user]);
+    }, [user, userSet]);
 
     const setFilter = (index) => {
         if (index < 0 || index >= filters.length){
@@ -728,9 +737,10 @@ export default function ProjectPage(){
                                 <h2 className="titleFont cardTitle">Project Description</h2>
                                 <span className="description">{project?.description}</span>
                                 <div className="actions">
-                                    {(!isOwner && hasJoined) && <button className="button-shape bodyFont button-red-harsh" onClick={() => setLeaveProjectPanelOpen(true)}>Leave Project</button>}
-                                    {(!isOwner && !hasJoined) && <button className="button-shape bodyFont button-red" onClick={() => JoinProject()} disabled={isJoining}>{isJoining ? "Joining..." : "Join Project"}</button>}
-                                    {isOwner && <a href={`/project/${id}/dashboard`}><button className="button-shape bodyFont button-yellow">Project Dashboard</button></a>}
+                                    {!projectActionSet && <button className="button-shape bodyFont skeleton" disabled>Leave Project</button>}
+                                    {(!isOwner && hasJoined && projectActionSet) && <button className="button-shape bodyFont button-red-harsh" onClick={() => setLeaveProjectPanelOpen(true)}>Leave Project</button>}
+                                    {(!isOwner && !hasJoined && projectActionSet) && <button className="button-shape bodyFont button-red" onClick={() => JoinProject()} disabled={isJoining}>{isJoining ? "Joining..." : "Join Project"}</button>}
+                                    {(isOwner && projectActionSet) && <a href={`/project/${id}/dashboard`}><button className="button-shape bodyFont button-yellow">Project Dashboard</button></a>}
                                 </div>
                             </div>
                             <div className="card other bodyFont">
