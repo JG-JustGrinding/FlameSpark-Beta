@@ -1,0 +1,27 @@
+.previewImages {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.previewImageContainer {
+  max-width: 250px;
+  max-height: 250px;
+  background-color: var(--shadow);
+}
+
+.previewImages img {
+  object-fit: contain;
+}
+
+.previewImageContainer button {
+  width: 100%;
+  background-color: var(--flamespark-red-accented);
+  color: var(--white);
+  padding: 0.5rem 0rem;
+  font-size: 0.8rem;
+}
+
+.sixteennine {
+  aspect-ratio: 16 / 9;
+}

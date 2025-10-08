@@ -9,9 +9,10 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import "@/styles/dashboard.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL } from '@fortawesome/free-solid-svg-icons'
 import CappedInput from "@/components/CappedInput";
 import ArrayInputField from "@/components/ArrayInputField";
+import PreviewImagesContainer from "@/components/PreviewImagesContainer";
 
 export default function ProjectPage(){
     const { id } = useParams();
@@ -38,6 +39,7 @@ export default function ProjectPage(){
     const [coverUpload, setCoverUpload] = useState(null);
     const [iconUpload, setIconUpload] = useState(null);
     const [previewUpload, setPreviewUpload] = useState([]);
+    const [previewImagesUpdatePending, setPreviewImagesUpdatePending] = useState(false);
 
     const [projectDetailsError, setProjectDetailsError] = useState("");
     const [coverImageError, setCoverImageError] = useState("");
@@ -88,7 +90,16 @@ export default function ProjectPage(){
         .eq("id", id)
         .single();
 
-      if (error || !projectData) {
+        const { data: mediaData, error: mediaError } = await supabase
+            .from("project_media")
+            .select("id, url, type, order_index")
+            .eq("project_id", id)
+            .eq("is_preview", true)
+            .order("order_index", { ascending: true });
+
+        if (mediaError) throw mediaError;
+
+      if (error || mediaError || !projectData) {
         setNotFound(true);
         setLoading(false);
         return;
@@ -113,6 +124,9 @@ export default function ProjectPage(){
       setProjectTagline(projectData?.tagline);
       setProjectTags(projectData?.tags);
 
+      setPreviewImages(mediaData);
+      setPreviewUpload(mediaData); // need to check to see if the id is defined to tell if the image should be reordered or not
+
       setLoading(false);
     };
 
@@ -120,13 +134,24 @@ export default function ProjectPage(){
   }, [id, user, userSet]);
 
   useEffect(() => {
-    if (projectTitle === project.title && projectDescription === project.description && projectTagline === project.tagline && projectTags === project.tags)
+    if (projectTitle === project?.title && projectDescription === project?.description && projectTagline === project?.tagline && projectTags === project?.tags)
     {
         return;
     }
 
+    if (!projectTitle || !projectDescription)
+    {
+        return;
+    }
+
+    setProjectDetailsError("");
     setDetailsUpdatePending(true);
-  }, [projectTitle, projectDescription, projectTagline, projectTags ])
+  }, [ projectTitle, projectDescription, projectTagline, projectTags ]);
+
+  
+  useEffect(() => {
+    setPreviewImagesUpdatePending(true);
+  }, [ previewUpload ]);
 
     if (loading || !userSet) return (
         <>
@@ -195,11 +220,44 @@ export default function ProjectPage(){
     setProjectTagline(project?.tagline);
     setProjectTags(project?.tags);
     
+    setProjectDetailsError("");
     setDetailsUpdatePending(false);
   }
 
   async function updateProjectDetails() {
-    
+    if (!projectTitle)
+    {
+        setProjectDetailsError("Please give your project a title");
+        return;
+    }
+
+    try {
+        setDetailsLoading(true);
+        setProjectDetailsError("");
+
+        const { error: updateError } = await supabase
+        .from("projects")
+        .update({
+          title: projectTitle,
+          description: projectDescription,
+          tagline: projectTagline,
+          tags: projectTags
+        })
+        .eq("id", id);
+
+        if (updateError)
+        {
+            throw updateError;
+        }
+
+        setProject(prev => ({ ...prev, title: projectTitle }));
+
+        setDetailsUpdatePending(false);
+    } catch (error) {
+        setProjectDetailsError(error.message || "An error occured.");
+    } finally {
+        setDetailsLoading(false);
+    }
   }
 
   async function updateCoverImage() {
@@ -367,12 +425,12 @@ export default function ProjectPage(){
                                 <CappedInput value={projectTagline} onChange={(e) => setProjectTagline(e.target.value)} maxLength={75} label="Project Tagline" id="project-tagline"></CappedInput>
                                 <CappedInput value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} maxLength={1500} isTextArea={true} label="Project Description" id="project-description"></CappedInput>
                                 <ArrayInputField id="project-tags" array={projectTags} setArray={setProjectTags} label="Project Tags (Max maxArrayCount)" maxArrayCount={5}></ArrayInputField>
+                                {projectDetailsError && <p className="bodyFont error-message">{projectDetailsError}</p>}
                                 {detailsUpdatePending && <div className="optionsDiv">
                                     <button className="cancel button-shape bodyFont" disabled={detailsLoading} onClick={() => resetProjectDetails()}>Cancel</button>
                                     <button className="button-shape bodyFont red-color" onClick={() => updateProjectDetails()} disabled={detailsLoading}>{detailsLoading ? "Saving..." : "Save"}</button>
                                 </div>}
                             </div>
-                            {projectDetailsError && <p className="bodyFont error-message">{projectDetailsError}</p>}
                             <div className="line-break"/>
                             <div className="section-container cover-image">
                                 <span className="bodyFont">Cover Image</span>
@@ -401,10 +459,13 @@ export default function ProjectPage(){
                             {iconError && <p className="bodyFont error-message">{iconError}</p>}
                             <div className="line-break"/>
                             <div className="section-container preview-images">
-                                <span className="bodyFont">Preview Images</span>
-                                
+                                <PreviewImagesContainer previewImages={previewImages} setPreviewImages={setPreviewImages} previewUpload={previewUpload} setPreviewUpload={setPreviewUpload}/>
+                                {previewImagesError && <p className="bodyFont error-message">{previewImagesError}</p>}
+                                {previewImagesUpdatePending && <div className="optionsDiv">
+                                    <button className="cancel button-shape bodyFont" disabled={previewImagesLoading}>Cancel</button>
+                                    <button className="button-shape bodyFont red-color" disabled={previewImagesLoading}>{previewImagesLoading ? "Saving..." : "Save"}</button>
+                                </div>}
                             </div>
-                            {previewImagesError && <p className="bodyFont error-message">{previewImagesError}</p>}
                         </div>
                         }
                         {selectedIndex == 1 && 

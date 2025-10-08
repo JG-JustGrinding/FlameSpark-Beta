@@ -277,8 +277,13 @@ button:disabled:not(.cancel) {
 
 button:disabled {
   opacity: 0.5;
+  cursor: default;
 }
 
 .error-message {
   margin-top: 10px;
+}
+
+.preview-images .optionsDiv {
+  margin-bottom: 30px;
 }
