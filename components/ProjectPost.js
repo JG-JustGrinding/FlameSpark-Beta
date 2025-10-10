@@ -7,7 +7,7 @@ import { getPostRating, getUserRating } from '@/lib/projectFunctions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
-import { editPost, extractYouTubeId, timeAgo } from '@/lib/projectFunctions';
+import { editPost, extractYouTubeId, timeAgo, shortenNumber } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
 import PanelOverlay from './PanelOverlay';
 import CappedInput from './CappedInput';
@@ -18,6 +18,8 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
     const [postRating, setPostRating] = useState(0);
     const [userRating, setUserRating] = useState(0);
     const [ratingLoading, setRatingLoading] = useState(true);
+    const [commentCount, setCommentCount] = useState(0);
+    const [commentCountLoading, setCommentCountLoading] = useState(true);
     const [adminPanelOpen, setAdminPanelOpen] = useState(false);
     const [editPanelOpen, setEditPanelOpen] = useState(false);
     const [editPostTitle, setEditPostTitle] = useState(postTitle);
@@ -228,12 +230,12 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
         <div className="post-bottom bodyFont">
             <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
                 <FontAwesomeIcon className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateFunction(1); UpdateRating(1)}}/>
-                <span className="bold bad">{postRating + (userRating || 0)}</span>
+                <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
                 <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
             </div>
             <div className="comments">
                 <FontAwesomeIcon icon={faComment}/>
-                <span className="bold">0</span>
+                <span className="bold">{shortenNumber(commentCount)}</span>
             </div>
         </div>
     </div>

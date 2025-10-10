@@ -96,7 +96,21 @@ export default function ProjectPreview(){
       }
     };
 
+    const logView = async () => {
+      if (!id)
+      {
+        return;
+      }
+
+      const { error } = await supabase.rpc('log_project_view', {
+        p_project_id: id,
+      });
+
+      if (error) console.error('Error logging view:', error);
+    };
+
     fetchProject();
+    logView();
   }, [id]);
 
   useEffect(() => {

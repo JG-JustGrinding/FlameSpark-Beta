@@ -49,6 +49,11 @@ export default function ProjectPage(){
 
     useEffect(() => {
         async function run(){
+            if (!id)
+            {
+                return;
+            }
+
             try {
                 const value = await getProject(id);
                 setProject(value);
@@ -56,7 +61,22 @@ export default function ProjectPage(){
                 setError(true);
             }
         }
+
+        const logView = async () => {
+            if (!id)
+            {
+                return;
+            }
+
+            const { error } = await supabase.rpc('log_project_view', {
+                p_project_id: id,
+            });
+
+            if (error) console.error('Error logging view:', error);
+        };
+
         run();
+        logView();
     }, [id]);
 
     useEffect(() => {

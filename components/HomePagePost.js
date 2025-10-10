@@ -6,16 +6,18 @@ import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faL, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { timeAgo } from "@/lib/projectFunctions";
-import { extractYouTubeId, getPostRating, getUserRating } from '@/lib/projectFunctions';
+import { extractYouTubeId, getPostRating, getUserRating, shortenNumber } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
 
-const HomePagePost = ({postId, title = "", description = "", dateCreated, postContent, projectName = "", projectIcon = "", projectId, comments = 0, className="", rateFunction = null, goToPreview = false, disableContent = false, currentPostIndex = 0, postIndex = 0, previousIndex}) => {
+const HomePagePost = ({postId, title = "", description = "", dateCreated, postContent, projectName = "", projectIcon = "", projectId, className="", rateFunction = null, goToPreview = false, disableContent = false, currentPostIndex = 0, postIndex = 0, previousIndex}) => {
     const dateDifference = timeAgo(dateCreated);
     const [currentPostPartIndex, setCurrentPostPartIndex] = useState(0);
     const [currentPostContent, setCurrentPostContent] = useState(null);
     const [postRating, setPostRating] = useState(0);
     const [userRating, setUserRating] = useState(0);
     const [ratingLoading, setRatingLoading] = useState(true);
+    const [commentCount, setCommentCount] = useState(0);
+    const [commentCountLoading, setCommentCountLoading] = useState(true);
     
     const audioRef = useRef(null);
     const iframeRef = useRef(null);
@@ -171,12 +173,12 @@ const HomePagePost = ({postId, title = "", description = "", dateCreated, postCo
                 <div className="post-stats bodyFont">
                     <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
                         <FontAwesomeIcon className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateFunction(1); UpdateRating(1)}}/>
-                        <span className="bold bad">{postRating + (userRating || 0)}</span>
+                        <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
                         <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
                     </div>
                     <div className="comments">
                         <FontAwesomeIcon className="comment-icon" icon={faComment}></FontAwesomeIcon>
-                        <span className="comment-count bodyFont bold">{comments}</span>
+                        <span className="comment-count bodyFont bold">{shortenNumber(commentCount)}</span>
                     </div>
                 </div>
             </div>

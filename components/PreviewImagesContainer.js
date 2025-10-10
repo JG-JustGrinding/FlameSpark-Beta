@@ -9,12 +9,22 @@ const PreviewImagesContainer = ({
   setPreviewImages,
   previewUpload,
   setPreviewUpload,
+  onChanged,
   MAX_PREVIEW_IMAGES = 5,
 }) => {
   const fileInputRef = useRef(null);
 
   const handlePreviewChange = (e) => {
     if (e.target.files) {
+
+      if (previewImages.length < MAX_PREVIEW_IMAGES)
+      {
+        if (onChanged)
+        {
+          onChanged();
+        }
+      }
+
       const newFiles = Array.from(e.target.files);
       const newUrls = newFiles.map((file) => URL.createObjectURL(file));
 
@@ -33,6 +43,11 @@ const PreviewImagesContainer = ({
 
     setPreviewImages(previewImages.filter((_, i) => i !== index));
     setPreviewUpload(previewUpload.filter((_, i) => i !== index));
+
+    if (onChanged)
+    {
+      onChanged();
+    }
   }
     
   return (
