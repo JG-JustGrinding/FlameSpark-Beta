@@ -112,6 +112,16 @@ body {
   color: var(--white);
 }
 
+.button-shape.red-color-accented {
+  background-color: var(--flamespark-red-accented);
+  color: var(--white);
+}
+
+.button-shape.green-color {
+  background-color: var(--flamespark-green);
+  color: var(--white);
+}
+
 .skeleton {
   background-color: #e0e0e0;
   color: transparent;

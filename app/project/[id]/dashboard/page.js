@@ -9,7 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import "@/styles/dashboard.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL, faKey, faFlag, faStar, faEye, faThumbsUp, faHourglass, faPercent, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL, faKey, faFlag, faStar, faEye, faThumbsUp, faHourglass, faPercent, faThumbsDown, faCircle, faCheckCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
 import CappedInput from "@/components/CappedInput";
 import ArrayInputField from "@/components/ArrayInputField";
 import PreviewImagesContainer from "@/components/PreviewImagesContainer";
@@ -71,8 +71,29 @@ export default function ProjectPage(){
     const [postInterval, setPostInterval] = useState(null);
     const [postIntervalSet, setPostIntervalSet] = useState(false); // used in case the fetching of postInterval returns null
 
-    const [chartPosts, setChartPosts] = useState([]);
-    
+    // Project Status
+    const [showCompleteModal, setShowCompleteModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteConfirmInput, setDeleteConfirmInput] = useState("");
+
+    // Handler for marking project as complete
+    async function handleMarkComplete() {
+        // TODO: Implement Supabase update logic
+        // Example:
+        // await supabase.from('projects').update({ status: 'completed' }).eq('id', id);
+        setShowCompleteModal(false);
+        // Optionally, refresh project data
+    }
+
+    // Handler for deleting project
+    async function handleDeleteProject() {
+        // TODO: Implement Supabase delete logic
+        // Example:
+        // await supabase.from('projects').delete().eq('id', id);
+    setShowDeleteModal(false);
+    setDeleteConfirmInput("");
+        // Optionally, redirect user after deletion
+    }
     function PushItem(name, icon, itemArray, fullName = undefined) {
         itemArray.push({name, icon, fullName});
     }
@@ -525,8 +546,9 @@ export default function ProjectPage(){
 
                         {unlockableItems.map((item, index) => (
                             <li key={index} className={`item ${selectedIndex == (index + items.length) ? "selected" : ""}`} onClick={() => {handleTabClick(index + items.length)}}>
-                            <FontAwesomeIcon icon={item.icon} />
-                            <span>{item.name}</span>
+                                <FontAwesomeIcon icon={item.icon} />
+                                <span>{item.name}</span>
+                                <FontAwesomeIcon className="lock" icon={faLock} />
                             </li>
                         ))}
 
@@ -660,12 +682,112 @@ export default function ProjectPage(){
                         </div>
                         }
                         {(selectedIndex > items.length - 1 && selectedIndex < items.length + unlockableItems.length) && 
-                        <div className="content-section locked">
-                            <h2 className="title">This Feature Hasn’t Been Released Yet</h2>
-                            <p className="body">Something about becoming a member</p>
-                            <FontAwesomeIcon icon={faLock} className="label-color icon"/>
+                        <div className="content-section locked" style={{padding: '48px 0', minHeight: '340px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '24px'}}>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px'}}>
+                                <FontAwesomeIcon icon={faLock} className="label-color icon" style={{fontSize: '5rem', color: 'var(--flamespark-red)', marginBottom: '8px'}}/>
+                                <h2 className="titleFont bold" style={{fontSize: '2.2rem', margin: 0}}>Feature In Development</h2>
+                                <span className="bodyFont label-color" style={{fontSize: '1.1rem', textAlign: 'center', maxWidth: '420px'}}>Thank you for being a member and supporting FlameSpark! This feature is currently in development and will be available soon.<br/>If you’re not a member yet, you can join below.</span>
+                            </div>
+                            <a href="https://patreon.com" target="_blank" rel="noopener noreferrer">
+                                <button className="button-shape bodyFont red-color" style={{marginTop: '18px', fontSize: '1.1rem', padding: '12px 32px'}}>Become a Member</button>
+                            </a>
                         </div>
                         }
+                        {selectedIndex == (items.length + unlockableItems.length) && 
+                        <div>
+                            <div className="content-section status">
+                                <div className="status-header" style={{display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '24px'}}>
+                                    <FontAwesomeIcon icon={faFlag} style={{fontSize: '2.5rem', color: 'var(--flamespark-red)'}} />
+                                    <div>
+                                        <h2 className="titleFont" style={{margin: 0}}>Project Status</h2>
+                                        <span className="bodyFont label-color hide">Manage your project's lifecycle. Mark as complete or delete permanently.</span>
+                                    </div>
+                                </div>
+                                <div style={{maxWidth: '600px', margin: '0 auto', padding: '32px 0'}}>
+                                    <div className="status-card" style={{background: '#fff', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', padding: '24px', marginBottom: '24px', textAlign: 'center'}}>
+                                        <div style={{marginBottom: '12px'}}>
+                                            <div className={`status-circle ${project?.status === 'completed' ? 'completed' : ''}`}></div>
+                                        </div>
+                                        <h3 className="titleFont" style={{margin: 0, fontSize: '1.3rem'}}>
+                                            {project?.status === 'completed' ? 'Completed' : 'Active'}
+                                        </h3>
+                                        <span className="bodyFont label-color" style={{fontSize: '1rem'}}>
+                                            {project?.status === 'completed' ? 'This project is marked as complete. No further edits are allowed.' : 'Project is currently active.'}
+                                        </span>
+                                    </div>
+                                    <div style={{display: 'flex', flexDirection: 'column', gap: '18px'}}>
+                                        <button 
+                                            className="button-shape bodyFont green-color" 
+                                            style={{fontSize: '1.1rem', padding: '12px 0'}} 
+                                            disabled={project?.status === 'completed'}
+                                            onClick={() => setShowCompleteModal(true)}
+                                        >
+                                            <FontAwesomeIcon icon={faCheckCircle} style={{marginRight: '10px'}} />
+                                            Mark as Complete
+                                        </button>
+                                        <button 
+                                            className="button-shape bodyFont" 
+                                            style={{fontSize: '1.1rem', padding: '12px 0'}} 
+                                            onClick={() => setShowDeleteModal(true)}
+                                        >
+                                            <FontAwesomeIcon icon={faTrash} style={{marginRight: '10px'}} />
+                                            Delete Project
+                                        </button>
+                                    </div>
+                                    <div style={{marginTop: '32px', textAlign: 'center'}}>
+                                        <span className="bodyFont label-color" style={{fontSize: '0.98rem'}}>
+                                            <strong>Mark as Complete:</strong> This action is <span style={{color: 'var(--flamespark-green)'}}>final</span>. Your project will be locked and cannot be edited further.<br/>
+                                            <strong>Delete Project:</strong> This action is <span style={{color: 'var(--flamespark-red-accented)'}}>permanent</span> and cannot be undone. All data will be lost.
+                                        </span>
+                                    </div>
+                                </div>                                
+                                {/* Complete Confirmation Modal */}
+                                {showCompleteModal && (
+                                    <div className="modal-overlay" style={{position: 'fixed', top:0, left:0, width:'100vw', height:'100vh', background:'rgba(0,0,0,0.25)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000}}>
+                                        <div className="modal" style={{background:'#fff', borderRadius:'10px', padding:'32px', boxShadow:'0 2px 12px rgba(0,0,0,0.12)', maxWidth:'400px', textAlign:'center'}}>
+                                            <FontAwesomeIcon icon={faCheckCircle} style={{fontSize:'2.5rem', color:'var(--flamespark-green)', marginBottom:'12px'}} />
+                                            <h3 className="titleFont" style={{margin:'0 0 12px'}}>Mark Project as Complete?</h3>
+                                            <span className="bodyFont label-color" style={{fontSize:'1rem'}}>This action is final. You will not be able to edit the project after completion.</span>
+                                            <div style={{marginTop:'24px', display:'flex', gap:'12px', justifyContent:'center'}}>
+                                                <button className="button-shape bodyFont" onClick={() => setShowCompleteModal(false)}>Cancel</button>
+                                                <button className="button-shape bodyFont green-color" onClick={handleMarkComplete}>Confirm</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                {/* Delete Confirmation Modal */}
+                                {showDeleteModal && (
+                                    <div className="modal-overlay" style={{position: 'fixed', top:0, left:0, width:'100vw', height:'100vh', background:'rgba(0,0,0,0.25)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000}}>
+                                        <div className="modal" style={{background:'#fff', borderRadius:'10px', padding:'32px', boxShadow:'0 2px 12px rgba(0,0,0,0.12)', maxWidth:'400px', textAlign:'center'}}>
+                                            <FontAwesomeIcon icon={faTrash} style={{fontSize:'2.5rem', color:'var(--flamespark-red)', marginBottom:'12px'}} />
+                                            <h3 className="titleFont" style={{margin:'0 0 12px'}}>Delete Project?</h3>
+                                            <span className="bodyFont label-color" style={{fontSize:'1rem'}}>This action is permanent and cannot be undone. All project data will be lost.</span>
+                                            <div style={{marginTop:'24px', marginBottom:'12px', textAlign:'left'}}>
+                                                <label htmlFor="delete-confirm-input" className="bodyFont label-color" style={{fontSize:'0.98rem', display:'block', marginBottom:'8px'}}>Type <strong>{project?.title}</strong> to confirm:</label>
+                                                <input 
+                                                    id="delete-confirm-input"
+                                                    type="text"
+                                                    value={deleteConfirmInput}
+                                                    onChange={e => setDeleteConfirmInput(e.target.value)}
+                                                    className="bodyFont input-field"
+                                                    style={{width:'100%', padding:'10px', borderRadius:'6px', border:'1px solid #ccc', fontSize:'1rem'}}
+                                                    autoComplete="off"
+                                                />
+                                            </div>
+                                            <div style={{marginTop:'12px', display:'flex', gap:'12px', justifyContent:'center'}}>
+                                                <button className="button-shape bodyFont" onClick={() => { setShowDeleteModal(false); setDeleteConfirmInput(""); }}>Cancel</button>
+                                                <button 
+                                                    className="button-shape bodyFont red-color" 
+                                                    onClick={handleDeleteProject}
+                                                    disabled={deleteConfirmInput !== project?.title}
+                                                >Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+}
                     </main>
                 </div>
             </div>

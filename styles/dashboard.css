@@ -17,7 +17,7 @@
   top: 0;
   height: 100%;
   overflow-y: auto;
-  max-width: 18%;
+  max-width: 25%;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -58,6 +58,10 @@
     gap: 20px;
     padding: 9px 20px;
     border-radius: 5px;
+}
+
+.sidebar .item .lock {
+  margin-left: auto;
 }
 
 .sidebar .project-display {
@@ -347,4 +351,22 @@ button:disabled {
 
 .preview-images .optionsDiv {
   margin-bottom: 50px;
+}
+@keyframes pulse-glow {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 8px rgba(255, 165, 0, 0.6); }
+  50% { transform: scale(1.15); box-shadow: 0 0 20px rgba(255, 165, 0, 0.9); }
+}
+
+.status-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin: 0 auto;
+  background: var(--flamespark-orange);
+  animation: pulse-glow 1.5s infinite;
+}
+
+.status-circle.completed {
+  background: var(--flamespark-green);
+  animation: pulse-glow 1s infinite;
 }
