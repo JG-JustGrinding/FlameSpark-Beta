@@ -346,7 +346,7 @@ h1, img {
     align-items: center;
 }
 
-.comments:hover{
+.comments:hover, .share:hover{
     background-color: var(--shadow);
 }
 
@@ -437,7 +437,6 @@ h1, img {
     color: var(--white);
     opacity: 0.5;
 }
-
 
 .overlay-panel.edit {
     max-width: 1000px;

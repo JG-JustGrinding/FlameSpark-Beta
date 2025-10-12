@@ -108,13 +108,14 @@ ul li {
     gap: 25px;
 }
 
-.post .post-bottom .comments {
+.post .post-bottom .comments, .post-bottom .option {
     font-size: 1rem;
     cursor: pointer;
     border-radius: 50%;
     padding: 10px;
+    text-decoration: none;
+    color: var(--black);
 }
-
 
 .post-footer .rating, .post-bottom .rating {
     padding: .25rem .75rem;

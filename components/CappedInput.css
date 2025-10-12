@@ -12,9 +12,13 @@
   width: 100%;
 }
 
-.field textarea {
+.field textarea:not(.no-min-height) {
   resize: vertical;
   min-height: 80px;
+}
+
+.field textarea.no-min-height {
+  resize: vertical;
 }
 
 .counter {

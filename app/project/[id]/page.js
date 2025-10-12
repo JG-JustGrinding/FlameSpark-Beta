@@ -757,7 +757,7 @@ export default function ProjectPage(){
                                 <h2 className="titleFont cardTitle">Project Description</h2>
                                 <span className="description">{project?.description}</span>
                                 <div className="actions">
-                                    {!projectActionSet && <button className="button-shape bodyFont skeleton" disabled>Leave Project</button>}
+                                    {!projectActionSet && <button className="button-shape bodyFont skeleton">Leave Project</button>}
                                     {(!isOwner && hasJoined && projectActionSet) && <button className="button-shape bodyFont button-red-harsh" onClick={() => setLeaveProjectPanelOpen(true)}>Leave Project</button>}
                                     {(!isOwner && !hasJoined && projectActionSet) && <button className="button-shape bodyFont button-red" onClick={() => JoinProject()} disabled={isJoining}>{isJoining ? "Joining..." : "Join Project"}</button>}
                                     {(isOwner && projectActionSet) && <a href={`/project/${id}/dashboard`}><button className="button-shape bodyFont button-yellow">Project Dashboard</button></a>}

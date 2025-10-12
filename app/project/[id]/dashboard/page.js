@@ -530,11 +530,7 @@ export default function ProjectPage(){
                         </li>
                         
                         <li className="line-break full"><span/></li>
-
-                        <li className="item create-post-button">
-                            <FontAwesomeIcon icon={faPlus}/> 
-                            Create New Post
-                        </li>
+                        
                         {items.map((item, index) => (
                             <li key={index} className={`item ${selectedIndex == index ? "selected" : ""}`} onClick={() => {handleTabClick(index)}}>
                             <FontAwesomeIcon icon={item.icon} />
@@ -651,8 +647,8 @@ export default function ProjectPage(){
                                 <DashboardCard title="Supporters" value={supporters} icon={faStar} className="red medium" />
                                 <DashboardCard title="Views" value={views} icon={faEye} className="red medium" />
                                 <DashboardCard title="Total Posts" value={postCount} icon={faLayerGroup} className="green small" />
-                                <DashboardCard title="Total Likes:Dislikes" value={(totalLikes && totalDislikes) ? (`${shortenNumber(totalLikes)} : ${shortenNumber(totalDislikes)}`) : ""} icon={faThumbsUp} secondIcon={faThumbsDown} className="green small" />
-                                <DashboardCard title="Like Ratio" value={likeRatio ? `${truncate(likeRatio)}%` : ""} icon={faThumbsUp} secondIcon={faPercent} className="green small" />
+                                <DashboardCard title="Total Likes:Dislikes" value={(totalLikes != null && totalDislikes != null) ? (`${shortenNumber(totalLikes)} : ${shortenNumber(totalDislikes)}`) : ""} icon={faThumbsUp} secondIcon={faThumbsDown} className="green small" />
+                                <DashboardCard title="Like Ratio" value={likeRatio != null ? `${truncate(likeRatio)}%` : ""} icon={faThumbsUp} secondIcon={faPercent} className="green small" />
                                 <DashboardCard title="Avg. Post Interval (Current)" value={formatInterval(postInterval) || (postIntervalSet ? "N/A" : "")} icon={faHourglass} className="green small" />
                             </div>
                             <div className="analytics-chart hide" style={{marginTop: '32px', background: '#fff', borderRadius: '10px', padding: '24px', boxShadow: '0 2px 8px rgba(0,0,0,0.07)'}}>
@@ -736,7 +732,7 @@ export default function ProjectPage(){
                                     </div>
                                     <div style={{marginTop: '32px', textAlign: 'center'}}>
                                         <span className="bodyFont label-color" style={{fontSize: '0.98rem'}}>
-                                            <strong>Mark as Complete:</strong> This action is <span style={{color: 'var(--flamespark-green)'}}>final</span>. Your project will be locked and cannot be edited further.<br/>
+                                            <strong>Mark as Complete:</strong> This action is <span style={{color: 'var(--flamespark-green)'}}>final</span>. Your project will be locked and cannot be edited further. When your project is completed, a notification will be sent to all of your supporters.<br/>
                                             <strong>Delete Project:</strong> This action is <span style={{color: 'var(--flamespark-red-accented)'}}>permanent</span> and cannot be undone. All data will be lost.
                                         </span>
                                     </div>
@@ -759,7 +755,7 @@ export default function ProjectPage(){
                                 {showDeleteModal && (
                                     <div className="modal-overlay" style={{position: 'fixed', top:0, left:0, width:'100vw', height:'100vh', background:'rgba(0,0,0,0.25)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000}}>
                                         <div className="modal" style={{background:'#fff', borderRadius:'10px', padding:'32px', boxShadow:'0 2px 12px rgba(0,0,0,0.12)', maxWidth:'400px', textAlign:'center'}}>
-                                            <FontAwesomeIcon icon={faTrash} style={{fontSize:'2.5rem', color:'var(--flamespark-red)', marginBottom:'12px'}} />
+                                            <FontAwesomeIcon icon={faTrash} style={{fontSize:'2.5rem', color:'var(--flamespark-red-accented)', marginBottom:'12px'}} />
                                             <h3 className="titleFont" style={{margin:'0 0 12px'}}>Delete Project?</h3>
                                             <span className="bodyFont label-color" style={{fontSize:'1rem'}}>This action is permanent and cannot be undone. All project data will be lost.</span>
                                             <div style={{marginTop:'24px', marginBottom:'12px', textAlign:'left'}}>
@@ -777,7 +773,7 @@ export default function ProjectPage(){
                                             <div style={{marginTop:'12px', display:'flex', gap:'12px', justifyContent:'center'}}>
                                                 <button className="button-shape bodyFont" onClick={() => { setShowDeleteModal(false); setDeleteConfirmInput(""); }}>Cancel</button>
                                                 <button 
-                                                    className="button-shape bodyFont red-color" 
+                                                    className="button-shape bodyFont red-color-accented" 
                                                     onClick={handleDeleteProject}
                                                     disabled={deleteConfirmInput !== project?.title}
                                                 >Delete</button>

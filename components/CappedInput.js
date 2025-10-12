@@ -13,6 +13,7 @@ const CappedInput = ({
   isTextArea = false,
   hideCounter = false,
   className = '',
+  noMinHeight = false,
   id,
 }) => {
   return (
@@ -27,7 +28,7 @@ const CappedInput = ({
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          className="bodyFont input-field"
+          className={`bodyFont input-field${noMinHeight ? " no-min-height" : ""}`}
         />
       ) : (
         <input

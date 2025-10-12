@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import '@/lib/fontawesome'
 import { getPostRating, getUserRating } from '@/lib/projectFunctions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck, faShare } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
 import { editPost, extractYouTubeId, timeAgo, shortenNumber } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
@@ -233,9 +233,12 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
                 <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
                 <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
             </div>
-            <div className="comments">
+            <a className="comments" href={`${window.location.pathname}/post/${postId}`}>
                 <FontAwesomeIcon icon={faComment}/>
                 <span className="bold">{shortenNumber(commentCount)}</span>
+            </a>
+            <div className="share option">
+                <FontAwesomeIcon icon={faShare}/>
             </div>
         </div>
     </div>

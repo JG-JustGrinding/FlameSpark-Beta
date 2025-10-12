@@ -9,8 +9,8 @@
     --flamespark-blue-accented: #4C6584;
     --flamespark-background: #19193B;
     --flamespark-background-darker: #06060f;
-    --flamespark-tinted-page: #FCE6E3;
-    --flamespark-tinted-page-alt: #DCDCDC;
+    --flamespark-tinted-page: #f4f4f4;
+    --flamespark-tinted-page-old: #FCE6E3;
     --success-color: #04A777;
     --warning-color: #F08A2E;
     --error-color: #E72D3A;
@@ -95,6 +95,10 @@ body {
 
 .bold {
   font-weight: bold;
+}
+
+.normal-weight {
+  font-weight: normal;
 }
 
 .error-message{
