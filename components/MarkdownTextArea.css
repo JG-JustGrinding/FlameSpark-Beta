@@ -1,0 +1,101 @@
+.markdown textarea{
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+}
+
+.markdown textarea:focus {
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+
+.markdown textarea:disabled {
+    opacity: 0.5;
+}
+
+.markdown {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0px;
+}
+
+.markdown .wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.markdown .input-field {
+    border: 1px solid #000;
+    border-radius: 5px 5px 0px 0px;
+}
+
+.markdown .input-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    border: 1px solid #000;
+    border-top: none;
+    border-radius: 0px 0px 5px 5px;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.markdown .input-options .rich-text {
+    font-size: 0.8rem;
+    color: var(--gray);
+    display: flex;
+    align-items: start;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.rich-text button {
+    border: 1px dashed #ccc;
+    background-color: transparent;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.rich-text button:hover {
+    background-color: var(--shadow);
+}
+
+.rich-text button.selected {
+    background-color: var(--flamespark-red);
+    color: var(--white);
+    border: 1px solid var(--flamespark-red);
+}
+
+.input-options.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.input-options .submit-section {
+    margin-left: auto;
+}
+
+.input-options .submit-section * {
+    padding: 5px;
+    border-radius: 50%;
+    background-color: var(--flamespark-red);
+    color: var(--white);
+    height: 15px;
+    width: 15px;
+}
+
+.submit-section .disabled {
+    background-color: #525252;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.markdown.disabled .counter {
+    opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
+    -moz-user-select: none;
+}

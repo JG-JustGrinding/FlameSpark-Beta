@@ -6,7 +6,7 @@ import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faL, faLink } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { timeAgo } from "@/lib/projectFunctions";
-import { extractYouTubeId, getPostRating, getUserRating, shortenNumber } from '@/lib/projectFunctions';
+import { extractYouTubeId, getPostRating, getUserRating, shortenNumber, getPostCommentCount } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
 
 const HomePagePost = ({postId, title = "", description = "", dateCreated, postContent, projectName = "", projectIcon = "", projectId, className="", rateFunction = null, goToPreview = false, disableContent = false, currentPostIndex = 0, postIndex = 0, previousIndex}) => {
@@ -17,7 +17,6 @@ const HomePagePost = ({postId, title = "", description = "", dateCreated, postCo
     const [userRating, setUserRating] = useState(0);
     const [ratingLoading, setRatingLoading] = useState(true);
     const [commentCount, setCommentCount] = useState(0);
-    const [commentCountLoading, setCommentCountLoading] = useState(true);
     
     const audioRef = useRef(null);
     const iframeRef = useRef(null);
@@ -83,11 +82,22 @@ const HomePagePost = ({postId, title = "", description = "", dateCreated, postCo
 
                 setRatingLoading(false);
             } catch (error) {
-                console.log(error)
+                
+            }
+        }
+
+        async function GetCommentCount() {
+            try {                
+                let count = await getPostCommentCount(postId);
+
+                setCommentCount(count || 0);
+            } catch (error) {
+
             }
         }
 
         GetRating();
+        GetCommentCount();
     }, []);
 
     function UpdateRating(value) {
@@ -176,10 +186,10 @@ const HomePagePost = ({postId, title = "", description = "", dateCreated, postCo
                         <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
                         <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
                     </div>
-                    <div className="comments">
-                        <FontAwesomeIcon className="comment-icon" icon={faComment}></FontAwesomeIcon>
-                        <span className="comment-count bodyFont bold">{shortenNumber(commentCount)}</span>
-                    </div>
+                    <a className={`comments${commentCount != null ? "" : " skeleton"}`} href={`/project/${projectId}/post/${postId}`}>
+                        <FontAwesomeIcon className="comment-icon" icon={faComment}/>
+                        <span className="bold">{shortenNumber(commentCount) || 0}</span>
+                    </a>
                 </div>
             </div>
         </div>

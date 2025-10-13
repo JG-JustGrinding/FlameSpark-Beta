@@ -14,7 +14,10 @@ const CappedInput = ({
   hideCounter = false,
   className = '',
   noMinHeight = false,
+  disabled = false,
   id,
+  ref = null,
+  keyDown = null,
 }) => {
   return (
     <div className={`field capped-input ${className}`}>
@@ -29,6 +32,9 @@ const CappedInput = ({
           onChange={onChange}
           placeholder={placeholder}
           className={`bodyFont input-field${noMinHeight ? " no-min-height" : ""}`}
+          ref={ref}
+          onKeyDown={keyDown}
+          disabled={disabled}
         />
       ) : (
         <input
@@ -39,6 +45,9 @@ const CappedInput = ({
           onChange={onChange}
           placeholder={placeholder}
           className="bodyFont input-field"
+          ref={ref}
+          onKeyDown={keyDown}
+          disabled={disabled}
         />
       )}
       {children}

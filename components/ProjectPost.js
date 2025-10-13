@@ -7,7 +7,7 @@ import { getPostRating, getUserRating } from '@/lib/projectFunctions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck, faShare } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
-import { editPost, extractYouTubeId, timeAgo, shortenNumber } from '@/lib/projectFunctions';
+import { editPost, extractYouTubeId, timeAgo, shortenNumber, getPostCommentCount } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
 import PanelOverlay from './PanelOverlay';
 import CappedInput from './CappedInput';
@@ -18,8 +18,7 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
     const [postRating, setPostRating] = useState(0);
     const [userRating, setUserRating] = useState(0);
     const [ratingLoading, setRatingLoading] = useState(true);
-    const [commentCount, setCommentCount] = useState(0);
-    const [commentCountLoading, setCommentCountLoading] = useState(true);
+    const [commentCount, setCommentCount] = useState(null);
     const [adminPanelOpen, setAdminPanelOpen] = useState(false);
     const [editPanelOpen, setEditPanelOpen] = useState(false);
     const [editPostTitle, setEditPostTitle] = useState(postTitle);
@@ -75,7 +74,17 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
             }
         }
 
+        async function GetCommentCount() {
+            try {                
+                let count = await getPostCommentCount(postId);
+                setCommentCount(count || 0);
+            } catch (error) {
+
+            }
+        }
+
         GetRating();
+        GetCommentCount();
     }, []);
 
     async function editPostFunction () {
@@ -233,9 +242,9 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
                 <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
                 <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
             </div>
-            <a className="comments" href={`${window.location.pathname}/post/${postId}`}>
-                <FontAwesomeIcon icon={faComment}/>
-                <span className="bold">{shortenNumber(commentCount)}</span>
+            <a className={`comments${commentCount != null ? "" : " skeleton"}`} href={`${window.location.pathname}/post/${postId}`}>
+                <FontAwesomeIcon className="comment-icon" icon={faComment}/>
+                <span className="bold">{shortenNumber(commentCount) || 0}</span>
             </a>
             <div className="share option">
                 <FontAwesomeIcon icon={faShare}/>

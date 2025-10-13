@@ -134,6 +134,10 @@ body {
   position: relative;
 }
 
+.skeleton > * {
+  opacity: 0;
+}
+
 .skeleton::after {
   content: "";
   position: absolute;
@@ -156,6 +160,10 @@ body {
 
 .invisible {
   opacity: 0;
+}
+
+.full-width {
+  width: 100%;
 }
 
 .no-select-pointer {

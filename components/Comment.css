@@ -1,0 +1,125 @@
+.comment {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.comment-main {
+    width: 100%;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.comment-user-date {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+    padding: 0;
+}
+
+.commenter-pfp {
+    margin-right: 10px;
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+}
+
+.commenter-pfp img {
+    width: 100%;
+    height: 100%;
+}
+
+.comment a {
+    text-decoration: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+.comment .bottom-options {
+    margin-top: 5px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 0.8em;
+}
+
+.comment .bottom-options > *:hover {
+    color: var(--flamespark-red);
+}
+
+.comment .link:not(:hover) {
+    color: var(--black);
+}
+
+.comment .rating, .comment.rating {
+    border-radius: 999px;
+    font-weight: normal;
+    display: flex;
+    justify-content: space-between;
+}
+
+.comment .rating:not(.skeleton), .comment .rating:not(.skeleton) {
+    background-color: rgba(55, 55, 55, 0.05);
+    color: var(--black);
+}
+
+.comment .rating > * {
+    padding: 5px;
+    border-radius: 50%;
+}
+
+.comment .rating .vote
+{
+    cursor: pointer;
+}
+
+.comment .rating .vote:hover:not(.selected)
+{
+    background-color: var(--shadow);
+}
+
+.comment .rating .selected.up {
+    background-color: var(--flamespark-red);
+    color: var(--white);
+}
+
+.comment .rating .selected.down {
+    background-color: var(--flamespark-blue);
+    color: var(--white);
+}
+
+.comment-main blockquote {
+  border-left: 4px solid #ccc;
+  padding: 6px 12px;
+  margin: 8px 0;
+  color: #444;
+  font-style: italic;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.comment-main code {
+  background-color: #eee;
+  color: var(--flamespark-green);
+  font-family: 'Fira Code', monospace;
+  font-size: 0.95em;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+@media (max-width: 768px) {
+    .commenter-pfp {
+        width: 35px;
+        height: 35px;
+        margin-right: 5px;
+    }
+}
