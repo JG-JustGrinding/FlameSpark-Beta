@@ -54,7 +54,7 @@ const CappedInput = ({
       </div>
 
       <span className={`counter bodyFont label-color ${hideCounter ? "hide" : ""}`}>
-        {value.length}/{maxLength}
+        {value?.length}/{maxLength}
       </span>
     </div>
   );

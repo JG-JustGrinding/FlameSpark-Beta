@@ -33,6 +33,7 @@ export default function PostPage() {
     const [commentInput, setCommentInput] = useState("");
     const [commentInputDisabled, setCommentInputDisabled] = useState(false);
     const [commentInputLoading, setCommentInputLoading] = useState(false);
+    const [commentUpdateItem, setCommentUpdateItem] = useState(null);
 
     useEffect(() => {
         async function run(){
@@ -103,6 +104,58 @@ export default function PostPage() {
         }
     }
 
+    async function reportComment(comment, reason, details) {
+        if ((!reason || !reason.trim()) && (!details || !details.trim())) {
+            throw new Error("Please provide a reason or details for your report.");
+        }
+
+        const { error } = await supabase
+            .from("reports")
+            .insert({
+            reporter_id: user?.id,
+            target_table: "comments",
+            target_id: comment.id,
+            reason,
+            details,
+        });
+
+        if (error)
+        {
+            throw error;
+        }
+
+        setCommentUpdateItem({ ...comment, removeReportButton: true });
+    }
+
+    async function editComment(comment, newText)
+    {
+        const { error } = await supabase.rpc("edit_comment", { p_comment_id: comment.id, p_new_content: newText});
+
+        if (error) throw error;
+
+        setCommentUpdateItem({ ...comment, content: newText, was_edited: true });
+    }
+
+    async function deleteComment(comment) {
+        try {
+            const updating = { ...comment, deleting: true };
+            setCommentUpdateItem(updating);
+
+            const { error } = await supabase
+                .from("comments")
+                .delete()
+                .eq("id", comment.id);
+
+            if (error) throw error;
+
+            const removed = { ...comment, remove_item: true };
+            setCommentUpdateItem(removed);
+        } catch (error) {
+            const removed = { ...comment, remove_item: false };
+            setCommentUpdateItem(removed);
+        }
+    }
+
 	return (
 		<>
         <div className="body-container">
@@ -132,7 +185,7 @@ export default function PostPage() {
                     </div>
                     <div className="comments-container">
                         <h3 className="titleFont reset">Comments</h3>
-                        <MarkdownTextArea value={commentInput} onChange={(e) => setCommentInput(e.target.value)} placeholder={commentInputDisabled ? "Log in to comment" : "Add a comment..."} disabled={commentInputDisabled || commentInputLoading} maxLength={1000} isTextArea={true} className="comment-input" id="comment-input" noMinHeight={true} submitButton={true} submitFunction={() => {submitComment()}} />
+                        <MarkdownTextArea value={commentInput} onChange={(e) => setCommentInput(e.target.value)} placeholder={commentInputDisabled ? "Log in to comment" : "Add a comment..."} disabled={commentInputDisabled || commentInputLoading} maxLength={1000} className="comment-input" id="comment-input" noMinHeight={true} submitButton={true} submitFunction={() => {submitComment()}} />
                         {((user || !userSet) && commentInput) && 
                         <>
                             <Comment avatar={avatar || "/profile_icon_colored.svg"} loading={!userSet || (user != null && !avatar)} username={username} body={commentInput} date="comment preview" dontUseTimeAgo={true}/>
@@ -143,8 +196,9 @@ export default function PostPage() {
                         <div className="comments-section">
                             <Paginator fetchFunction={fetchComments} projectId={postId}
                             renderItem={(comment, idx) => (
-                                <Comment key={idx} isOwner={user?.id === comment.user_id} id={comment.user_id} username={comment.username} avatar={comment.avatar_url || "/profile_icon_colored.svg"} date={comment.created_at} body={comment.content}/>
+                                <Comment key={idx} id={comment.id} postId={postId} isOwner={user?.id === comment.user_id} posterId={comment.user_id} username={comment.username} avatar={comment.avatar_url || "/profile_icon_colored.svg"} date={comment.created_at} body={comment.content} replyCount={comment.reply_count} user={user} currentUsername={username} currentAvatar={avatar} editCommentFunction={editComment.bind(null, comment)} edited={comment.was_edited} deleteCommentFunction={() => deleteComment(comment)} deleting={comment.deleting} reportCommentFunction={reportComment.bind(null, comment)} removeReportButton={comment.removeReportButton || !user} canReply={user}/>
                             )}
+                            updateItem={commentUpdateItem}
                             limit={10}
                             filter={refetchFilter}
                             noneFoundMessage=""

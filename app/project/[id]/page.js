@@ -176,8 +176,11 @@ export default function ProjectPage(){
     {
         try {
             await ratePost(post.id, userId, value);
-        } catch {
-
+        } catch (err) {
+            if (err.notLoggedIn)
+            {
+                window.location.href = "/login";
+            }
         }
     }
 

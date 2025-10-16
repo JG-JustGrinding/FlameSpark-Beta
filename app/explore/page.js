@@ -167,8 +167,11 @@ useEffect(() => {
     {
         try {
             await ratePost(post.post_id, userId, value);
-        } catch (error) {
-
+        } catch (err) {
+            if (err.notLoggedIn)
+            {
+                window.location.href = "/login";
+            }
         }
     }
 

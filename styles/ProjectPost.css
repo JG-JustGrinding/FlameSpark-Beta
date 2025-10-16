@@ -106,6 +106,7 @@ ul li {
     display: flex;
     align-items: center;
     gap: 25px;
+    flex-wrap: wrap;
 }
 
 .post .post-bottom .comments, .post-bottom .option {

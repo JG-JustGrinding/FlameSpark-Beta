@@ -39,7 +39,6 @@
     border: 1px solid #000;
     border-top: none;
     border-radius: 0px 0px 5px 5px;
-    gap: 10px;
     flex-wrap: wrap;
 }
 
@@ -50,6 +49,7 @@
     align-items: start;
     gap: 5px;
     flex-wrap: wrap;
+    margin-right: 40px;
 }
 
 .rich-text button {

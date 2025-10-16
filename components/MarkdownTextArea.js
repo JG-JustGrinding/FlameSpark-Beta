@@ -73,7 +73,7 @@ export default function MarkdownTextArea({
             cursorPos = selected ? start + newText.length : start + 1;
             break;
             case 'link':
-            newText = `[${cleanSelected(selected) || 'Link Text'}](https://)`;
+            newText = `[${cleanSelected(selected) || 'Link Text'}](https://)${addSpace}`;
             // place cursor *inside* parentheses
             cursorPos = start + newText.indexOf('(') + 1;
             break;
@@ -187,7 +187,7 @@ export default function MarkdownTextArea({
 					<button className="rich-text-button bodyFont" title="Strikethrough" onClick={() => {applyFormat('strike');}}><s>S</s></button>
 					<button className="rich-text-button bodyFont" title="Link" onClick={() => {applyFormat('link');}}>🔗</button>
                     <button className="rich-text-button bodyFont" title="Quote" onClick={() => {applyFormat('quote');}}>"</button>
-                    <button className="rich-text-button bodyFont" title="Code" onClick={() => {applyFormat('code');}}><code>{"</>"}</code></button>
+                    <button className="rich-text-button bodyFont" title="Code" onClick={() => {applyFormat('code');}}><code className="no-styling">{"</>"}</code></button>
 					<button className={`rich-text-button bodyFont${selectedStyling == "ulist" ? " selected" : ""}`} title="Bullet List" onClick={() => {applyFormat('ulist');}}>• List</button>
 					<button className={`rich-text-button bodyFont${selectedStyling == "olist" ? " selected" : ""}`} title="Numbered List" onClick={() => {applyFormat('olist');}}>1. List</button>
 				</div>

@@ -87,6 +87,10 @@ body {
   border: 1px solid var(--black);
 }
 
+.input-field.vertical {
+  resize: vertical;
+}
+
 .pfp-shape {
   border-radius: 50%;
   object-fit: cover;

@@ -8,6 +8,11 @@
     width: 100%;
 }
 
+.deleting {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .comment-header {
     display: flex;
     justify-content: space-between;
@@ -56,8 +61,27 @@
     color: var(--flamespark-red);
 }
 
+.comment .bottom-options > *.dark:hover {
+    color: var(--flamespark-red-accented);
+}
+
 .comment .link:not(:hover) {
     color: var(--black);
+}
+
+.comment .replies-count {
+    color: var(--flamespark-blue);
+    margin-right: 10px;
+}
+
+.comment .replies-more {
+    color: var(--flamespark-blue);
+}
+
+.comment .reply-field {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .comment .rating, .comment.rating {
@@ -97,7 +121,11 @@
     color: var(--white);
 }
 
-.comment-main blockquote {
+.icon.selected {
+    color: var(--flamespark-red);
+}
+
+.comment blockquote {
   border-left: 4px solid #ccc;
   padding: 6px 12px;
   margin: 8px 0;
@@ -107,13 +135,26 @@
   border-radius: 4px;
 }
 
-.comment-main code {
+.comment-main code:not(.no-styling), .comment .overlay-panel .comment-body code {
   background-color: #eee;
   color: var(--flamespark-green);
   font-family: 'Fira Code', monospace;
   font-size: 0.95em;
   padding: 2px 4px;
   border-radius: 3px;
+}
+
+.edit-comment-input {
+    margin-top: 15px;
+}
+
+.report-button:disabled {
+    background-color: #525252;
+    opacity: 0.5;
+}
+
+button:disabled{
+    pointer-events: none;
 }
 
 @media (max-width: 768px) {

@@ -107,7 +107,7 @@ export default function SignupPage() {
 
           <h1 className="titleFont header-size">Sign Up for FlameSpark</h1>
 
-          {error && <p className="titleFont">{error}</p>}
+          {error && <p className="titleFont error-message">{error}</p>}
 
           <div className="auth-content">
 

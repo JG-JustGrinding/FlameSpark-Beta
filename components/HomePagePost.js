@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useUser } from '@/lib/useUser';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faL, faLink } from '@fortawesome/free-solid-svg-icons';
@@ -17,6 +18,7 @@ const HomePagePost = ({postId, title = "", description = "", dateCreated, postCo
     const [userRating, setUserRating] = useState(0);
     const [ratingLoading, setRatingLoading] = useState(true);
     const [commentCount, setCommentCount] = useState(0);
+    const { user } = useUser();
     
     const audioRef = useRef(null);
     const iframeRef = useRef(null);
@@ -101,6 +103,11 @@ const HomePagePost = ({postId, title = "", description = "", dateCreated, postCo
     }, []);
 
     function UpdateRating(value) {
+        if (!user)
+        {
+            return;
+        }
+
         if (value == userRating)
         {
             setUserRating(0);

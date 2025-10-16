@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { useUser } from "@/lib/useUser";
 import '@/lib/fontawesome'
 import { getPostRating, getUserRating } from '@/lib/projectFunctions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -28,6 +29,7 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
     const [deleteChecked, setDeleteChecked] = useState(false);
     const [deleteErrorMessage, setDeleteErrorMessage] = useState(false);
     const dateDifference = timeAgo(dateCreated);
+    const { user } = useUser();
 
     useEffect(() => {
         if (postContent?.length > 0) {
@@ -98,6 +100,11 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
     }
 
     function UpdateRating(value) {
+        if (!user)
+        {
+            return;
+        }
+
         if (value == userRating)
         {
             setUserRating(0);
@@ -105,7 +112,6 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
         }
 
         setUserRating(value);
-
     }
 
     function GetIconFromPostType() {
