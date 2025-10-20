@@ -564,6 +564,8 @@ export default function ProjectPage(){
                 content.content = uploadedUrls;
             } else if (post.postType == "poll") {
                 content.contentType = post.postType;
+                
+                // let the createPost function handle it
 
                 content.content = post.pollContent;                
             } else if (post.postType == "audio") {
@@ -747,7 +749,7 @@ export default function ProjectPage(){
                                     fetchFunction={fetchPosts}
                                     projectId={id}
                                     renderItem={(post, idx) => (
-                                      <ProjectPost key={idx || post.id} postId={post.id} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at} isOwner={isOwner} isPinned={post.is_pinned} wasEdited={post.was_edited} setPinnedFunction={() => SetPinned(post)} rateFunction={rateProjectPost.bind(null, post, user?.id)}></ProjectPost>  
+                                      <ProjectPost key={idx || post.id} projectId={id} postId={post.id} icon={project?.icon} postTitle={post.title} postDescription={post.description} postContent={post.content} dateCreated={post.created_at} isOwner={isOwner} isPinned={post.is_pinned} wasEdited={post.was_edited} setPinnedFunction={() => SetPinned(post)} rateFunction={rateProjectPost.bind(null, post, user?.id)}></ProjectPost>  
                                     )}
                                     limit={5}
                                     filter={filters[selectedFilter]}

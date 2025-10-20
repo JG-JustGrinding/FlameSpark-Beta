@@ -145,6 +145,15 @@
     align-items: center;
 }
 
+.post .post-footer .comments, .post-footer .option {
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 10px;
+    text-decoration: none;
+    color: var(--black);
+}
+
 .post {
     --shadow-offset-x: 0px;
     --shadow-offset-y: 2px;

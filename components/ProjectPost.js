@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useUser } from "@/lib/useUser";
 import '@/lib/fontawesome'
-import { getPostRating, getUserRating } from '@/lib/projectFunctions';
+import { deletePost, getPostRating, getUserRating } from '@/lib/projectFunctions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck, faShare } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
@@ -12,42 +12,26 @@ import { editPost, extractYouTubeId, timeAgo, shortenNumber, getPostCommentCount
 import Carousel from './Carousel';
 import PanelOverlay from './PanelOverlay';
 import CappedInput from './CappedInput';
+import PostContentView from './PostContentView';
+import ShareButton from './ShareButton';
 
-const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postContent = null, dateCreated, isOwner = false, isPinned = false, wasEdited = false, setPinnedFunction = null, rateFunction = null}) => {
-    const [currentPostPartIndex, setCurrentPostPartIndex] = useState(0);
-    const [currentPostContent, setCurrentPostContent] = useState(null);
+const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postContent = null, dateCreated, isOwner = false, isPinned = false, wasEdited = false, setPinnedFunction = null, rateFunction = null, projectId = null}) => {
     const [postRating, setPostRating] = useState(0);
     const [userRating, setUserRating] = useState(0);
     const [ratingLoading, setRatingLoading] = useState(true);
     const [commentCount, setCommentCount] = useState(null);
     const [adminPanelOpen, setAdminPanelOpen] = useState(false);
     const [editPanelOpen, setEditPanelOpen] = useState(false);
+    const adminRef = useRef(null);
     const [editPostTitle, setEditPostTitle] = useState(postTitle);
     const [editPostDescription, setEditPostDescription] = useState(postDescription);
     const [editing, setEditing] = useState(false); // when the edit button is clicked
     const [deletePanelOpen, setDeletePanelOpen] = useState(false);
     const [deleteChecked, setDeleteChecked] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
     const [deleteErrorMessage, setDeleteErrorMessage] = useState(false);
     const dateDifference = timeAgo(dateCreated);
     const { user } = useUser();
-
-    useEffect(() => {
-        if (postContent?.length > 0) {
-            setCurrentPostContent(postContent[currentPostPartIndex % postContent.length]);
-        }
-    }, [currentPostPartIndex, postContent]);
-
-    const nextPostPart = () => {
-        if (postContent?.length > 1) {
-            setCurrentPostPartIndex((prev) => (prev + 1) % postContent.length);
-        }
-    };
-
-    const previousPostPart = () => {
-        if (postContent?.length > 1) {
-            setCurrentPostPartIndex((prev) => (prev - 1 + postContent.length) % postContent.length);
-        }
-    };
 
     useEffect(() => {
         async function GetRating() {
@@ -134,21 +118,43 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
             case "link":
                 return faLink;
             default:
-                return faT;
+                return faLayerGroup;
         }
     }
 
-    function DeletePost(postId) {
-        // delete content (if applicable)
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (adminRef.current && !adminRef.current.contains(event.target)) {
+                setAdminPanelOpen(false);
+            }
+        }
 
+        if (adminPanelOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
 
-        // delete post from table
-        // reload page
+        // cleanup
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [adminPanelOpen]);
+
+    async function DeletePost() {
+        try {
+            setDeleteLoading(true);
+            await deletePost(postId);
+            window.location.reload();
+        } catch (error) {
+            setDeleteErrorMessage(error.message || "An error occured.");
+            setDeleteLoading(false);
+        }
     }
     
     return (
     <>
-    <div className="post card text">
+    <div className="post card no-overflow text">
         <div className={`post-top ${(!postTitle && !postDescription) ? "align-center" : ""}`}>
             <img className="icon pfp-shape" alt="post-icon" src={icon}></img>
             <div className="info">
@@ -161,14 +167,13 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
                         <span className="post-title bodyFont body-size label-color reset">{postDescription}</span>
                     </div>
                 </div>
-                <span className="date-created"></span>
             </div>
             <div className={`project-top-actions`}>
                 {isPinned && <FontAwesomeIcon icon={faThumbTack} />}
                 {isOwner && <div className='admin'>
                     <FontAwesomeIcon icon={faEllipsisH} className={`no-select-pointer icon${adminPanelOpen ? " open" : ""}`} onClick={() => setAdminPanelOpen(value => !value)}/>
                     {adminPanelOpen &&
-                    <div className="post-admin-panel bodyFont">
+                    <div ref={adminRef} className="post-admin-panel bodyFont">
                         <ul>
                             <li className="no-select-pointer" onClick={() => {setPinnedFunction(); setAdminPanelOpen(false)}}>
                                 <FontAwesomeIcon icon={faThumbTack} />
@@ -188,60 +193,7 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
                 </div> }
             </div>
         </div>
-        {postContent?.length > 1 && <span className="label-color caption-size bodyFont">{currentPostPartIndex + 1} of {postContent?.length}</span>}
-        <div className="post-content">
-            <div className="content">
-                {currentPostContent?.contentType == "text" && <p className="text-post bodyFont body-size">{currentPostContent?.content}</p>}
-                {currentPostContent?.contentType === "image" && (
-                <>
-                    {currentPostContent?.content?.length <= 1 ? (
-                        <img
-                            src={currentPostContent?.content?.[0]} 
-                            alt="image post"
-                        />
-                    ) : (
-                        <Carousel images={currentPostContent?.content}/>
-                    )}
-                </>
-                )}
-                {currentPostContent?.contentType == "audio" && <audio controls className="" src={currentPostContent?.content}></audio>}
-                {currentPostContent?.contentType == "video" && 
-                    <iframe
-                    className="video"
-                    src={`https://www.youtube.com/embed/${extractYouTubeId(
-                    currentPostContent?.content
-                    )}`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    />
-                }
-                {currentPostContent?.contentType == "poll" && <ul className="poll">
-                    {currentPostContent?.content.map((pollOption, i) => (
-                    <li key={i}>
-                        <div className="poll-option no-select-pointer">
-                            <div className="color">
-                                <span className="bodyFont">{pollOption}</span>
-                            </div>
-                            <div className="percent label-color bodyFont caption-size">
-                                <span className="hide">0%</span>
-                            </div>
-                        </div>
-                    </li>         
-                    ))}
-                </ul>}
-                {currentPostContent?.contentType == "link" && <ul className="links bodyFont">
-                    {currentPostContent?.content.map((link, i) => (
-                    <li key={i}>
-                        <a target="_blank" rel='noopener noreferrer' href={link.url}><FontAwesomeIcon icon={faLink}/>{link.name}</a>
-                    </li>         
-                    ))}
-                </ul>}
-            </div>
-            <div className={`actions ${postContent?.length <= 1 ? "hide" : ""} caption-size`}>
-                <button className="button-shape bodyFont" onClick={() => previousPostPart()}>Back</button>
-                <button className="button-shape bodyFont" onClick={() => nextPostPart()}>Next</button>
-            </div>
-        </div>
+        <PostContentView postContent={postContent} />
         <div className="post-bottom bodyFont">
             <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
                 <FontAwesomeIcon className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateFunction(1); UpdateRating(1)}}/>
@@ -252,9 +204,7 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
                 <FontAwesomeIcon className="comment-icon" icon={faComment}/>
                 <span className="bold">{shortenNumber(commentCount) || 0}</span>
             </a>
-            <div className="share option">
-                <FontAwesomeIcon icon={faShare}/>
-            </div>
+            <ShareButton postId={postId} projectId={projectId}/>
         </div>
     </div>
     <PanelOverlay isOpen={editPanelOpen} onClose={() => setEditPanelOpen(false)} panelClass='edit'>
@@ -289,7 +239,7 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
         </div>
         <div className='options'>
             <button className='button-shape' onClick={() => setDeletePanelOpen(false)}>Cancel</button>
-            <button className='button-shape delete-button' disabled={!deleteChecked}>Delete</button>
+            <button className='button-shape delete-button' disabled={!deleteChecked || deleteLoading} onClick={() => DeletePost()}>{deleteLoading ? "Deleting..." : "Delete"}</button>
         </div>
     </PanelOverlay>
     </>

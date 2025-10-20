@@ -61,6 +61,7 @@ ul li {
     overflow: visible;
     white-space: nowrap;
     text-overflow: ellipsis;
+    transition: width 400ms ease;
 }
 
 .poll .poll-option .color span {
@@ -134,6 +135,10 @@ ul li {
 .post-footer .rating:not(.skeleton), .post-bottom .rating:not(.skeleton) {
     background-color: rgba(55, 55, 55, 0.1);
     color: var(--black);
+}
+
+.comments:hover, .share:hover {
+    background-color: var(--shadow);
 }
 
 .rating > * {

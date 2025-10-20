@@ -125,9 +125,19 @@ body {
   color: var(--white);
 }
 
+.button-shape.blue-color {
+  background-color: var(--flamespark-blue);
+  color: var(--white);
+}
+
 .button-shape.green-color {
   background-color: var(--flamespark-green);
   color: var(--white);
+}
+
+.styled-link:not(:hover) {
+  color: var(--black);
+  text-decoration: none;
 }
 
 .skeleton {
@@ -180,6 +190,10 @@ body {
 
 .cursor-default {
   cursor: default;
+}
+
+.no-pointer-events {
+  pointer-events: none;
 }
 
 .reset {

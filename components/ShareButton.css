@@ -1,0 +1,52 @@
+.share-container {
+    position: relative;
+}
+
+.share-container .share-panel {
+    position: absolute;
+    bottom: 100%;
+    left: 0px;
+    background-color: var(--white);
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px var(--shadow);
+    border-radius: 5px;
+    padding: 10px;
+    min-width: max-content;
+    z-index: 5;
+}
+
+/* alignment variants */
+.share-container .share-panel.right {
+    left: 0px;
+}
+
+.share-container .share-panel.left {
+    right: 0px;
+    left: auto;
+}
+
+.share-panel li, .share-panel ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.share-panel ul {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.share-panel li {
+    display: flex;
+    gap: 5px;
+    color: #525252;
+}
+
+.share-panel li:hover {
+    color: var(--black);
+}
+
+.share-panel li span {
+    white-space: nowrap;
+}

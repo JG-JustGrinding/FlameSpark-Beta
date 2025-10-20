@@ -170,7 +170,7 @@ export default function ProjectPreview(){
                     </div>
                     <div className="right">
                         {!isJoinedSet && <button className={`button-shape bodyFont skeleton join-button body-size cursor-default`} disabled>View Project</button>}
-                        {isJoinedSet && <button className={`button-shape bodyFont join-button ${isJoined ? "blue" : "red"} body-size`} onClick={viewOrJoinProject}>{isJoined ? "View Project" : "Join Project"} </button>}
+                        {isJoinedSet && <button className={`button-shape bodyFont join-button ${isJoined ? "blue" : "red"} body-size`} onClick={viewOrJoinProject}>{isJoined ? "View Project" : "Join Project"}</button>}
                     </div>
                 </div>
                 <div className="images">

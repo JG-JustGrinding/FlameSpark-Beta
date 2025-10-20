@@ -1,8 +1,9 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUser } from "@/lib/useUser";
+import { useRouter } from "next/navigation";
 import { faShare, faArrowUp, faArrowDown, faEllipsisH, faTrash, faPaperPlane, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { createComment, shortenNumber } from "@/lib/projectFunctions";
+import { createComment, shortenNumber, getProject, getPost, fetchComments, timeAgo, isUserJoinedOrOwner, getPostRating, getUserRating, ratePost, fetchProjectPageOtherPosts } from "@/lib/projectFunctions";
 import Header from "@/components/Header";
 import "@/styles/PostPage.css";
 import "@/styles/ProjectPost.css";
@@ -12,20 +13,28 @@ import Image from "next/image";
 import MarkdownTextArea from "@/components/MarkdownTextArea";
 import Comment from "@/components/Comment";
 import { useParams } from "next/navigation";
-import { getProject, getPost, fetchComments } from "@/lib/projectFunctions";
 import ErrorComponent from "@/components/ErrorComponent";
 import { supabase } from "@/lib/supabaseClient";
 import { Paginator } from "@/lib/infinitePostFeed";
+import PostContentView from "@/components/PostContentView";
+import OtherPost from "@/components/OtherPost";
+import ShareButton from "@/components/ShareButton";
 
 export default function PostPage() {
     const { id, postId } = useParams();
     const { user, userSet, avatar, username } = useUser();
+    const router = useRouter();
 
     const [post, setPost] = useState(null);
     const [project, setProject] = useState(null);
-    const [comments, setComments] = useState([]);
     const [refetchFilter, setRefetchFilter] = useState(""); // this is for refetching comments when the user submits a comment
     const [fetchError, setFetchError] = useState(false);
+    const [otherPosts, setOtherPosts] = useState([]);
+    const seedRef = useRef(Math.random() * 2 - 1);
+    const seed = seedRef.current;
+
+    const [isJoinedSet, setIsJoinedSet] = useState(false);
+    const [isJoined, setIsJoined] = useState(false);
 
     const [postRating, setPostRating] = useState(0);
     const [userRating, setUserRating] = useState(0);
@@ -58,9 +67,6 @@ export default function PostPage() {
                 {
                     throw new Error("Post does not belong to project");
                 }
-
-                const commentsFetch = await fetchComments(postId, 0, 10, "");
-                setComments(commentsFetch);
             } catch (error) {
                 setFetchError(true);
             }
@@ -77,10 +83,113 @@ export default function PostPage() {
 
         if (!user)
         {
+            setIsJoinedSet(true);
+            setIsJoined(true); // turn "join" button into "view" button
             setCommentInputDisabled(true);
         }
 
+        const check = async () => {
+            if (user != null && id != null && postId != null)
+            {
+                const result = await isUserJoinedOrOwner(user.id, id);
+                setIsJoined(result);
+                setIsJoinedSet(true);
+            }
+        };
+
+      check();
     }, [userSet]);
+
+    useEffect(()=> {
+        const setOtherPagePosts = async () => {
+            try {
+                const posts = await fetchProjectPageOtherPosts(postId, id, 0, 5, seed);
+                
+                setOtherPosts(posts);
+            } catch (error) {
+
+            } finally {
+
+            }
+        };
+
+        setOtherPagePosts();
+    }, []);
+
+    useEffect(() => {
+        async function GetRating() {
+            try {
+                let rating = await getPostRating(postId);
+
+                const userRating = await getUserRating(postId);
+
+                if (userRating == -1)
+                {
+                    rating++;
+                }
+
+                if (userRating == 1)
+                {
+                    rating--;
+                }
+
+                setPostRating(rating);
+
+                setUserRating(userRating);
+
+                setRatingLoading(false);
+            } catch (error) {
+                
+            }
+        }
+
+        GetRating();
+    }, []);
+
+    function UpdateRating(value) {
+        if (!user)
+        {
+            return;
+        }
+
+        if (value == userRating)
+        {
+            setUserRating(0);
+            return;
+        }
+
+        setUserRating(value);
+    }
+
+    async function rateProjectPost(value)
+    {
+        try {
+            await ratePost(postId, user?.id, value);
+        } catch (err) {
+            if (err.notLoggedIn)
+            {
+                window.location.href = "/login";
+            }
+        }
+    }
+
+    const viewOrJoinProject = async () => {
+        if (user == null){
+            router.push(`/project/${id}`);
+            return;
+        }
+        
+        if (!isJoined)
+        {
+            try {
+            await joinProject(user.id, id);
+            } catch (error) {
+
+            }
+        }
+
+        router.push(`/project/${id}`);
+    }
 
     if (fetchError) {
         return <ErrorComponent />
@@ -162,26 +271,24 @@ export default function PostPage() {
 			<Header />
             <main className="main">
                 <div className="back">
-                    <FontAwesomeIcon className="back-button" icon={faArrowLeft}/>
+                    <a href={`/project/${id}`} className="reset">
+                        <FontAwesomeIcon className="back-button reset" icon={faArrowLeft}/>
+                    </a>
                 </div>
                 <div className="content card">
                         <div className="title-date">
                             {post?.title && <h1 className="titleFont reset">{post?.title}</h1>}
-                            <p className="post-date label-color bodyFont reset">{`X Days ago`}</p>
+                            {post?.created_at &&  <p className="post-date label-color bodyFont reset">{timeAgo(post?.created_at)}</p>}
                         </div>
-                        <h2 className="bodyFont reset normal-weight label-color">Post Description</h2>
-                    <div className="post-body">
-
-                    </div>
+                        {post?.description && <h2 className="bodyFont reset normal-weight label-color">{post?.description}</h2>}
+                    <PostContentView postContent={post?.content} defaultStyling={true}/>
                     <div className="post-bottom bodyFont">
                         <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
-                            <FontAwesomeIcon className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateFunction(1); UpdateRating(1)}}/>
+                            <FontAwesomeIcon className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateProjectPost(1); UpdateRating(1)}}/>
                             <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
-                            <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
+                            <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateProjectPost(-1); UpdateRating(-1)}}/>
                         </div>
-                        <div className="share option">
-                            <FontAwesomeIcon icon={faShare}/>
-                        </div>
+                        <ShareButton postId={postId} projectId={id}/>
                     </div>
                     <div className="comments-container">
                         <h3 className="titleFont reset">Comments</h3>
@@ -208,33 +315,24 @@ export default function PostPage() {
                 </div>
                 <div className="side-section">
                     <div className={`project-info card`}>
-                        <div className="project">
-                            <img className="project-icon pfp-shape" src="/default_project_icon.png" alt="Project Icon"></img>
+                        <a href={`/project/${project?.id}`} className="project styled-link">
+                            <img className="project-icon pfp-shape" src={project?.icon} alt="Project Icon"></img>
                             <h3 className={`titleFont full-width reset${project ? "" : " skeleton"}`}>{project?.title || "No Title"}</h3>
-                        </div>
-                        <p className="bodyFont">Project description</p>
-                        <p className="bodyFont reset normal-weight label-color">Tag 1, tag 2</p>
-
-                        <button className="bodyFont button-shape project-action red-color">Join Project</button>
-                    </div>
-                    <div className="other-posts card">
-                        <a href="#" className="other-post">
-                            <div className="project-information">
-                                <img className="project-icon-other pfp-shape" src="/default_project_icon.png" alt="Project Icon"/>
-                                <span className="bodyFont">Other Post Title</span>
-                            </div>
-                            <div className="o-content">
-                                <div className="text">
-                                    <h4 className="titleFont reset">Post Title</h4>
-                                    <p className="bodyFont reset">Post description</p>
-                                </div>
-                                <div className="other-post-content-display">
-                                    <img className="other-post-image" src="https://tse2.mm.bing.net/th/id/OIP.Z73ULgQ422BKGyeUB6GDhAHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Post Image"/>
-                                </div>
-                            </div>
                         </a>
-                        <span className="break"/>
+                        {project?.description && <p className="bodyFont">{project?.description}</p>}
+                        {project?.tags && <p className="bodyFont reset normal-weight label-color">{project?.tags.join(', ')}</p>}
+
+                        {!isJoinedSet && <button className={`button-shape bodyFont skeleton project-action body-size cursor-default`} disabled>View Project</button>}
+                        {isJoinedSet && <button className={`button-shape bodyFont project-action ${isJoined ? "blue-color" : "red-color"} body-size`} onClick={viewOrJoinProject}>{isJoined ? "View Project" : "Join Project"}</button>}
                     </div>
+                    {otherPosts?.length > 0 && <div className="other-posts card">
+                        {otherPosts.map((post, i) => (
+                            <div className="other-post-container" key={i}>
+                                <OtherPost postContent={post.post_content} postId={post.post_id} postTitle={post.post_title} postDescription={post.post_description} projectId={post.project_id} projectTitle={post.project_title} projectIcon={post.project_icon} postDate={post.post_created_at} />
+                                {i <= otherPosts.length - 2 && <span className="break"/>}
+                            </div>
+                        ))}
+                    </div>}
                 </div>
             </main>
 

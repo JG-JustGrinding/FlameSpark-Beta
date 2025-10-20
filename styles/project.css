@@ -158,6 +158,10 @@ h1, img {
     gap: 10px;
 }
 
+.card.no-overflow {
+    overflow-y: visible;
+}
+
 .card::-webkit-scrollbar, .card *::-webkit-scrollbar {
     display: none;
 }
@@ -344,10 +348,6 @@ h1, img {
     display: flex;
     gap: 20px;
     align-items: center;
-}
-
-.comments:hover, .share:hover{
-    background-color: var(--shadow);
 }
 
 .coming-soon-panel {

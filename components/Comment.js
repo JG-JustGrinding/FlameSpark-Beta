@@ -54,6 +54,7 @@ export default function Comment({
     const [replies, setReplies] = useState([]);
     const [hasMoreReplies, setHasMoreReplies] = useState(false);
     const [loadingMoreReplies, setLoadingMoreReplies] = useState(false);
+    const [repliesLoading, setRepliesLoading] = useState(false);
     const replyPage = useRef(0);
     const replyPageCount = 10;
     const [replyCountOverride, setReplyCountOverride] = useState(null);
@@ -116,6 +117,7 @@ export default function Comment({
         replyPage.current = 0;
 
         try {
+            setRepliesLoading(true);
             const count = await fetchReplyCount(id);
 
             setReplyCountOverride(count);
@@ -132,6 +134,8 @@ export default function Comment({
             }
         } catch (error) {
 
+        } finally {
+            setRepliesLoading(false);
         }
     }
 
@@ -315,15 +319,21 @@ export default function Comment({
                     </>
                     }
                 </div> }
-                {repliesOpen && replies?.length > 0 && (
-                    <>
-                    <div className="replies-list" style={{marginTop: replying ? '5px' : '18px', display: "flex", flexDirection: "column", gap: "15px"}}>
-                        {replies.map((comment, idx) => (
-                            <Comment key={idx} id={comment.id} isOwner={user?.id === comment.user_id} posterId={comment.user_id} username={comment.username} avatar={comment.avatar_url || "/profile_icon_colored.svg"} date={comment.created_at} body={comment.content} replyCount={comment.reply_count} user={user} currentUsername={username} currentAvatar={avatar} editCommentFunction={editReply.bind(null, comment)} edited={comment.was_edited} deleteCommentFunction={() => deleteReply(comment)} deleting={comment.deleting} reportCommentFunction={reportReply.bind(null, comment)} removeReportButton={comment.removeReportButton || !user} canReply={false}/>
-                        ))}
-                    {hasMoreReplies && <span className="bodyFont replies-more bold no-select-pointer caption-size" onClick={() => fetchMoreReplies()}>{loadingMoreReplies ? "Loading More..." : "Load More"}</span>}
+                {repliesOpen && (
+                    <div style={{marginTop: replying ? '5px' : '18px', display: 'flex', flexDirection: 'column', gap: '12px'}}>
+                        {repliesLoading && <div className="replies-loading-bar" />}
+
+                        {repliesLoading && replies.length === 0 ? (
+                            <div className="replies-spinner" />
+                        ) : (
+                            <div className="replies-list" style={{display: 'flex', flexDirection: 'column', gap: '15px'}}>
+                                {replies.map((comment, idx) => (
+                                    <Comment key={comment.id || idx} id={comment.id} isOwner={user?.id === comment.user_id} posterId={comment.user_id} username={comment.username} avatar={comment.avatar_url || "/profile_icon_colored.svg"} date={comment.created_at} body={comment.content} replyCount={comment.reply_count} user={user} currentUsername={username} currentAvatar={avatar} editCommentFunction={editReply.bind(null, comment)} edited={comment.was_edited} deleteCommentFunction={() => deleteReply(comment)} deleting={comment.deleting} reportCommentFunction={reportReply.bind(null, comment)} removeReportButton={comment.removeReportButton || !user} canReply={false}/>
+                                ))}
+                                {hasMoreReplies && <span className="bodyFont replies-more bold no-select-pointer caption-size" onClick={() => fetchMoreReplies()}>{loadingMoreReplies ? "Loading..." : "Load More"}</span>}
+                            </div>
+                        )}
                     </div>
-                    </>
                 )}
             </div>
             <PanelOverlay isOpen={editPanelOpen} onClose={() => setEditPanelOpen(false)} panelClass='edit'>

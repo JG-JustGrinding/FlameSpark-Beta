@@ -67,10 +67,10 @@ const fetchPosts = async () => {
     // update buffer synchronously
     postBufferRef.current = [...postBufferRef.current, ...newPosts];
   } catch (error) {
-    console.error("Error fetching posts:", error);
+
   } finally {
     setLoading(false);
-  isLoadingRef.current = false;
+    isLoadingRef.current = false;
   }
 };
 
