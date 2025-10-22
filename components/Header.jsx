@@ -8,6 +8,7 @@ import '../lib/fontawesome'
 import { useUser } from "@/lib/useUser";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faInbox, faUser, faGear, faInfo, faPencil } from '@fortawesome/free-solid-svg-icons'
+import { faBell } from '@fortawesome/free-regular-svg-icons' // Replace with solid bell when user has unread notifications
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 
@@ -118,7 +119,7 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
               {user ? (
                 <>
                 <div className={styles.userSection}>
-                  <FontAwesomeIcon icon={faInbox} className={styles.inbox} />
+                  <FontAwesomeIcon icon={faBell} className={styles.inbox} />
                   <img src={avatar} alt="User Avatar" className={`${styles.pfp} pfp-shape`}
                         onClick={() => {setUserPanelOpen(!userPanelOpen)}}></img>
                 </div>

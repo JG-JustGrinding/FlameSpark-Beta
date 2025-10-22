@@ -144,7 +144,7 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
     async function DeletePost() {
         try {
             setDeleteLoading(true);
-            await deletePost(postId);
+            await deletePost({id: postId, content: postContent });
             window.location.reload();
         } catch (error) {
             setDeleteErrorMessage(error.message || "An error occured.");

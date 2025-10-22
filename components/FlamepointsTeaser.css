@@ -1,0 +1,15 @@
+.flamepoints-teaser{max-width:640px;padding:18px;display:flex;flex-direction:column;gap:16px}
+.header{display:flex;gap:14px;align-items:center}
+.big-icon{font-size:2.6rem;color:var(--flamespark-red)}
+.title{margin:0;font-size:1.5rem}
+.subtitle{margin:0;color:var(--label-color);font-size:0.95rem}
+.body{background:var(--white);padding:12px;border-radius:10px}
+.lead{margin:0 0 12px}
+.benefits{list-style:none;padding:0;margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.benefits li{display:flex;gap:8px;align-items:center}
+.progress-panel{margin-top:8px}
+.progress-info{margin-bottom:8px;color:var(--label-color)}
+.progress-bar{background:#eee;border-radius:999px;height:12px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--flamespark-red),#ffb3b3);transition:width 360ms ease}
+.actions{display:flex;gap:8px;justify-content:flex-end}
+.actions .button-shape{padding:8px 14px}

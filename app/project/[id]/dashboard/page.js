@@ -15,6 +15,8 @@ import ArrayInputField from "@/components/ArrayInputField";
 import PreviewImagesContainer from "@/components/PreviewImagesContainer";
 import PostsChart from "@/components/PostsChart";
 import { formatInterval, getLikeRatio, getProjectAvgPostInterval, getProjectLikeDislikeCounts, getProjectPostCount, getProjectSupporters, getProjectViews, likeRatio, shortenNumber, truncate } from "@/lib/projectFunctions";
+import PanelOverlay from "@/components/PanelOverlay";
+import FlamepointsTeaser from '@/components/FlamepointsTeaser';
 
 export default function ProjectPage(){
     const { id } = useParams();
@@ -75,6 +77,8 @@ export default function ProjectPage(){
     const [showCompleteModal, setShowCompleteModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [deleteConfirmInput, setDeleteConfirmInput] = useState("");
+
+    const [flameSparkTeaserOpen, setFlameSparkTeaserOpen] = useState(false);
 
     // Handler for marking project as complete
     async function handleMarkComplete() {
@@ -567,7 +571,7 @@ export default function ProjectPage(){
                                 <div className="fill"></div>
                             </div>
                             <span className="bodyFont caption-size">0 FlamePoints Until Next Upgrade</span>
-                            <button className="bodyFont button-shape red-color">
+                            <button className="bodyFont button-shape red-color" onClick={() => setFlameSparkTeaserOpen(true)}>
                                 Learn More
                             </button>
                         </div>
@@ -783,7 +787,10 @@ export default function ProjectPage(){
                                 )}
                             </div>
                         </div>
-}
+}                       
+                    <PanelOverlay isOpen={flameSparkTeaserOpen} onClose={() => setFlameSparkTeaserOpen(false)}>
+                        <FlamepointsTeaser projectTitle={project?.title} points={0} nextTierPoints={100} onClose={() => setFlameSparkTeaserOpen(false)} />
+                    </PanelOverlay>
                     </main>
                 </div>
             </div>

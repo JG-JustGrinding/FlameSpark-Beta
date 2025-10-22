@@ -5,7 +5,7 @@ import PrimaryPageLayout from "@/components/PrimaryPageLayout";
 import "@/styles/ProjectPost.css";
 import "@/styles/Home.css";
 import HomePagePost from "@/components/HomePagePost";
-import { fetchHomePagePosts } from "@/lib/projectFunctions";
+import { fetchHomePagePosts, ratePost } from "@/lib/projectFunctions";
 import { Paginator } from "@/lib/infinitePostFeed";
 import { useUser } from "@/lib/useUser";
 
@@ -21,6 +21,18 @@ export default function Home() {
         }
 
         return postType;
+    }
+
+    async function rateProjectPost(post, userId, value)
+    {
+        try {
+            await ratePost(post.post_id, userId, value);
+        } catch (err) {
+            if (err.notLoggedIn)
+            {
+                window.location.href = "/login";
+            }
+        }
     }
 
   return (
@@ -47,7 +59,7 @@ export default function Home() {
                                 </div>
                             }
                 renderItem={(post, idx) => (
-                    <HomePagePost key={idx || post.post_id} postId={post.post_id} className={PostTypeClass(post.post_content[0]?.contentType, post.post_content?.length)} title={post.post_title} description={post.post_description} postContent={post.post_content} projectIcon={post.project_icon} projectName={post.project_title} projectId={post.project_ide || post.project_id} dateCreated={post.post_created_at}></HomePagePost>  
+                    <HomePagePost key={idx || post.post_id} postId={post.post_id} className={PostTypeClass(post.post_content[0]?.contentType, post.post_content?.length)} title={post.post_title} description={post.post_description} postContent={post.post_content} projectIcon={post.project_icon} projectName={post.project_title} projectId={post.project_ide || post.project_id} dateCreated={post.post_created_at} rateFunction={rateProjectPost.bind(null, post, user?.id)}></HomePagePost>  
                 )} />
             </div>
 }
