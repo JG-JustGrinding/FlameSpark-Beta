@@ -1,0 +1,76 @@
+.complete-main-wrapper {
+  background: linear-gradient(270deg, var(--flamespark-red), var(--flamespark-orange), var(--flamespark-orange-accented));
+  background-size: 300% 300%;
+  animation: gradientShift 10s ease infinite;
+  margin: 0;
+  min-height: 100%;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.complete-page {
+    margin-top: 60px;
+    display: flex;
+    min-height: 70%;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.complete-card {
+    max-width: 720px;
+    width: 100%;
+    text-align: center;
+    padding: 28px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px var(--shadow);
+    background: var(--white);
+    display: flex;
+    flex-direction: column;
+}
+
+.complete-icon {
+    font-size: 4.4rem;
+    color: var(--flamespark-green)
+}
+
+.icon-wrap {
+    margin-bottom: 12px
+}
+
+.title {
+    margin: 6px 0 8px
+}
+
+.subtitle {
+    margin: 0 0 12px;
+    color: var(--label-color)
+}
+
+.owner {
+    margin-bottom: 12px
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.actions .button-shape {
+    text-decoration: none;
+}
+
+.note {
+    margin-bottom: 5px;
+}
+
+.error {
+    color: var(--flamespark-red)
+}

@@ -79,6 +79,8 @@ body {
   border: none;
   cursor: pointer;
   font-weight: bold;
+  text-decoration: none;
+  text-align: center;
 }
 
 .input-field {
@@ -133,6 +135,12 @@ body {
 .button-shape.green-color {
   background-color: var(--flamespark-green);
   color: var(--white);
+}
+
+.button-shape.outlined {
+  background-color: transparent;
+  color: var(--black);
+  border: 1px solid var(--black);
 }
 
 .styled-link:not(:hover) {

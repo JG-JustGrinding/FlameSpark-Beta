@@ -1,9 +1,9 @@
 "use client"
 import Header from "@/components/Header";
 import ErrorComponent from "@/components/ErrorComponent"
-import { useState, useEffect } from "react";
-import { getProject, joinProject, leaveProject, ratePost } from "@/lib/projectFunctions";
-import { useParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { getProject, getUser, joinProject, leaveProject, ratePost } from "@/lib/projectFunctions";
+import { useParams, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import '@/lib/fontawesome'
 import { fetchRandomProjects } from "@/lib/projectFunctions";
@@ -21,6 +21,7 @@ import ProjectPost from "@/components/ProjectPost";
 import { Paginator } from "@/lib/infinitePostFeed";
 import CappedInput from "@/components/CappedInput";
 import InfiniteScroll from "@/lib/infinitePostFeed";
+import CompletedProject from "@/components/CompletedProject";
 
 export default function ProjectPage(){
     const [project, setProject] = useState(null);
@@ -36,6 +37,7 @@ export default function ProjectPage(){
     const [creationError, setCreationError] = useState("");
     const [creatingPost, setCreatingPost] = useState(false);
     const [projectActionSet, setProjectActionSet] = useState(false);
+    const [owner, setOwner] = useState(false);
     const [isOwner, setIsOwner] = useState(false);
     const [hasJoined, setHasJoined] = useState(false);
     const [otherProjects, setOtherProjects] = useState([]);
@@ -46,6 +48,9 @@ export default function ProjectPage(){
     const { user, userSet } = useUser();
     const { id } = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const isCompleted = useRef(false);
+    const allowIgnoreComplete = false;
 
     useEffect(() => {
         async function run(){
@@ -55,8 +60,15 @@ export default function ProjectPage(){
             }
 
             try {
+                const { data: isCompletedValue } = await supabase.rpc('is_project_completed', { p_project_id: id });
+                isCompleted.current = isCompletedValue;
                 const value = await getProject(id);
                 setProject(value);
+                const { data: owner, error: ownerError } = await getUser(value?.owner_id);
+
+                if (ownerError) throw ownerError;
+
+                setOwner(owner);
             } catch (error) {
                 setError(true);
             }
@@ -706,6 +718,17 @@ export default function ProjectPage(){
         } catch {
             setIsLeaving(false);
         }
+    }
+
+    const ignoreComplete = searchParams.get("ignore_complete") === "true"
+
+    if (isCompleted.current === true && !(ignoreComplete && allowIgnoreComplete)) {
+        return (
+            <>
+            <Header/>
+            <CompletedProject project={{id, title: project?.title, icon: project?.icon}} creator={{id: project?.owner_id, username: owner?.username, avatar_url: owner?.avatar_url}} messageTitle={project?.completion_message_title} messageBody={project?.completion_message} links={project?.completion_links} allowIgnoreComplete={allowIgnoreComplete}/>
+            </>
+        )
     }
 
     return (

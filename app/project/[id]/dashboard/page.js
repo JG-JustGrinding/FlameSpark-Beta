@@ -9,14 +9,15 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import "@/styles/dashboard.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL, faKey, faFlag, faStar, faEye, faThumbsUp, faHourglass, faPercent, faThumbsDown, faCircle, faCheckCircle, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL, faKey, faFlag, faStar, faEye, faThumbsUp, faHourglass, faPercent, faThumbsDown, faCircle, faCheckCircle, faSpinner, faTrash } from '@fortawesome/free-solid-svg-icons'
 import CappedInput from "@/components/CappedInput";
 import ArrayInputField from "@/components/ArrayInputField";
 import PreviewImagesContainer from "@/components/PreviewImagesContainer";
 import PostsChart from "@/components/PostsChart";
-import { formatInterval, getLikeRatio, getProjectAvgPostInterval, getProjectLikeDislikeCounts, getProjectPostCount, getProjectSupporters, getProjectViews, likeRatio, shortenNumber, truncate } from "@/lib/projectFunctions";
+import { checkURL, formatInterval, getLikeRatio, getProjectAvgPostInterval, getProjectLikeDislikeCounts, getProjectPostCount, getProjectSupporters, getProjectViews, likeRatio, shortenNumber, truncate } from "@/lib/projectFunctions";
 import PanelOverlay from "@/components/PanelOverlay";
 import FlamepointsTeaser from '@/components/FlamepointsTeaser';
+import ProjectCompletePage from "@/components/ProjectComplete";
 
 export default function ProjectPage(){
     const { id } = useParams();
@@ -75,38 +76,89 @@ export default function ProjectPage(){
 
     // Project Status
     const [showCompleteModal, setShowCompleteModal] = useState(false);
+    const [showCompleteLoading, setShowCompleteLoading] = useState(false);
+    const [completeError, setCompleteError] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showDeleteLoading, setShowDeleteLoading] = useState(false);
     const [deleteConfirmInput, setDeleteConfirmInput] = useState("");
+    const [deleteError, setDeleteError] = useState("");
 
     const [flameSparkTeaserOpen, setFlameSparkTeaserOpen] = useState(false);
 
-    // Handler for marking project as complete
+const [completionTitle, setCompletionTitle] = useState("");
+const [completionBody, setCompletionBody] = useState("");
+const [projectLinks, setProjectLinks] = useState([{ text: "", url: "" }]);
+
+    const [projectCompletedSet, setProjectCompletedSet] = useState(false);
+
+const handleLinkChange = (index, field, value) => {
+  const updated = [...projectLinks];
+  updated[index][field] = value;
+  setProjectLinks(updated);
+};
+
+const removeLink = (index) => {
+  setProjectLinks(projectLinks.filter((_, i) => i !== index));
+};
+
     async function handleMarkComplete() {
-        // TODO: Implement Supabase update logic
-        // Example:
-        // await supabase.from('projects').update({ status: 'completed' }).eq('id', id);
-        setShowCompleteModal(false);
-        // Optionally, refresh project data
+        try {
+            setShowCompleteLoading(true);
+
+            let completionLinks = projectLinks.filter(link => link.text.trim() !== "" && link.url.trim() !== "");
+
+            // checklinks
+            await Promise.all(completionLinks.map(async (link) => {
+                const isValid = await checkURL(link.url);
+                if (!isValid) {
+                    throw new Error(`Invalid URL: ${link.url}`);
+                }
+            }));
+
+            const { data, error } = await supabase.from('projects').update(
+                {
+                    is_completed: true,
+                    completion_message_title: completionTitle,
+                    completion_message: completionBody,
+                    completion_links: completionLinks
+                }
+            ).eq('id', id);
+
+            if (error) throw error;
+
+            setProjectCompletedSet(true);
+        } catch (err) {
+            setShowCompleteLoading(false);
+            setCompleteError(err.message || 'An error occurred.');
+        }
     }
 
     // Handler for deleting project
     async function handleDeleteProject() {
-        // TODO: Implement Supabase delete logic
-        // Example:
-        // await supabase.from('projects').delete().eq('id', id);
-    setShowDeleteModal(false);
-    setDeleteConfirmInput("");
-        // Optionally, redirect user after deletion
+        try {
+            setDeleteError("");
+            setShowDeleteLoading(true);
+
+            // Delete project row from Supabase
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Optionally, redirect to the home or explore page after deletion
+            window.location.href = '/';
+        } catch (err) {
+            setShowDeleteLoading(false);
+            setDeleteError(err.message || 'An error occurred while deleting the project.');
+        }
     }
+
     function PushItem(name, icon, itemArray, fullName = undefined) {
         itemArray.push({name, icon, fullName});
     }
 
     PushItem("Details", faPencil, items, "Project Details");
     PushItem("Analytics", faChartBar, items);
-    PushItem("Posts", faLayerGroup, items);
+    //PushItem("Posts", faLayerGroup, items);
 
-    PushItem("Theme", faPaintBrush, unlockableItems);
+    //PushItem("Theme", faPaintBrush, unlockableItems);
     PushItem("To-Do List", faList, unlockableItems);
     PushItem("Stickers", faNoteSticky, unlockableItems);
     PushItem("Reactions", faHeart, unlockableItems);
@@ -121,6 +173,14 @@ export default function ProjectPage(){
     const fetchProject = async () => {
         if (project)
         {
+            return;
+        }
+
+        const { data: isCompleted } = await supabase.rpc('is_project_completed', { p_project_id: id });
+        
+        if (isCompleted)
+        {
+            window.location.href = `/project/${id}`;
             return;
         }
 
@@ -245,6 +305,8 @@ export default function ProjectPage(){
 
     if (notFound) return <ErrorComponent />;
     if (unauthorized) return <Unauthorized />;
+
+    if (projectCompletedSet) return (<ProjectCompletePage />);
 
   const handleCoverChange = (e) => {
     if (coverImage)
@@ -670,7 +732,7 @@ export default function ProjectPage(){
                             <PostsChart projectId={id}/>
                         </div>
                         }
-                        {selectedIndex == 2 && 
+                        {(selectedIndex == 2 && false) && 
                         <div className="content-section posts">
                             <div className="posts-header" style={{display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '24px'}}>
                                 <FontAwesomeIcon icon={faLayerGroup} style={{fontSize: '2.5rem', color: 'var(--flamespark-red)'}} />
@@ -734,34 +796,194 @@ export default function ProjectPage(){
                                             Delete Project
                                         </button>
                                     </div>
-                                    <div style={{marginTop: '32px', textAlign: 'center'}}>
-                                        <span className="bodyFont label-color" style={{fontSize: '0.98rem'}}>
-                                            <strong>Mark as Complete:</strong> This action is <span style={{color: 'var(--flamespark-green)'}}>final</span>. Your project will be locked and cannot be edited further. When your project is completed, a notification will be sent to all of your supporters.<br/>
-                                            <strong>Delete Project:</strong> This action is <span style={{color: 'var(--flamespark-red-accented)'}}>permanent</span> and cannot be undone. All data will be lost.
-                                        </span>
-                                    </div>
                                 </div>                                
                                 {/* Complete Confirmation Modal */}
                                 {showCompleteModal && (
-                                    <div className="modal-overlay" style={{position: 'fixed', top:0, left:0, width:'100vw', height:'100vh', background:'rgba(0,0,0,0.25)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000}}>
-                                        <div className="modal" style={{background:'#fff', borderRadius:'10px', padding:'32px', boxShadow:'0 2px 12px rgba(0,0,0,0.12)', maxWidth:'400px', textAlign:'center'}}>
-                                            <FontAwesomeIcon icon={faCheckCircle} style={{fontSize:'2.5rem', color:'var(--flamespark-green)', marginBottom:'12px'}} />
-                                            <h3 className="titleFont" style={{margin:'0 0 12px'}}>Mark Project as Complete?</h3>
-                                            <span className="bodyFont label-color" style={{fontSize:'1rem'}}>This action is final. You will not be able to edit the project after completion.</span>
-                                            <div style={{marginTop:'24px', display:'flex', gap:'12px', justifyContent:'center'}}>
-                                                <button className="button-shape bodyFont" onClick={() => setShowCompleteModal(false)}>Cancel</button>
-                                                <button className="button-shape bodyFont green-color" onClick={handleMarkComplete}>Confirm</button>
+                                    <div className="modal-overlay" style={{
+                                        position: 'fixed',
+                                        top: 0, left: 0,
+                                        width: '100vw',
+                                        height: '100vh',
+                                        background: 'rgba(0,0,0,0.35)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        zIndex: 1000
+                                    }}>
+                                        <div className="modal bodyFont" style={{
+                                        background: '#fff',
+                                        borderRadius: '12px',
+                                        padding: '36px',
+                                        boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
+                                        width: 'min(1800px, 90vw)',
+                                        maxHeight: '85vh',
+                                        overflowY: 'auto'
+                                        }}>
+                                        {showCompleteLoading ? (
+                                            <div style={{textAlign: 'center', padding: '36px 12px'}}>
+                                                <FontAwesomeIcon icon={faSpinner} spin style={{fontSize: '2.4rem', color: 'var(--flamespark-green)'}} />
+                                                <h2 className="titleFont" style={{ margin: '16px 0 8px', textAlign: 'center' }}>Completing project…</h2>
+                                                <div style={{marginTop: '18px'}}>
+                                                    <button className="button-shape bodyFont" onClick={() => { /* keep modal open during loading */ }} disabled>
+                                                        Please wait...
+                                                    </button>
+                                                </div>
                                             </div>
+                                        ) : (
+                                            <>
+                                            <FontAwesomeIcon icon={faCheckCircle} style={{
+                                                fontSize: '2.5rem',
+                                                color: 'var(--flamespark-green)',
+                                                marginBottom: '16px',
+                                                width: '100%'
+                                            }} />
+                                            <h2 className="titleFont" style={{ margin: '0 0 8px', textAlign: 'center' }}>Complete Project</h2>
+                                            <p className="label-color" style={{ fontSize: '1rem', textAlign: 'center', marginBottom: '24px' }}>
+                                                Finalize your project and share the completion with your supporters!
+                                            </p>
+
+                                            {/* Completion Message */}
+                                            <div style={{ marginBottom: '24px' }}>
+                                                <label className="label-color" style={{ display: 'block', marginBottom: '6px' }}>Completion Message Title</label>
+                                                <input
+                                                type="text"
+                                                placeholder="e.g. Thank You Everyone!"
+                                                className="input-field"
+                                                value={completionTitle}
+                                                onChange={(e) => setCompletionTitle(e.target.value)}
+                                                style={{
+                                                    width: '100%',
+                                                    padding: '10px',
+                                                    borderRadius: '6px',
+                                                    border: '1px solid #ccc'
+                                                }}
+                                                />
+                                            </div>
+
+                                            <div style={{ marginBottom: '24px' }}>
+                                                <label className="label-color" style={{ display: 'block', marginBottom: '6px' }}>Completion Message Body</label>
+                                                <textarea
+                                                placeholder="Write a message to your supporters..."
+                                                className="input-field"
+                                                rows={4}
+                                                value={completionBody}
+                                                onChange={(e) => setCompletionBody(e.target.value)}
+                                                style={{
+                                                    width: '100%',
+                                                    padding: '10px',
+                                                    borderRadius: '6px',
+                                                    border: '1px solid #ccc',
+                                                    resize: 'vertical'
+                                                }}
+                                                />
+                                            </div>
+
+                                            {/* Optional Links */}
+                                            <div style={{ marginBottom: '18px' }}>
+                                                <label className="label-color" style={{ display: 'block', marginBottom: '10px' }}>
+                                                Optional Links (View / Download / Purchase)
+                                                </label>
+                                                {projectLinks.map((link, index) => (
+                                                <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                                                    <input
+                                                    type="text"
+                                                    placeholder="Link Text"
+                                                    value={link.text}
+                                                    onChange={(e) => handleLinkChange(index, 'text', e.target.value)}
+                                                    className="input-field"
+                                                    style={{ flex: '0 0 35%', padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
+                                                    />
+                                                    <input
+                                                    type="text"
+                                                    placeholder="https://..."
+                                                    value={link.url}
+                                                    onChange={(e) => handleLinkChange(index, 'url', e.target.value)}
+                                                    className="input-field"
+                                                    style={{ flex: '1', padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
+                                                    />
+                                                    <button
+                                                    onClick={() => removeLink(index)}
+                                                    style={{
+                                                        border: 'none',
+                                                        background: 'transparent',
+                                                        color: 'var(--flamespark-red-accented)',
+                                                        fontSize: '1.1rem',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                    >
+                                                    ×
+                                                    </button>
+                                                </div>
+                                                ))}
+                                                {projectLinks.length < 4 && (
+                                                <button
+                                                    className="button-shape bodyFont"
+                                                    style={{
+                                                    background: '#f5f5f5',
+                                                    color: 'var(--flamespark-red)',
+                                                    fontSize: '0.95rem',
+                                                    padding: '6px 12px',
+                                                    marginTop: '4px'
+                                                    }}
+                                                    onClick={() => setProjectLinks([...projectLinks, { text: '', url: '' }])}
+                                                >
+                                                    + Add Link
+                                                </button>
+                                                )}
+                                            </div>
+
+                                            <div style={{marginTop: '0px', textAlign: 'center'}}>
+                                                <span className="bodyFont label-color" style={{fontSize: '0.98rem'}}>
+                                                    <strong>WARNING:</strong> This action is <span style={{color: 'var(--flamespark-green)'}}>final</span>. Your project will be locked and cannot be edited further. When your project is completed, a notification will be sent to all of your supporters.<br/>
+                                                </span>
+                                            </div>
+
+                                            {completeError && (<p className="bodyFont error-message" style={{marginTop: '12px'}}>{completeError}</p>)}
+
+                                            {/* Buttons */}
+                                            <div style={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                gap: '12px',
+                                                marginTop: '24px'
+                                            }}>
+                                                <button
+                                                className="button-shape bodyFont"
+                                                onClick={() => setShowCompleteModal(false)}
+                                                >
+                                                Cancel
+                                                </button>
+                                                <button
+                                                className="button-shape bodyFont green-color"
+                                                onClick={handleMarkComplete}
+                                                disabled={!completionTitle || !completionBody}
+                                                >
+                                                Complete Project
+                                                </button>
+                                            </div>
+                                            </>
+                                        )}
                                         </div>
                                     </div>
-                                )}
+                                    )}
                                 {/* Delete Confirmation Modal */}
                                 {showDeleteModal && (
                                     <div className="modal-overlay" style={{position: 'fixed', top:0, left:0, width:'100vw', height:'100vh', background:'rgba(0,0,0,0.25)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000}}>
                                         <div className="modal" style={{background:'#fff', borderRadius:'10px', padding:'32px', boxShadow:'0 2px 12px rgba(0,0,0,0.12)', maxWidth:'400px', textAlign:'center'}}>
+                                        {showDeleteLoading ? (
+                                            <div style={{textAlign: 'center', padding: '24px'}}>
+                                                <FontAwesomeIcon icon={faSpinner} spin style={{fontSize: '2.2rem', color: 'var(--flamespark-red-accented)'}} />
+                                                <h3 className="titleFont" style={{margin: '12px 0'}}>Deleting project…</h3>
+                                                <p className="bodyFont label-color" style={{fontSize: '0.98rem'}}>Deleting project and associated data...</p>
+                                                <div style={{marginTop: '16px'}}>
+                                                    <button className="button-shape bodyFont" disabled>Please wait...</button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <>
                                             <FontAwesomeIcon icon={faTrash} style={{fontSize:'2.5rem', color:'var(--flamespark-red-accented)', marginBottom:'12px'}} />
                                             <h3 className="titleFont" style={{margin:'0 0 12px'}}>Delete Project?</h3>
-                                            <span className="bodyFont label-color" style={{fontSize:'1rem'}}>This action is permanent and cannot be undone. All project data will be lost.</span>
+                                            <span className="bodyFont label-color" style={{fontSize:'1rem'}}><strong>WARNING:</strong> This action is <span style={{color: 'var(--flamespark-red-accented)'}}>permanent</span> and cannot be undone. All project data will be lost.</span>
                                             <div style={{marginTop:'24px', marginBottom:'12px', textAlign:'left'}}>
                                                 <label htmlFor="delete-confirm-input" className="bodyFont label-color" style={{fontSize:'0.98rem', display:'block', marginBottom:'8px'}}>Type <strong>{project?.title}</strong> to confirm:</label>
                                                 <input 
@@ -774,6 +996,7 @@ export default function ProjectPage(){
                                                     autoComplete="off"
                                                 />
                                             </div>
+                                            {deleteError && (<p className="bodyFont error-message" style={{marginTop: '8px'}}>{deleteError}</p>)}
                                             <div style={{marginTop:'12px', display:'flex', gap:'12px', justifyContent:'center'}}>
                                                 <button className="button-shape bodyFont" onClick={() => { setShowDeleteModal(false); setDeleteConfirmInput(""); }}>Cancel</button>
                                                 <button 
@@ -782,6 +1005,8 @@ export default function ProjectPage(){
                                                     disabled={deleteConfirmInput !== project?.title}
                                                 >Delete</button>
                                             </div>
+                                            </>
+                                        )}
                                         </div>
                                     </div>
                                 )}

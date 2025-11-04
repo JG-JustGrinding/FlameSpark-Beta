@@ -375,3 +375,7 @@ button:disabled {
   background: var(--flamespark-green);
   animation: pulse-glow-green 2.5s infinite;
 }
+
+.modal::-webkit-scrollbar{
+  display: none;
+}
