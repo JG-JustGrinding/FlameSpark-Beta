@@ -162,7 +162,7 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
                     <div className="title-desc">
                         <div className="title-date">
                             {postTitle && <span className="post-title titleFont header-size">{postTitle}</span>}
-                            <span className="post-date label-color bodyFont">{`${dateDifference}${wasEdited ? " (edited)" : ""}`}</span>
+                            <span className="post-date label-color bodyFont">{`${dateDifference}${wasEdited ? "" : ""}`}</span>
                         </div>
                         <span className="post-title bodyFont body-size label-color reset">{postDescription}</span>
                     </div>

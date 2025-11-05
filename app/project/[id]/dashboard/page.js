@@ -14,7 +14,7 @@ import CappedInput from "@/components/CappedInput";
 import ArrayInputField from "@/components/ArrayInputField";
 import PreviewImagesContainer from "@/components/PreviewImagesContainer";
 import PostsChart from "@/components/PostsChart";
-import { checkURL, formatInterval, getLikeRatio, getProjectAvgPostInterval, getProjectLikeDislikeCounts, getProjectPostCount, getProjectSupporters, getProjectViews, likeRatio, shortenNumber, truncate } from "@/lib/projectFunctions";
+import { checkURL, deleteImageFromPublicURL, deletePost, formatInterval, getLikeRatio, getProjectAvgPostInterval, getProjectLikeDislikeCounts, getProjectPostCount, getProjectSupporters, getProjectViews, likeRatio, shortenNumber, truncate } from "@/lib/projectFunctions";
 import PanelOverlay from "@/components/PanelOverlay";
 import FlamepointsTeaser from '@/components/FlamepointsTeaser';
 import ProjectCompletePage from "@/components/ProjectComplete";
@@ -139,10 +139,48 @@ const removeLink = (index) => {
             setDeleteError("");
             setShowDeleteLoading(true);
 
-            // Delete project row from Supabase
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Delete project cover and icon
+            await deleteImageFromPublicURL(project?.cover_image, 'project-covers');
+            await deleteImageFromPublicURL(project?.icon, 'project-icons');
 
-            // Optionally, redirect to the home or explore page after deletion
+            // Get project media
+            const { data: mediaData, error: mediaError } = await supabase
+                .from("project_media")
+                .select("id, url")
+                .eq("project_id", id);
+
+            if (mediaError) throw mediaError;
+
+            // Delete project media from storage
+            if (mediaData && mediaData.length > 0) {
+                for (const media of mediaData) {
+                    await deleteImageFromPublicURL(media.url, 'project-media');
+                }
+            }
+
+            // Delete project media entries from table
+            await supabase.from("project_media").delete().eq("project_id", id);
+
+            // Get project posts
+            const { data: postsData, error: postsError } = await supabase
+                .from("posts")
+                .select("*")
+                .eq("project_id", id);
+
+            if (postsError) throw postsError;
+
+            // Delete project posts
+            if (postsData && postsData.length > 0) {
+                for (const post of postsData) {
+                    await deletePost(post);
+                }
+            }
+
+            // Finally, delete the project
+            const { error: deleteError } = await supabase.from('projects').delete().eq('id', id);
+            if (deleteError) throw deleteError;
+
+            // Redirect
             window.location.href = '/';
         } catch (err) {
             setShowDeleteLoading(false);

@@ -83,8 +83,6 @@ export default function ProjectPage(){
             const { error } = await supabase.rpc('log_project_view', {
                 p_project_id: id,
             });
-
-            if (error) console.error('Error logging view:', error);
         };
 
         run();
