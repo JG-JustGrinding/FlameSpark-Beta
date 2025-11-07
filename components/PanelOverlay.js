@@ -4,7 +4,7 @@ import '@/lib/fontawesome'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 
-export default function PanelOverlay({ isOpen, onClose, children, panelClass = "" }) {
+export default function PanelOverlay({ isOpen, onClose, children, disableClose = false, panelClass = "" }) {
   // Close on ESC key
   useEffect(() => {
     const handleEsc = (e) => {
@@ -22,7 +22,7 @@ export default function PanelOverlay({ isOpen, onClose, children, panelClass = "
     <div className="overlay">
       <div className="overlay-background" onClick={onClose}></div>
       <div className={`overlay-panel bodyFont${panelClass ? " " + panelClass : ""}`}>
-        <FontAwesomeIcon icon={faCircleXmark} className="overlay-close no-select-pointer" onClick={onClose}/>
+        {!disableClose && <FontAwesomeIcon icon={faCircleXmark} className="overlay-close no-select-pointer" onClick={onClose}/>}
         {children}
       </div>
     </div>

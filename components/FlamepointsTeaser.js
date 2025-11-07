@@ -1,38 +1,33 @@
 import React from 'react';
 import './FlamepointsTeaser.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFireFlameCurved, faStar, faUsers, faRoad, faComments } from '@fortawesome/free-solid-svg-icons';
+import { faFireFlameCurved, faStar, faUsers, faRoad, faComments, faList, faGem } from '@fortawesome/free-solid-svg-icons';
 
 export default function FlamepointsTeaser({ projectTitle = '', points = 0, nextTierPoints = 100, onClose = () => {} }) {
     const remaining = Math.max(0, nextTierPoints - (points || 0));
 
     return (
         <div className="flamepoints-teaser">
-            <div className="header">
+            <div className="points-header">
                 <FontAwesomeIcon icon={faFireFlameCurved} className="big-icon" />
                 <div className="title-block">
-                    <h2 className="title">FlamePoints</h2>
-                    <p className="subtitle">Award points to projects to unlock exclusive features and community perks.</p>
+                    <h2 className="points-teaser-title">FlamePoints</h2>
+                    <p className="subtitle">Award points to projects to unlock extra features and community perks.</p>
                 </div>
             </div>
 
             <div className="body">
-                <p className="lead">Give support to {projectTitle ? `"${projectTitle}"` : 'this project'} — FlamePoints help unlock features like:</p>
+                <p className="lead">FlamePoints are points that supporters can give that help projects unlock amazing new features!</p>
                 <ul className="benefits">
-                    <li><FontAwesomeIcon icon={faRoad} /> Timeline (project history & milestones)</li>
-                    <li><FontAwesomeIcon icon={faUsers} /> Community Space (project-specific discussions)</li>
-                    <li><FontAwesomeIcon icon={faComments} /> Enhanced Comments & Reactions</li>
-                    <li><FontAwesomeIcon icon={faStar} /> Stickers & Theme Unlocks</li>
+                    <li><FontAwesomeIcon icon={faStar} /> Stickers & Themes</li>
+                    <li><FontAwesomeIcon icon={faList} /> To-Do List & Task Manager</li>
+                    <li><FontAwesomeIcon icon={faRoad} /> Customizable Timeline</li>
+                    <li><FontAwesomeIcon icon={faComments} /> Reactions & Enhanced Comments</li>
+                    <li><FontAwesomeIcon icon={faUsers} /> Community Space (Project chat & discussion spaces)</li>
+                    <li><FontAwesomeIcon icon={faGem} /> & Much More!</li>
                 </ul>
 
-                <div className="progress-panel">
-                    <div className="progress-info bodyFont">{points || 0} FlamePoints · {remaining} until next upgrade</div>
-                    <div className="progress-bar" aria-hidden>
-                        <div className="progress-fill" style={{ width: `${Math.min(100, ((points||0) / nextTierPoints) * 100)}%` }} />
-                    </div>
-                </div>
-
-                <p className="body caption-size">Anyone can award FlamePoints — they're a community signal. As the project earns more points it unlocks features that help collaborators connect and showcase progress.</p>
+                <p className="body caption-size label-color bold">FlamePoints are a way for supporters to recognize and reward the efforts of project creators. As the project earns more points, it unlocks more and more features that enhance both the creator's and supporters' experience!</p>
             </div>
 
             <div className="actions">

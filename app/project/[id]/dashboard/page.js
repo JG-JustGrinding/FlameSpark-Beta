@@ -9,7 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import "@/styles/dashboard.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL, faKey, faFlag, faStar, faEye, faThumbsUp, faHourglass, faPercent, faThumbsDown, faCircle, faCheckCircle, faSpinner, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL, faKey, faFlag, faStar, faEye, faThumbsUp, faHourglass, faPercent, faThumbsDown, faCircle, faCheckCircle, faSpinner, faTrash, faTimeline } from '@fortawesome/free-solid-svg-icons'
 import CappedInput from "@/components/CappedInput";
 import ArrayInputField from "@/components/ArrayInputField";
 import PreviewImagesContainer from "@/components/PreviewImagesContainer";
@@ -115,6 +115,8 @@ const removeLink = (index) => {
                 }
             }));
 
+            await new Promise(resolve => setTimeout(resolve, 500)); // small delay for UX
+
             const { data, error } = await supabase.from('projects').update(
                 {
                     is_completed: true,
@@ -180,6 +182,8 @@ const removeLink = (index) => {
             const { error: deleteError } = await supabase.from('projects').delete().eq('id', id);
             if (deleteError) throw deleteError;
 
+            await new Promise(resolve => setTimeout(resolve, 500)); // small delay for UX
+
             // Redirect
             window.location.href = '/';
         } catch (err) {
@@ -198,7 +202,7 @@ const removeLink = (index) => {
 
     //PushItem("Theme", faPaintBrush, unlockableItems);
     PushItem("To-Do List", faList, unlockableItems);
-    PushItem("Stickers", faNoteSticky, unlockableItems);
+    PushItem("Timeline", faTimeline, unlockableItems);
     PushItem("Reactions", faHeart, unlockableItems);
     PushItem("Community", faGlobe, unlockableItems);
 
@@ -837,26 +841,8 @@ const removeLink = (index) => {
                                 </div>                                
                                 {/* Complete Confirmation Modal */}
                                 {showCompleteModal && (
-                                    <div className="modal-overlay" style={{
-                                        position: 'fixed',
-                                        top: 0, left: 0,
-                                        width: '100vw',
-                                        height: '100vh',
-                                        background: 'rgba(0,0,0,0.35)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        zIndex: 1000
-                                    }}>
-                                        <div className="modal bodyFont" style={{
-                                        background: '#fff',
-                                        borderRadius: '12px',
-                                        padding: '36px',
-                                        boxShadow: '0 2px 12px rgba(0,0,0,0.12)',
-                                        width: 'min(1800px, 90vw)',
-                                        maxHeight: '85vh',
-                                        overflowY: 'auto'
-                                        }}>
+                                    <PanelOverlay isOpen={showCompleteModal} disableClose={showCompleteLoading} onClose={() => { if (!showCompleteLoading) { setShowCompleteModal(false); setCompleteError(""); } }}>
+
                                         {showCompleteLoading ? (
                                             <div style={{textAlign: 'center', padding: '36px 12px'}}>
                                                 <FontAwesomeIcon icon={faSpinner} spin style={{fontSize: '2.4rem', color: 'var(--flamespark-green)'}} />
@@ -1001,53 +987,48 @@ const removeLink = (index) => {
                                             </div>
                                             </>
                                         )}
-                                        </div>
-                                    </div>
+                                    </PanelOverlay>
                                     )}
                                 {/* Delete Confirmation Modal */}
-                                {showDeleteModal && (
-                                    <div className="modal-overlay" style={{position: 'fixed', top:0, left:0, width:'100vw', height:'100vh', background:'rgba(0,0,0,0.25)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000}}>
-                                        <div className="modal" style={{background:'#fff', borderRadius:'10px', padding:'32px', boxShadow:'0 2px 12px rgba(0,0,0,0.12)', maxWidth:'400px', textAlign:'center'}}>
-                                        {showDeleteLoading ? (
-                                            <div style={{textAlign: 'center', padding: '24px'}}>
-                                                <FontAwesomeIcon icon={faSpinner} spin style={{fontSize: '2.2rem', color: 'var(--flamespark-red-accented)'}} />
-                                                <h3 className="titleFont" style={{margin: '12px 0'}}>Deleting project…</h3>
-                                                <p className="bodyFont label-color" style={{fontSize: '0.98rem'}}>Deleting project and associated data...</p>
-                                                <div style={{marginTop: '16px'}}>
-                                                    <button className="button-shape bodyFont" disabled>Please wait...</button>
-                                                </div>
+                                <PanelOverlay isOpen={showDeleteModal} disableClose={showDeleteLoading} onClose={() => { if (!showDeleteLoading) { setShowDeleteModal(false); setDeleteConfirmInput(""); } }}>
+                                    {showDeleteLoading ? (
+                                        <div style={{textAlign: 'center', padding: '24px'}}>
+                                            <FontAwesomeIcon icon={faSpinner} spin style={{fontSize: '2.2rem', color: 'var(--flamespark-red-accented)'}} />
+                                            <h3 className="titleFont" style={{margin: '12px 0'}}>Deleting project…</h3>
+                                            <p className="bodyFont label-color" style={{fontSize: '0.98rem'}}>Deleting project and associated data...</p>
+                                            <div style={{marginTop: '16px'}}>
+                                                <button className="button-shape bodyFont" disabled>Please wait...</button>
                                             </div>
-                                        ) : (
-                                            <>
-                                            <FontAwesomeIcon icon={faTrash} style={{fontSize:'2.5rem', color:'var(--flamespark-red-accented)', marginBottom:'12px'}} />
-                                            <h3 className="titleFont" style={{margin:'0 0 12px'}}>Delete Project?</h3>
-                                            <span className="bodyFont label-color" style={{fontSize:'1rem'}}><strong>WARNING:</strong> This action is <span style={{color: 'var(--flamespark-red-accented)'}}>permanent</span> and cannot be undone. All project data will be lost.</span>
-                                            <div style={{marginTop:'24px', marginBottom:'12px', textAlign:'left'}}>
-                                                <label htmlFor="delete-confirm-input" className="bodyFont label-color" style={{fontSize:'0.98rem', display:'block', marginBottom:'8px'}}>Type <strong>{project?.title}</strong> to confirm:</label>
-                                                <input 
-                                                    id="delete-confirm-input"
-                                                    type="text"
-                                                    value={deleteConfirmInput}
-                                                    onChange={e => setDeleteConfirmInput(e.target.value)}
-                                                    className="bodyFont input-field"
-                                                    style={{width:'100%', padding:'10px', borderRadius:'6px', border:'1px solid #ccc', fontSize:'1rem'}}
-                                                    autoComplete="off"
-                                                />
-                                            </div>
-                                            {deleteError && (<p className="bodyFont error-message" style={{marginTop: '8px'}}>{deleteError}</p>)}
-                                            <div style={{marginTop:'12px', display:'flex', gap:'12px', justifyContent:'center'}}>
-                                                <button className="button-shape bodyFont" onClick={() => { setShowDeleteModal(false); setDeleteConfirmInput(""); }}>Cancel</button>
-                                                <button 
-                                                    className="button-shape bodyFont red-color-accented" 
-                                                    onClick={handleDeleteProject}
-                                                    disabled={deleteConfirmInput !== project?.title}
-                                                >Delete</button>
-                                            </div>
-                                            </>
-                                        )}
                                         </div>
-                                    </div>
-                                )}
+                                    ) : (
+                                        <div style={{textAlign: 'center', padding: '24px'}}>
+                                        <FontAwesomeIcon icon={faTrash} style={{fontSize:'2.5rem', color:'var(--flamespark-red-accented)', marginBottom:'12px'}} />
+                                        <h3 className="titleFont" style={{margin:'0 0 12px'}}>Delete Project?</h3>
+                                        <span className="bodyFont label-color" style={{fontSize:'1rem'}}><strong>WARNING:</strong> This action is <span style={{color: 'var(--flamespark-red-accented)'}}>permanent</span> and cannot be undone. All project data will be lost.</span>
+                                        <div style={{marginTop:'24px', marginBottom:'12px', textAlign:'left'}}>
+                                            <label htmlFor="delete-confirm-input" className="bodyFont label-color" style={{fontSize:'0.98rem', display:'block', marginBottom:'8px'}}>Type <strong>{project?.title}</strong> to confirm:</label>
+                                            <input 
+                                                id="delete-confirm-input"
+                                                type="text"
+                                                value={deleteConfirmInput}
+                                                onChange={e => setDeleteConfirmInput(e.target.value)}
+                                                className="bodyFont input-field"
+                                                style={{width:'100%', padding:'10px', borderRadius:'6px', border:'1px solid #ccc', fontSize:'1rem'}}
+                                                autoComplete="off"
+                                            />
+                                        </div>
+                                        {deleteError && (<p className="bodyFont error-message" style={{marginTop: '8px'}}>{deleteError}</p>)}
+                                        <div style={{marginTop:'12px', display:'flex', gap:'12px', justifyContent:'center'}}>
+                                            <button className="button-shape bodyFont" onClick={() => { setShowDeleteModal(false); setDeleteConfirmInput(""); }}>Cancel</button>
+                                            <button 
+                                                className="button-shape bodyFont red-color-accented" 
+                                                onClick={handleDeleteProject}
+                                                disabled={deleteConfirmInput !== project?.title}
+                                            >Delete</button>
+                                        </div>
+                                        </div>
+                                    )}
+                                </PanelOverlay>
                             </div>
                         </div>
 }                       
