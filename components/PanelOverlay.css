@@ -27,7 +27,7 @@
   max-width: 90%;
 
   max-height: 100%;
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: auto;
 
   /* Slide down animation

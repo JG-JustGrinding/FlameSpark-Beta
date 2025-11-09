@@ -9,7 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import "@/styles/dashboard.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL, faKey, faFlag, faStar, faEye, faThumbsUp, faHourglass, faPercent, faThumbsDown, faCircle, faCheckCircle, faSpinner, faTrash, faTimeline } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL, faKey, faFlag, faStar, faEye, faThumbsUp, faHourglass, faPercent, faThumbsDown, faCircle, faCheckCircle, faSpinner, faTrash, faTimeline, faFire } from '@fortawesome/free-solid-svg-icons'
 import CappedInput from "@/components/CappedInput";
 import ArrayInputField from "@/components/ArrayInputField";
 import PreviewImagesContainer from "@/components/PreviewImagesContainer";
@@ -18,6 +18,7 @@ import { checkURL, deleteImageFromPublicURL, deletePost, formatInterval, getLike
 import PanelOverlay from "@/components/PanelOverlay";
 import FlamepointsTeaser from '@/components/FlamepointsTeaser';
 import ProjectCompletePage from "@/components/ProjectComplete";
+import SimpleLoadingGraphic from "@/components/SimpleLoadingGraphic";
 
 export default function ProjectPage(){
     const { id } = useParams();
@@ -42,6 +43,8 @@ export default function ProjectPage(){
     const [coverImage, setCoverImage] = useState(null);
     const [iconImage, setIconImage] = useState(null);
     const [previewImages, setPreviewImages] = useState([]);
+
+    const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
     const [coverUpload, setCoverUpload] = useState(null);
     const [iconUpload, setIconUpload] = useState(null);
@@ -213,7 +216,7 @@ const removeLink = (index) => {
 
     useEffect(() => {
     const fetchProject = async () => {
-        if (project)
+        if (project || !userSet)
         {
             return;
         }
@@ -226,7 +229,6 @@ const removeLink = (index) => {
             return;
         }
 
-      setLoading(true);
       // fetch project by ID
       const { data: projectData, error } = await supabase
         .from("projects")
@@ -250,15 +252,13 @@ const removeLink = (index) => {
       }
 
       // check authorization
-      if (userSet)
-      {
+
         if (!user || user.id !== projectData.owner_id) {
             setUnauthorized(true);
             setProject(projectData);
             setLoading(false);
             return;
         }
-      }
 
       setProject(projectData);
 
@@ -323,6 +323,7 @@ const removeLink = (index) => {
     const handleTabClick = (index) => {
         setSelectedIndex(index);
         router.replace(`?tab=${index}`, { scroll: false });
+        setMobileSidebarOpen(false);
     };
 
   useEffect(() => {
@@ -341,8 +342,7 @@ const removeLink = (index) => {
   }, [ projectTitle, projectDescription, projectTagline, projectTags ]);
 
     if (loading || !userSet) return (
-        <>
-        </>
+        <SimpleLoadingGraphic />
     )
 
     if (notFound) return <ErrorComponent />;
@@ -628,12 +628,12 @@ const removeLink = (index) => {
     return (
         <>
             <div className="container">
-                <aside className="sidebar bodyFont">
+                <aside className={`sidebar bodyFont ${mobileSidebarOpen ? "" : "closed"}`}>
                     <ul>
                         <li className="project-display">
                             <a href={`/project/${project?.id}`}>
                                 <img className="pfp-shape" src={project?.icon} alt="Project icon"/>
-                                <h2 className="reset titleFont">{project?.title}</h2>
+                                <h2 className="reset titleFont mobile-hide">{project?.title}</h2>
                             </a>
                         </li>
                         
@@ -652,7 +652,7 @@ const removeLink = (index) => {
                             <li key={index} className={`item ${selectedIndex == (index + items.length) ? "selected" : ""}`} onClick={() => {handleTabClick(index + items.length)}}>
                                 <FontAwesomeIcon icon={item.icon} />
                                 <span>{item.name}</span>
-                                <FontAwesomeIcon className="lock" icon={faLock} />
+                                <FontAwesomeIcon className="lock mobile-hide" icon={faLock} />
                             </li>
                         ))}
 
@@ -665,7 +665,7 @@ const removeLink = (index) => {
 
                         <li className="line-break"><span/></li>
 
-                        <div className="flamepoints-display">
+                        <div className="flamepoints-display mobile-hide">
                             <div className="points-title bodyFont">
                                 <FontAwesomeIcon icon={faFireFlameCurved} className="icon"/>
                                 <span>0 FlamePoints</span>
@@ -679,10 +679,17 @@ const removeLink = (index) => {
                                 Learn More
                             </button>
                         </div>
+
+                        <li style={{color: "var(--flamespark-red)"}} className={`item mobile-show`} onClick={() => {setFlameSparkTeaserOpen(true)}}>
+                        <FontAwesomeIcon icon={faFireFlameCurved} />
+                        </li>
                     </ul>
                 </aside>
+                {mobileSidebarOpen && (
+                    <div className="mobile-sidebar-backdrop" onClick={() => setMobileSidebarOpen(false)} />
+                )}
                 <div className="container-content">
-                    <Header isDashboardHeader={true} />
+                    <Header isDashboardHeader={true} project={project} onOpenMobileMenu={() => setMobileSidebarOpen(!mobileSidebarOpen)} />
 
                     <main className="main-content">
                         {selectedIndex == 0 && 
@@ -695,12 +702,12 @@ const removeLink = (index) => {
                                 </div>
                             </div>
                             <div className="section-container details-container">
-                                <CappedInput value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} maxLength={30} label="Project Title" id="project-title"></CappedInput>
-                                <CappedInput value={projectTagline} onChange={(e) => setProjectTagline(e.target.value)} maxLength={75} label="Project Tagline" id="project-tagline"></CappedInput>
-                                <CappedInput value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} maxLength={1500} isTextArea={true} label="Project Description" id="project-description"></CappedInput>
-                                <ArrayInputField id="project-tags" array={projectTags} setArray={setProjectTags} label="Project Tags (Max maxArrayCount)" maxArrayCount={5}></ArrayInputField>
+                                <CappedInput disabled={project?.is_completed} value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} maxLength={30} label="Project Title" id="project-title"></CappedInput>
+                                <CappedInput disabled={project?.is_completed} value={projectTagline} onChange={(e) => setProjectTagline(e.target.value)} maxLength={75} label="Project Tagline" id="project-tagline"></CappedInput>
+                                <CappedInput disabled={project?.is_completed} value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} maxLength={1500} isTextArea={true} label="Project Description" id="project-description"></CappedInput>
+                                <ArrayInputField disabled={project?.is_completed} id="project-tags" array={projectTags} setArray={setProjectTags} label={project?.is_completed ? `Project Tags` : `Project Tags (Max ${5})`} maxArrayCount={5}></ArrayInputField>
                                 {projectDetailsError && <p className="bodyFont error-message">{projectDetailsError}</p>}
-                                {detailsUpdatePending && <div className="optionsDiv">
+                                {(detailsUpdatePending && !project?.is_completed) && <div className="optionsDiv">
                                     <button className="cancel button-shape bodyFont" disabled={detailsLoading} onClick={() => resetProjectDetails()}>Cancel</button>
                                     <button className="button-shape bodyFont red-color" onClick={() => updateProjectDetails()} disabled={detailsLoading}>{detailsLoading ? "Saving..." : "Save"}</button>
                                 </div>}
@@ -710,9 +717,9 @@ const removeLink = (index) => {
                                 <span className="bodyFont">Cover Image</span>
                                 <div className="fileAndImage cover-image">
                                     <img src={coverImage || project?.cover_image} className="sixteennine"/>
-                                    <input type="file" accept="image/*" className="bodyFont input-field" onChange={handleCoverChange} ref={coverImageInputRef} />
+                                    <input disabled={project?.is_completed} type="file" accept="image/*" className="bodyFont input-field" onChange={handleCoverChange} ref={coverImageInputRef} />
                                 </div>
-                                {coverImage && <div className="optionsDiv">
+                                {(coverImage && !project?.is_completed) && <div className="optionsDiv">
                                     <button className="cancel button-shape bodyFont" disabled={coverImageLoading} onClick={() => removeCoverImage()}>Cancel</button>
                                     <button className="button-shape bodyFont red-color" onClick={() => updateCoverImage()} disabled={coverImageLoading}>{coverImageLoading ? "Saving..." : "Save"}</button>
                                 </div>}
@@ -723,9 +730,9 @@ const removeLink = (index) => {
                                 <span className="bodyFont">Project Logo</span>
                                 <div className="fileAndImage project-icon">
                                     <img className="pfp-shape" src={iconImage || project?.icon}/>
-                                    <input type="file" accept="image/*" className="bodyFont input-field pfp-shape" onChange={handleIconChange} ref={iconImageInputRef} />
+                                    <input disabled={project?.is_completed} type="file" accept="image/*" className="bodyFont input-field pfp-shape" onChange={handleIconChange} ref={iconImageInputRef} />
                                 </div>
-                                {iconImage && <div className="optionsDiv">
+                                {(iconImage && !project?.is_completed) && <div className="optionsDiv">
                                     <button className="cancel button-shape bodyFont" onClick={() => removeIconImage()} disabled={iconLoading}>Cancel</button>
                                     <button className="button-shape bodyFont red-color" onClick={() => updateIconImage()} disabled={iconLoading}>{iconLoading ? "Saving..." : "Save"}</button>
                                 </div>}
@@ -733,9 +740,9 @@ const removeLink = (index) => {
                             {iconError && <p className="bodyFont error-message">{iconError}</p>}
                             <div className="line-break"/>
                             <div className="section-container preview-images">
-                                <PreviewImagesContainer previewImages={previewImages} setPreviewImages={setPreviewImages} previewUpload={previewUpload} setPreviewUpload={setPreviewUpload} onChanged={() => setPreviewImagesUpdatePending(true)}/>
+                                <PreviewImagesContainer label={project?.is_completed ? "Preview Images" : "Preview Images (Up to MAX_PREVIEW_IMAGES)"} disabled={project?.is_completed} previewImages={previewImages} setPreviewImages={setPreviewImages} previewUpload={previewUpload} setPreviewUpload={setPreviewUpload} onChanged={() => setPreviewImagesUpdatePending(true)}/>
                                 {previewImagesError && <p className="bodyFont error-message">{previewImagesError}</p>}
-                                {previewImagesUpdatePending && <div className="optionsDiv">
+                                {(previewImagesUpdatePending && !project?.is_completed) && <div className="optionsDiv">
                                     <button className="cancel button-shape bodyFont" onClick={() => resetPreviewImages()} disabled={previewImagesLoading}>Cancel</button>
                                     <button className="button-shape bodyFont red-color" onClick={() => updatePreviewImages()} disabled={previewImagesLoading}>{previewImagesLoading ? "Saving..." : "Save"}</button>
                                 </div>}
@@ -754,10 +761,10 @@ const removeLink = (index) => {
                             <div className="dashboard-grid">
                                 <DashboardCard title="Supporters" value={supporters} icon={faStar} className="red medium" />
                                 <DashboardCard title="Views" value={views} icon={faEye} className="red medium" />
-                                <DashboardCard title="Total Posts" value={postCount} icon={faLayerGroup} className="green small" />
-                                <DashboardCard title="Total Likes:Dislikes" value={(totalLikes != null && totalDislikes != null) ? (`${shortenNumber(totalLikes)} : ${shortenNumber(totalDislikes)}`) : ""} icon={faThumbsUp} secondIcon={faThumbsDown} className="green small" />
-                                <DashboardCard title="Like Ratio" value={likeRatio != null ? `${truncate(likeRatio)}%` : ""} icon={faThumbsUp} secondIcon={faPercent} className="green small" />
-                                <DashboardCard title="Avg. Post Interval (Current)" value={formatInterval(postInterval) || (postIntervalSet ? "N/A" : "")} icon={faHourglass} className="green small" />
+                                <DashboardCard title="Total Posts" value={postCount} icon={faLayerGroup} className="green medium" />
+                                <DashboardCard title="Total Likes:Dislikes" value={(totalLikes != null && totalDislikes != null) ? (`${shortenNumber(totalLikes)} : ${shortenNumber(totalDislikes)}`) : ""} icon={faThumbsUp} secondIcon={faThumbsDown} className="green medium" />
+                                <DashboardCard title="Like Ratio" value={likeRatio != null ? `${truncate(likeRatio)}%` : ""} icon={faThumbsUp} secondIcon={faPercent} className="green medium" />
+                                <DashboardCard title="Avg. Post Interval (Current)" value={formatInterval(postInterval) || (postIntervalSet ? "N/A" : "")} icon={faHourglass} className="green medium" />
                             </div>
                             <div className="analytics-chart hide" style={{marginTop: '32px', background: '#fff', borderRadius: '10px', padding: '24px', boxShadow: '0 2px 8px rgba(0,0,0,0.07)'}}>
                                 <h3 className="titleFont" style={{marginBottom: '12px'}}>Post Frequency</h3>
@@ -771,7 +778,7 @@ const removeLink = (index) => {
                                 <div style={{height: '120px', background: 'linear-gradient(90deg, var(--flamespark-red) 60%, #eee 100%)', borderRadius: '8px'}}></div>
                                 <span className="bodyFont label-color" style={{fontSize: '0.9rem'}}>Charts coming soon!</span>
                             </div>
-                            <PostsChart projectId={id}/>
+                            <PostsChart className="mobile-small-hide" projectId={id}/>
                         </div>
                         }
                         {(selectedIndex == 2 && false) && 
@@ -810,20 +817,20 @@ const removeLink = (index) => {
                                 <div style={{maxWidth: '600px', margin: '0 auto', padding: '32px 0'}}>
                                     <div className="status-card" style={{background: '#fff', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.07)', padding: '24px', marginBottom: '24px', textAlign: 'center'}}>
                                         <div style={{marginBottom: '12px'}}>
-                                            <div className={`status-circle ${project?.status === 'completed' ? 'completed' : ''}`}></div>
+                                            <div className={`status-circle ${project?.is_completed ? 'completed' : ''}`}></div>
                                         </div>
                                         <h3 className="titleFont" style={{margin: 0, fontSize: '1.3rem'}}>
-                                            {project?.status === 'completed' ? 'Completed' : 'Active'}
+                                            {project?.is_completed ? 'Completed' : 'Active'}
                                         </h3>
                                         <span className="bodyFont label-color" style={{fontSize: '1rem'}}>
-                                            {project?.status === 'completed' ? 'This project is marked as complete. No further edits are allowed.' : 'Project is currently active.'}
+                                            {project?.is_completed ? 'This project has been completed. You cannot make any further edits.' : 'This project is currently active.'}
                                         </span>
                                     </div>
                                     <div style={{display: 'flex', flexDirection: 'column', gap: '18px'}}>
                                         <button 
                                             className="button-shape bodyFont green-color" 
                                             style={{fontSize: '1.1rem', padding: '12px 0'}} 
-                                            disabled={project?.status === 'completed'}
+                                            disabled={project?.is_completed}
                                             onClick={() => setShowCompleteModal(true)}
                                         >
                                             <FontAwesomeIcon icon={faCheckCircle} style={{marginRight: '10px'}} />
@@ -908,13 +915,13 @@ const removeLink = (index) => {
                                                 Optional Links (View / Download / Purchase)
                                                 </label>
                                                 {projectLinks.map((link, index) => (
-                                                <div key={index} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+                                                <div key={index} className="link-row" style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                                                     <input
                                                     type="text"
                                                     placeholder="Link Text"
                                                     value={link.text}
                                                     onChange={(e) => handleLinkChange(index, 'text', e.target.value)}
-                                                    className="input-field"
+                                                    className="input-field link-text-input"
                                                     style={{ flex: '0 0 35%', padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
                                                     />
                                                     <input
@@ -922,18 +929,13 @@ const removeLink = (index) => {
                                                     placeholder="https://..."
                                                     value={link.url}
                                                     onChange={(e) => handleLinkChange(index, 'url', e.target.value)}
-                                                    className="input-field"
+                                                    className="input-field link-url-input"
                                                     style={{ flex: '1', padding: '8px', borderRadius: '6px', border: '1px solid #ccc' }}
                                                     />
                                                     <button
+                                                    className="link-remove-button"
                                                     onClick={() => removeLink(index)}
-                                                    style={{
-                                                        border: 'none',
-                                                        background: 'transparent',
-                                                        color: 'var(--flamespark-red-accented)',
-                                                        fontSize: '1.1rem',
-                                                        cursor: 'pointer'
-                                                    }}
+                                                    aria-label={`Remove link ${index + 1}`}
                                                     >
                                                     ×
                                                     </button>
@@ -965,20 +967,15 @@ const removeLink = (index) => {
                                             {completeError && (<p className="bodyFont error-message" style={{marginTop: '12px'}}>{completeError}</p>)}
 
                                             {/* Buttons */}
-                                            <div style={{
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                gap: '12px',
-                                                marginTop: '24px'
-                                            }}>
+                                            <div className="complete-action-buttons actions">
                                                 <button
-                                                className="button-shape bodyFont"
+                                                className="button-shape bodyFont cancel"
                                                 onClick={() => setShowCompleteModal(false)}
                                                 >
                                                 Cancel
                                                 </button>
                                                 <button
-                                                className="button-shape bodyFont green-color"
+                                                className="button-shape bodyFont green-color action"
                                                 onClick={handleMarkComplete}
                                                 disabled={!completionTitle || !completionBody}
                                                 >
@@ -1004,7 +1001,7 @@ const removeLink = (index) => {
                                         <div style={{textAlign: 'center', padding: '24px'}}>
                                         <FontAwesomeIcon icon={faTrash} style={{fontSize:'2.5rem', color:'var(--flamespark-red-accented)', marginBottom:'12px'}} />
                                         <h3 className="titleFont" style={{margin:'0 0 12px'}}>Delete Project?</h3>
-                                        <span className="bodyFont label-color" style={{fontSize:'1rem'}}><strong>WARNING:</strong> This action is <span style={{color: 'var(--flamespark-red-accented)'}}>permanent</span> and cannot be undone. All project data will be lost.</span>
+                                        <span className="bodyFont label-color" style={{fontSize:'1rem'}}><strong>WARNING:</strong> This action is <span style={{color: 'var(--flamespark-red-accented)'}}>permanent</span> and cannot be undone. All of this project's data will be lost forever.</span>
                                         <div style={{marginTop:'24px', marginBottom:'12px', textAlign:'left'}}>
                                             <label htmlFor="delete-confirm-input" className="bodyFont label-color" style={{fontSize:'0.98rem', display:'block', marginBottom:'8px'}}>Type <strong>{project?.title}</strong> to confirm:</label>
                                             <input 
@@ -1018,10 +1015,10 @@ const removeLink = (index) => {
                                             />
                                         </div>
                                         {deleteError && (<p className="bodyFont error-message" style={{marginTop: '8px'}}>{deleteError}</p>)}
-                                        <div style={{marginTop:'12px', display:'flex', gap:'12px', justifyContent:'center'}}>
-                                            <button className="button-shape bodyFont" onClick={() => { setShowDeleteModal(false); setDeleteConfirmInput(""); }}>Cancel</button>
+                                        <div className="delete-action-buttons actions">
+                                            <button className="button-shape bodyFont cancel" onClick={() => { setShowDeleteModal(false); setDeleteConfirmInput(""); }}>Cancel</button>
                                             <button 
-                                                className="button-shape bodyFont red-color-accented" 
+                                                className="button-shape bodyFont red-color-accented action" 
                                                 onClick={handleDeleteProject}
                                                 disabled={deleteConfirmInput !== project?.title}
                                             >Delete</button>

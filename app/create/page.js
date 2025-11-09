@@ -317,7 +317,7 @@ export default function CreatePage() {
           </div>
 
           <div className={styles.field}>
-            <label className="bodyFont">Project Tags (max {MAX_TAG_COUNT})</label>
+            <label className="bodyFont">Project Tags (Max {MAX_TAG_COUNT})</label>
             <div className={styles.tagInputRow}>
               <input
                 value={tagInput}

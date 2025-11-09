@@ -1,0 +1,30 @@
+/* Simple loading graphic used on dashboard while project data loads */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+  min-height: calc(100vh - var(--header-height, 0px));
+  padding-top: var(--header-height, 0px);
+}
+
+.loading .spinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 5px solid rgba(0,0,0,0.08);
+  border-top-color: var(--flamespark-red);
+  animation: dash-spin 1s linear infinite;
+}
+
+.loading .loading-text {
+  margin-top: 12px;
+  color: var(--black);
+  font-size: 1rem;
+}
+
+
+@keyframes dash-spin {
+  to { transform: rotate(360deg); }
+}

@@ -27,7 +27,7 @@ export default function FlamepointsTeaser({ projectTitle = '', points = 0, nextT
                     <li><FontAwesomeIcon icon={faGem} /> & Much More!</li>
                 </ul>
 
-                <p className="body caption-size label-color bold">FlamePoints are a way for supporters to recognize and reward the efforts of project creators. As the project earns more points, it unlocks more and more features that enhance both the creator's and supporters' experience!</p>
+                <p className="body caption-size label-color bold">FlamePoints are an upcoming feature that allows supporters to recognize and reward the efforts of project creators. As the project earns more points, it unlocks more and more features that enhance both the creator's and supporters' experience!</p>
             </div>
 
             <div className="actions">

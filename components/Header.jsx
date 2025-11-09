@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import styles from "./Header.module.css";
 import { supabase } from "@/lib/supabaseClient";
@@ -7,21 +7,30 @@ import { useRouter, usePathname } from "next/navigation";
 import '../lib/fontawesome'
 import { useUser } from "@/lib/useUser";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faInbox, faUser, faGear, faInfo, faPencil } from '@fortawesome/free-solid-svg-icons'
-import { faBell } from '@fortawesome/free-regular-svg-icons' // Replace with solid bell when user has unread notifications
+import { faBars, faInbox, faUser, faGear, faInfo, faPencil, faBell as faBellSolid } from '@fortawesome/free-solid-svg-icons'
+import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 
 
-export default function Header({ forceAuthRedirect = false, isDashboardHeader = false, searchFieldText = "", project = null }) {
+export default function Header({ forceAuthRedirect = false, isDashboardHeader = false, searchFieldText = "", project = null, onOpenMobileMenu = null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const [userPanelOpen, setUserPanelOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(searchFieldText);
   const [searchOpen, setSearchOpen] = useState(false);
 
   const { user, userSet, avatar, username, handleLogout } = useUser();
+
+  const avatarRef = useRef(null);
+  const userDropdownRef = useRef(null);
+  const notifRef = useRef(null);
+  const notifButtonRef = useRef(null);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [goldenBadge, setGoldenBadge] = useState(false);
+  const [badgePulse, setBadgePulse] = useState(false);
 
   const search = () => {
     if (!searchQuery.trim()) return;
@@ -41,12 +50,54 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
     }
   }, [userSet, user, forceAuthRedirect]);
 
+useEffect(() => {
+    // Animate badge briefly when unreadCount increases
+    if (unreadCount > 0) {
+      setBadgePulse(true);
+      const t = setTimeout(() => setBadgePulse(false), 900);
+      return () => clearTimeout(t);
+    }
+}, [unreadCount]);
+
+  // Click-outside & Escape handling to close panels
+  useEffect(() => {
+    function handleClickOutside(e) {
+      // Close user panel if click is outside both dropdown and avatar
+      if (userPanelOpen) {
+        if (userDropdownRef.current && !userDropdownRef.current.contains(e.target) && !avatarRef.current?.contains(e.target)) {
+          setUserPanelOpen(false);
+        }
+      }
+
+      // Close notif panel if click is outside both notif panel and its button
+      if (notifOpen) {
+        if (notifRef.current && !notifRef.current.contains(e.target) && !notifButtonRef.current?.contains(e.target)) {
+          setNotifOpen(false);
+        }
+      }
+    }
+
+    function handleKey(e) {
+      if (e.key === 'Escape') {
+        setUserPanelOpen(false);
+        setNotifOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [userPanelOpen, notifOpen]);
+
   return (
     <header className={`${styles.header} titleFont`}>
 
       {/* Logo */}
       <div className={styles.logoContainer}>
-        <div className={styles.hamburger} onClick={() => setMobileOpen(true)}>
+        <div className={styles.hamburger} onClick={onOpenMobileMenu ? onOpenMobileMenu : () => setMobileOpen(!mobileOpen)}>
           <FontAwesomeIcon icon={faBars} className={styles.menuButton} />
         </div>
 
@@ -59,20 +110,29 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
       <>
         {project &&
         <>
-
         </>
         }
       </>
       }
 
-      {!isDashboardHeader && (<>
       <nav className={styles.navLinks}>
-        <a href="/">Discover</a>
-        <a href="/home">Home</a>
-        <a href="/explore">Explore</a>
-        <a href="/create">Create</a>
+      {!isDashboardHeader ? (
+        <>
+          <a href="/">Discover</a>
+          <a href="/home">Home</a>
+          <a href="/explore">Explore</a>
+          <a href="/create">Create</a>
+        </>
+      ) : (
+        <>
+          <a href="/">Discover</a>
+          <a href={`/project/${project.id}/preview`}>Project Preview</a>
+          <a href={`/project/${project.id}`}>View Project</a>
+        </>
+      )}
       </nav>
 
+      {!isDashboardHeader && (<>
       <div
         className={`${styles.mobileMenu} ${mobileOpen ? styles.open : ""}`}
       >
@@ -119,11 +179,25 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
               {user ? (
                 <>
                 <div className={styles.userSection}>
-                  <FontAwesomeIcon icon={faBell} className={styles.inbox} />
-                  <img src={avatar} alt="User Avatar" className={`${styles.pfp} pfp-shape`}
-                        onClick={() => {setUserPanelOpen(!userPanelOpen)}}></img>
+                  <button
+                    ref={notifButtonRef}
+                    className={styles.notifButton}
+                    onClick={() => { setNotifOpen(!notifOpen); setUserPanelOpen(false); if (!notifOpen) { /* mark as read when opened */ setUnreadCount(0); } }}
+                    aria-label="Open notifications"
+                    aria-haspopup="true"
+                    aria-expanded={notifOpen}
+                  >
+                    <FontAwesomeIcon icon={notifOpen ? faBellSolid : faBell} className={styles.inbox} />
+                    {unreadCount > 0 && (
+                      <span className={`${styles.notifBadge} ${badgePulse ? styles.pulse : ""} ${goldenBadge ? styles.golden : ""}`} aria-hidden="true">
+                        {unreadCount > 99 ? '99+' : (unreadCount > 9 ? `${unreadCount}` : `${unreadCount}`)}
+                      </span>
+                    )}
+                  </button>
+                  <img ref={avatarRef} src={avatar} alt="User Avatar" className={`${styles.pfp} pfp-shape`}
+                        onClick={() => {setUserPanelOpen(!userPanelOpen); setNotifOpen(false); }} />
                 </div>
-                <div className={`${styles.userDropdown} ${userPanelOpen ? styles.open : ""}`}>
+                <div ref={userDropdownRef} className={`${styles.userDropdown} ${userPanelOpen ? styles.open : ""}`}>
                   <div className={`${styles.userDisplay} ${styles.titleFont}`}>
                     <img src={avatar} alt="User Avatar" className="pfp pfp-shape"></img>
                     <span>{username}</span>
@@ -153,6 +227,16 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
               )}
             </>
           )}
+      </div>
+      {/* Notification panel */}
+      <div ref={notifRef} className={`${styles.notifPanel} ${notifOpen ? styles.open : ""}`}>
+        <div className={styles.notifHeader}>
+          <strong>Notifications</strong>
+        </div>
+        <div className={styles.notifList}>
+          {/* Placeholder - integrate real notifications later */}
+          <div className={styles.notifItem}>No new notifications</div>
+        </div>
       </div>
     </header>
   );

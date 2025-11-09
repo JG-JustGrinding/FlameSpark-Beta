@@ -22,9 +22,11 @@ import { Paginator } from "@/lib/infinitePostFeed";
 import CappedInput from "@/components/CappedInput";
 import InfiniteScroll from "@/lib/infinitePostFeed";
 import CompletedProject from "@/components/CompletedProject";
+import SimpleLoadingGraphic from "@/components/SimpleLoadingGraphic";
 
 export default function ProjectPage(){
     const [project, setProject] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [updateItem, setUpdateItem] = useState(null); // used to update the paginator
     const filters = ["Recent", "Oldest", "Top"];
     const filterIcons = [faClock, faHourglass, faStar];
@@ -45,6 +47,7 @@ export default function ProjectPage(){
     const [isLeaving, setIsLeaving] = useState(false);
     const [isJoining, setIsJoining] = useState(false);
     const [mobilePanelIndex, setMobilePanelIndex] = useState(0);
+    const mobileNavRef = useRef(null);
     const { user, userSet } = useUser();
     const { id } = useParams();
     const router = useRouter();
@@ -71,6 +74,8 @@ export default function ProjectPage(){
                 setOwner(owner);
             } catch (error) {
                 setError(true);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -121,6 +126,21 @@ export default function ProjectPage(){
 
         checkIsOwner();
     }, [user, userSet]);
+
+    // Close mobile panels (select Home) when clicking outside the mobile nav
+    useEffect(() => {
+        function handleClickOutside(e) {
+            if (mobilePanelIndex === 2 || mobilePanelIndex === 3) {
+                const nav = mobileNavRef.current;
+                if (nav && !nav.contains(e.target)) {
+                    setMobilePanelIndex(0);
+                }
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [mobilePanelIndex]);
 
     const setFilter = (index) => {
         if (index < 0 || index >= filters.length){
@@ -718,6 +738,12 @@ export default function ProjectPage(){
         }
     }
 
+    if (loading){
+        return (
+            <SimpleLoadingGraphic />
+        )
+    }
+
     const ignoreComplete = searchParams.get("ignore_complete") === "true"
 
     if (isCompleted.current === true && !(ignoreComplete && allowIgnoreComplete)) {
@@ -827,7 +853,7 @@ export default function ProjectPage(){
                         </div>
                     </div>
                 </main>
-                <div className="mobile-nav bodyFont">
+                <div className="mobile-nav bodyFont" ref={mobileNavRef}>
                     <div className={`section${mobilePanelIndex == 0 ? " current" : ""}`} onClick={() => setMobilePanelIndex(0)}>
                         <FontAwesomeIcon icon={faHome} />
                         <span className="caption-size">Home</span>

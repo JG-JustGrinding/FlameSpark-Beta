@@ -44,7 +44,7 @@ export default function CompletedProject({
           </div>
         )}
 
-        <div className="actions">
+        <div className="complete-actions">
           {onViewProject ? (
             <>{allowIgnoreComplete && <button className="button-shape outlined" onClick={() => onViewProject(project)}>View Project Anyway</button>}</>
           ) : (

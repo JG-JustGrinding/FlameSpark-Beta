@@ -274,13 +274,13 @@ export default function Comment({
 
 	return (
 		<div className={`comment` + (loading ? ` skeleton` : "")}>
-			<a href={`/user/${posterId}`} className={`link commenter-pfp pfp-shape` + (deleting ? " deleting" : "")}>
+			<a href={posterId ? `/user/${posterId}` : null} className={`link commenter-pfp pfp-shape` + (deleting ? " deleting" : "")}>
 				<img className={`pfp-shape` + (loading ? " hide" : "")} src={avatar} alt="User Profile Picture" />
 			</a>
 			<div className={`comment-main bodyFont` + (loading ? " hide" : "") + (deleting ? " deleting" : "")}>
                 <div className="comment-header">
                     <div className="comment-user-date">
-                        <a href={`/user/${posterId}`} className="link">
+                        <a href={posterId ? `/user/${posterId}` : null} className="link">
                             <span className="bold username">{username}</span>
                         </a>
                         {date && <span className="label-color caption-size reset">{`${dontUseTimeAgo ? date : timeAgo(date)}${edited ? " (edited)" : ""}`}</span>}

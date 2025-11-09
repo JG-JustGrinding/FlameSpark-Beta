@@ -11,6 +11,7 @@ const ArrayInputField = ({
   placeholder = 'Enter text here...',
   maxLength = 100,
   useAddButton = true,
+  disabled = false,
   id,
 }) => {
     const [tagInput, setTagInput] = useState("");
@@ -41,6 +42,8 @@ const ArrayInputField = ({
   };
 
   const handleRemoveTag = (index) => {
+    if (disabled) return;
+
     setArray(array.filter((_, i) => i !== index));
   };
 
@@ -57,8 +60,9 @@ const ArrayInputField = ({
             onKeyDown={(e) => e.key === "Enter" && handleAddTag()}
             maxLength={maxLength}
             id={id}
+            disabled={disabled}
         />
-        {useAddButton && 
+        {(useAddButton && !disabled) && 
         <button type="button" className="button-shape bodyFont" onClick={handleAddTag}>
             Add
         </button>}
@@ -67,12 +71,12 @@ const ArrayInputField = ({
         {array.map((item, i) => (
             <span key={i} className={`tag bodyFont`}>
             {item}
-            <span
-                className={`removeTag bodyFont`}
-                onClick={() => handleRemoveTag(i)}
-            >
-                ✕
-            </span>
+              {!disabled && <span
+                  className={`removeTag bodyFont`}
+                  onClick={() => handleRemoveTag(i)}
+              >
+                  ✕
+              </span>}
             </span>
         ))}
         </div>

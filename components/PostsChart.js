@@ -24,7 +24,7 @@ ChartJS.register(
 import { Line } from 'react-chartjs-2';
 import { supabase } from '@/lib/supabaseClient';
 
-export default function PostsChart({ projectId }) {
+export default function PostsChart({ projectId, className = '' }) {
   const [range, setRange] = useState('week'); // 'today', 'week', 'month'
   const [chartData, setChartData] = useState({ labels: [], datasets: [] });
   const ranges = [{filter: "week", text: "Past Week"}, {filter: "month", text: "Past Month"}, {filter: "year", text: "Past Year"}];
@@ -126,7 +126,7 @@ export default function PostsChart({ projectId }) {
     };
 
   return (
-    <div className="project-posts-chart">
+    <div className={`project-posts-chart ${className}`}>
       <Line data={chartData} options={options} />
       <div className="chart-controls" style={{ marginBottom: '1rem' }}>
         {ranges.map(r => (

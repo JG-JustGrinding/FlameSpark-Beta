@@ -4,9 +4,21 @@
   box-sizing: border-box;
 }
 
+/* Ensure dashboard page occupies full viewport and avoid double scrollbars */
+html, body, #__next {
+  height: 100%;
+}
+
 .container {
   display: flex;
-  height: 100%;
+  /* Make the dashboard container exactly the viewport height so internal
+     scrolls happen inside `.main-content` instead of the document. */
+  height: 100vh;
+  overflow: hidden; /* prevent body/document scroll for dashboard layout */
+}
+
+.container-content, .main-content {
+  max-width: 100%;
 }
 
 .sidebar {
@@ -15,9 +27,14 @@
   padding: 20px;
   position: sticky;
   top: 0;
-  height: 100%;
   overflow-y: auto;
-  max-width: 25%;
+  max-width: 300px;
+}
+
+/* Animated slide behavior for sidebar (used on mobile) */
+.sidebar {
+  transition: transform 280ms cubic-bezier(.2,.8,.2,1), opacity 180ms ease;
+  will-change: transform;
 }
 
 .sidebar::-webkit-scrollbar {
@@ -85,12 +102,6 @@
   height: 50px;
 }
 
-.container-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
 .create-post-button {
     background-color: var(--flamespark-red);
     color: var(--white);
@@ -103,10 +114,22 @@
     background-color: rgba(255, 255, 255, 0.25);
 }
 
+.container-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  /* allow child flex items to shrink properly */
+  min-height: 0;
+}
+
 .main-content {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  /* important: let this flex child be shorter than its parent when content is small */
+  min-height: 0;
 }
 
 .main-content .content-section {
@@ -118,8 +141,8 @@
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
   margin-bottom: 30px;
+  justify-content: center;
 }
-
 
 .dashboard-card {
   background: var(--white);
@@ -284,7 +307,8 @@
 }
 
 .section-container .project-icon {
-  width: 100%;
+  width: 15vw;
+  min-width: 100px;
   max-width: 300px;
   aspect-ratio: 1 / 1;
   object-fit: cover;
@@ -378,4 +402,163 @@ button:disabled {
 
 .modal::-webkit-scrollbar{
   display: none;
+}
+
+.sidebar li.mobile-show {
+  display: none;
+}
+
+.delete-action-buttons, .complete-action-buttons {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.complete-action-buttons {
+  margin-top: 24px;
+}
+
+/* Responsive tweaks for completion modal link rows */
+.overlay-panel .link-row {
+  display: flex !important; /* override inline where necessary */
+  gap: 8px;
+  align-items: center;
+}
+
+/* Default: text input gets ~35%, url expands. On narrow screens stack them */
+.overlay-panel .link-row .link-text-input {
+  flex: 0 0 35% !important;
+}
+.overlay-panel .link-row .link-url-input {
+  flex: 1 1 auto !important;
+}
+.overlay-panel .link-row .link-remove-button {
+  background: transparent;
+  border: none;
+  color: var(--flamespark-red-accented);
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    padding: 10px;
+    min-width: 60px;
+    position: fixed;
+    left: 0;
+    top: var(--header-height);
+    bottom: 0;
+    z-index: 2;
+    overflow-y: auto;
+    height: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: env(safe-area-inset-bottom, 10px);
+  }
+
+  /* closed state slides sidebar off-screen instead of display:none */
+  .sidebar.closed {
+    transform: translateX(-110%);
+    opacity: 0.98;
+    pointer-events: none; /* avoid capturing taps when closed */
+  }
+
+  /* Backdrop shown when sidebar is open to darken content and capture clicks */
+  .mobile-sidebar-backdrop {
+    position: fixed;
+    left: 0;
+    top: var(--header-height);
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.32);
+    z-index: 1; /* below sidebar which is z-index:2 */
+    opacity: 1;
+    transition: opacity 200ms ease;
+  }
+
+  .mobile-sidebar-backdrop.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .main-content {
+    padding: 10px;
+    width: 100%;
+  }
+
+  .flamepoints-display {
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 570px) {
+  .overlay-panel .link-row {
+    flex-direction: column !important;
+    align-items: stretch;
+  }
+
+  .overlay-panel .link-row .link-text-input,
+  .overlay-panel .link-row .link-url-input {
+    flex: none !important;
+    width: 100%;
+  }
+
+  .overlay-panel .link-row .link-remove-button {
+    align-self: flex-end;
+    margin-top: 6px;
+    font-size: 1.6rem;
+  }
+
+  .mobile-small-hide {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+    .actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .actions > .action { order: 1; }
+    .actions > .cancel { order: 2; }
+
+    .actions .button-shape {
+        width: 100%;
+    }
+}
+
+
+@media (max-width: 319px) {
+  .sidebar li {
+    font-size: 1.2rem;
+  }
+
+  .sidebar .item span, .mobile-hide {
+    display: none;
+  }
+
+  .sidebar li.mobile-show {
+    display: flex;
+  }
+
+  .sidebar .project-display a {
+    justify-content: center;
+  }
+
+  .sidebar li:not(.line-break)
+  {
+      cursor: pointer;
+      border-radius: 50%;
+  }
+
+  .sidebar .item:not(.line-break) {
+    gap: 10px;
+    padding: 5px 5px;
+    border-radius: 999px;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+  }
 }

@@ -11,10 +11,13 @@ const PreviewImagesContainer = ({
   setPreviewUpload,
   onChanged,
   MAX_PREVIEW_IMAGES = 5,
+  disabled = false,
 }) => {
   const fileInputRef = useRef(null);
 
   const handlePreviewChange = (e) => {
+    if (disabled) return;
+
     if (e.target.files) {
 
       if (previewImages.length < MAX_PREVIEW_IMAGES)
@@ -39,6 +42,8 @@ const PreviewImagesContainer = ({
   };
 
   const handleRemovePreviewImage = (index) => {
+    if (disabled) return;
+
     URL.revokeObjectURL(previewImages[index]);
 
     setPreviewImages(previewImages.filter((_, i) => i !== index));
@@ -54,12 +59,12 @@ const PreviewImagesContainer = ({
     <>
     {label &&<label className={`bodyFont`}>{label.replace("MAX_PREVIEW_IMAGES", MAX_PREVIEW_IMAGES)}</label>}
     {previewImages.length > 0 && <span className="label-color bodyFont">{previewImages.length} {previewImages.length != 1 ? "Images" : "Image"}</span>}
-    <input type="file" accept="image/*" className="bodyFont input-field" multiple ref={fileInputRef} onChange={handlePreviewChange} />
+    {!disabled && <input type="file" accept="image/*" className="bodyFont input-field" multiple ref={fileInputRef} onChange={handlePreviewChange} />}
     <div className="previewImages">
         {previewImages.map((img, i) => (
         <div key={i} className="previewImageContainer">
             <img src={img.url || img} alt={`Preview ${i}`} className={`previewImage sixteennine`} />
-            <button className="bodyFont button-shape" onClick={() => handleRemovePreviewImage(i)}>Remove</button>
+            {!disabled && <button className="bodyFont button-shape" onClick={() => handleRemovePreviewImage(i)}>Remove</button>}
         </div>
         ))}
     </div>
