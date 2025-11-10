@@ -1068,7 +1068,7 @@ export default function ProjectPage(){
                 }
                 {selectedPage == 1 &&
                 <div className="panel coming-soon-panel">
-                    <div className="backdrop"></div>
+                    <div className="backdrop" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}></div>
                     <div className="panel-content">
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
@@ -1081,7 +1081,7 @@ export default function ProjectPage(){
                 }
                 {selectedPage == 2 &&
                 <div className="panel coming-soon-panel">
-                    <div className="backdrop"></div>
+                    <div className="backdrop" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}></div>
                     <div className="panel-content">
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
@@ -1094,7 +1094,7 @@ export default function ProjectPage(){
                 }
                 {selectedPage == 3 &&
                 <div className="panel coming-soon-panel">
-                    <div className="backdrop"></div>
+                    <div className="backdrop" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}></div>
                     <div className="panel-content">
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>

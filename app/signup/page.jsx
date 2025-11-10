@@ -105,7 +105,7 @@ export default function SignupPage() {
             <button className="right button button-shape bodyFont cursor-default">Sign Up</button>
           </div>
 
-          <h1 className="titleFont header-size">Sign Up for FlameSpark</h1>
+          <h1 className="titleFont header-size">Sign Up for FlameSpark-BETA</h1>
 
           {error && <p className="titleFont error-message">{error}</p>}
 
@@ -196,9 +196,15 @@ export default function SignupPage() {
                 <img src="/logo_google.png" alt="Google Logo" />
                 Signup with Google
               </button>
-              <p className="label-color bodyFont account-if">
-                Already have an account? <Link href="/login">log in</Link>
-              </p>
+
+              <div className="bottom">
+                <p className="label-color reset bodyFont account-if" style={{marginRight: '15px', marginBottom: '5px'}}>
+                  Already have an account? <Link href="/login">log in</Link>
+                </p>
+                <p className="reset label-color bodyFont">
+                  By signing up you agree to our <Link href="/privacy">Privacy Policy</Link>.
+                </p>
+              </div>
             </div>
           </div>
         </div>

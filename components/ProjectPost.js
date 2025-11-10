@@ -6,7 +6,7 @@ import { useUser } from "@/lib/useUser";
 import '@/lib/fontawesome'
 import { deletePost, getPostRating, getUserRating } from '@/lib/projectFunctions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck, faShare } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck, faShare, faFireFlameCurved } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
 import { editPost, extractYouTubeId, timeAgo, shortenNumber, getPostCommentCount } from '@/lib/projectFunctions';
 import Carousel from './Carousel';

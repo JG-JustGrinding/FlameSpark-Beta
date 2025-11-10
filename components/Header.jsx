@@ -7,11 +7,12 @@ import { useRouter, usePathname } from "next/navigation";
 import '../lib/fontawesome'
 import { useUser } from "@/lib/useUser";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faInbox, faUser, faGear, faInfo, faPencil, faBell as faBellSolid } from '@fortawesome/free-solid-svg-icons'
-import { faBell } from '@fortawesome/free-regular-svg-icons';
+import { faBars, faInbox, faUser, faGear, faInfo, faPencil, faBell as faBellSolid, faInfoCircle, faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons'
+import { faBell, faStar } from '@fortawesome/free-regular-svg-icons';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
-
+import Notification from './notification';
+import SocialLinks from './SocialLinks';
 
 export default function Header({ forceAuthRedirect = false, isDashboardHeader = false, searchFieldText = "", project = null, onOpenMobileMenu = null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -28,10 +29,18 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
   const userDropdownRef = useRef(null);
   const notifRef = useRef(null);
   const notifButtonRef = useRef(null);
+  const socialRef = useRef(null);
+  const socialButtonRef = useRef(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [goldenBadge, setGoldenBadge] = useState(false);
   const [badgePulse, setBadgePulse] = useState(false);
+  const [notifFilter, setNotifFilter] = useState('All');
+  const notifFilters = ["All", "Projects", "Interactions", "Completions"];
+  const socialEnabled = true;
 
+  // track unread counts per category; initially zero — you can wire these from the server
+  const [unreadByFilter, setUnreadByFilter] = useState({ All: 0, Projects: 0, Interactions: 0, Completions: 0 });
+  const [socialOpen, setSocialOpen] = useState(false);
   const search = () => {
     if (!searchQuery.trim()) return;
   
@@ -75,12 +84,20 @@ useEffect(() => {
           setNotifOpen(false);
         }
       }
+
+      // Close social panel if click is outside both social dropdown and its button
+      if (socialOpen) {
+        if (socialRef.current && !socialRef.current.contains(e.target) && !socialButtonRef.current?.contains(e.target)) {
+          setSocialOpen(false);
+        }
+      }
     }
 
     function handleKey(e) {
       if (e.key === 'Escape') {
         setUserPanelOpen(false);
         setNotifOpen(false);
+        setSocialOpen(false);
       }
     }
 
@@ -90,7 +107,7 @@ useEffect(() => {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleKey);
     };
-  }, [userPanelOpen, notifOpen]);
+  }, [userPanelOpen, notifOpen, socialOpen]);
 
   return (
     <header className={`${styles.header} titleFont`}>
@@ -142,6 +159,19 @@ useEffect(() => {
           <a href="/explore">Explore</a>
           <a href="/create">Create</a>
         </nav>
+        {/* Mobile menu search button: visible inside the mobile menu (helpful for very small screens) */}
+        <div className={styles.mobileMenuSearchButtonContainer}>
+          <button
+            className={styles.mobileMenuSearchButton}
+            onClick={() => { setSearchOpen(true); setMobileOpen(false); }}
+            aria-label="Open search"
+          >
+            <Image src="/search.svg" alt="Search" width={20} height={20} />
+          </button>
+        </div>
+        <div className={styles.mobileSocials}>
+          <SocialLinks />
+        </div>
         <div
           className={styles.closeButton}
           onClick={() => setMobileOpen(false)}
@@ -167,13 +197,13 @@ useEffect(() => {
         </div>
       </div>}
 
-      <button className={`${styles.mobileSearchButton} ${styles.mobileOnly}`} onClick={() => setSearchOpen(true)}>
+      <button className={`${styles.mobileSearchButton} ${styles.mobileOnly} ${user ? "" : styles.unlogged}`} onClick={() => setSearchOpen(true)}>
         <Image src="/search.svg" alt="Search" width={20} height={20} />
       </button>
       </>)}
 
       {/* Auth buttons */}
-      <div className={styles.authButtons}>
+      <div className={`${styles.authButtons} ${user ? "" : styles.unlogged}`}>
           {userSet && (
             <>
               {user ? (
@@ -182,7 +212,17 @@ useEffect(() => {
                   <button
                     ref={notifButtonRef}
                     className={styles.notifButton}
-                    onClick={() => { setNotifOpen(!notifOpen); setUserPanelOpen(false); if (!notifOpen) { /* mark as read when opened */ setUnreadCount(0); } }}
+                    onClick={() => {
+                      const opening = !notifOpen;
+                      setNotifOpen(opening);
+                      setUserPanelOpen(false);
+                      if (opening) {
+                        /* mark as read when opened (clear total badge) */
+                        setUnreadCount(0);
+                        /* clear unread for the currently selected filter */
+                        setUnreadByFilter(prev => ({ ...prev, [notifFilter]: 0, All: 0 }));
+                      }
+                    }}
                     aria-label="Open notifications"
                     aria-haspopup="true"
                     aria-expanded={notifOpen}
@@ -194,6 +234,7 @@ useEffect(() => {
                       </span>
                     )}
                   </button>
+                  
                   <img ref={avatarRef} src={avatar} alt="User Avatar" className={`${styles.pfp} pfp-shape`}
                         onClick={() => {setUserPanelOpen(!userPanelOpen); setNotifOpen(false); }} />
                 </div>
@@ -223,6 +264,21 @@ useEffect(() => {
                 <>
                   <a href="/login"><button className={`${styles.logIn} ${styles.animate}`}>Log In</button></a>
                   <a href="/signup"><button className={`${styles.signUp} ${styles.animate}`}>Sign Up</button></a>
+                  <div className={styles.socialWrapper}>
+                    <button
+                      ref={socialButtonRef}
+                      className={styles.socialButton}
+                      onClick={() => { setSocialOpen(!socialOpen); setUserPanelOpen(false); setNotifOpen(false); }}
+                      aria-label="Open social links"
+                      aria-haspopup="true"
+                      aria-expanded={socialOpen}
+                    >
+                      {socialEnabled && <FontAwesomeIcon className={styles.socialWrapperIcon} icon={socialOpen ? faStarSolid : faStar} />}
+                    </button>
+                    <div ref={socialRef} className={`${styles.socialDropdown} ${socialOpen ? styles.open : ''}`}>
+                      <SocialLinks />
+                    </div>
+                  </div>
                 </>
               )}
             </>
@@ -232,10 +288,36 @@ useEffect(() => {
       <div ref={notifRef} className={`${styles.notifPanel} ${notifOpen ? styles.open : ""}`}>
         <div className={styles.notifHeader}>
           <strong>Notifications</strong>
+          <div className={styles.notifFilters} role="tablist" aria-label="Notification filters">
+            {notifFilters.map((f) => (
+              <button
+                key={f}
+                className={`${styles.notifFilter} ${notifFilter === f ? styles.active : ''}`}
+                onClick={() => setNotifFilter(f)}
+                role="tab"
+                aria-selected={notifFilter === f}
+              >
+                {f}
+                {unreadByFilter[f] > 0 && <span className={`${styles.notifDot} ${f === "Completions" ? styles.golden : ""}`} aria-hidden="true"></span>}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className={styles.notifList}>
-          {/* Placeholder - integrate real notifications later */}
-          <div className={styles.notifItem}>No new notifications</div>
+        <div className={`${styles.notifList} bodyFont`}>
+          {/* Placeholder - integrate real notifications later; filter state is available as `notifFilter` */}
+          <div className={styles.notifItemNoNew}>No new notifications</div>
+          <Notification
+            href="#"
+            colorClass="red"
+            iconSrc="/placeholder_generic.svg"
+            title="Notification Title"
+            timestamp="2h ago"
+            message="This is a sample notification content."
+          />
+        </div>
+        {/* Sticky social links footer inside the notification panel */}
+        <div className={styles.notifFooter}>
+          <SocialLinks />
         </div>
       </div>
     </header>

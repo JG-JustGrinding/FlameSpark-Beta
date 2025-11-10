@@ -918,7 +918,7 @@ const removeLink = (index) => {
                                                 <div key={index} className="link-row" style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
                                                     <input
                                                     type="text"
-                                                    placeholder="Link Text"
+                                                    placeholder="Link Name"
                                                     value={link.text}
                                                     onChange={(e) => handleLinkChange(index, 'text', e.target.value)}
                                                     className="input-field link-text-input"

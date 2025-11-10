@@ -84,7 +84,7 @@ export default function LoginPage() {
                         <a href="/signup" className="right button button-shape bodyFont off">Sign Up</a>
                     </div>
 
-                    <h1 className="titleFont header-size">Log In to FlameSpark</h1>
+                    <h1 className="titleFont header-size">Log In to FlameSpark-BETA</h1>
                     {error && <p className="error-message titleFont">Error: {error}</p>}
                     <div className="auth-content">
                         <div className="input-container">
