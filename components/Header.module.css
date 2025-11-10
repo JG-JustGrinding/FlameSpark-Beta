@@ -301,9 +301,9 @@
 .header .notifHeader {
     background-color: var(--white);
     padding: 16px 18px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid #ccc;
     padding-bottom: 8px;
-    box-shadow: 0 6px 8px -8px rgba(0, 0, 0, 0.35);
+    /*box-shadow: 0 6px 8px -8px rgba(0, 0, 0, 0.35);*/
     margin-bottom: 8px;
     position: sticky;
     top: 0;

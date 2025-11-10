@@ -169,9 +169,9 @@ useEffect(() => {
             <Image src="/search.svg" alt="Search" width={20} height={20} />
           </button>
         </div>
-        <div className={styles.mobileSocials}>
+        {!user && <div className={styles.mobileSocials}>
           <SocialLinks />
-        </div>
+        </div>}
         <div
           className={styles.closeButton}
           onClick={() => setMobileOpen(false)}
