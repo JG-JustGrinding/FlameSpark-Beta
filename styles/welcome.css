@@ -1,0 +1,296 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+:root {
+    --welcome-header-height: 64px;
+}
+
+.welcome-container {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* sticky header styling */
+.welcome-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--welcome-header-height);
+    display: flex;
+    align-items: center;
+    z-index: 300;
+    pointer-events: auto;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.welcome-header-inner {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+}
+
+.welcome-brand {
+    font-weight: 800;
+}
+
+.welcome-header-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.header-action {
+    background: transparent;
+    border: none;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Ensure any scrollIntoView accounts for the fixed header */
+/* header overlays content now; don't offset scroll positions */
+
+/* Each section */
+.section {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: var(--black);
+    position: relative;
+    /* keep the section size stable to avoid scroll-snapping when animating */
+    box-sizing: border-box;
+    overflow: hidden;
+    scroll-snap-align: center;
+    /* center alignment so header overlays the top portion without shifting content */
+    background-color: var(--white);
+}
+
+.section-1 h1 {
+    font-size: 5rem;
+    text-align: start;
+}
+
+.section-1 .middle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex: 1;
+}
+
+.section-1 .middle .middle-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.section-1 .middle p {
+    font-size: 2rem;
+}
+
+.section-1 .middle .text {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+    max-width: 700px;
+}
+
+.section-1 .middle img {
+    width: 425px;
+    margin-left: 20px;
+}
+
+.section-1 .bottom {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+    padding: 20px 0;
+    padding-top: 0px;
+    margin-bottom: 50px;
+}
+
+.section-1 .bottom .graphic-bar-1, .section-1 .bottom .graphic-bar-2 {
+    flex: 1;
+    width: 100%;
+    height: 5px;
+    background-color: var(--flamespark-red);
+}
+
+.section-1 .bottom .graphic-bar-1 {
+    flex: .925;
+}
+
+.section-1 .bottom .graphic-bar-2 {
+    flex: .075;
+}
+
+.section-1 .scroll-button {
+    padding: 0.5em 3rem;
+    font-size: 1.1rem;
+}
+
+/* Content animation */
+.section-content {
+    text-align: center;
+    /* Animate the inner content only so the section's layout (100vh) does not change */
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+    transition: transform 0.8s cubic-bezier(.2, .9, .3, 1), opacity 0.6s ease;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10%;
+    flex-direction: column;
+}
+
+.section.active .section-content {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.section-2.active .section-content {
+    background: linear-gradient(135deg, var(--black), var(--flamespark-background));
+    color: white;
+}
+
+.section-2 .section-content{
+    gap: 10px;
+}
+
+.section-2 .text-popup {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    max-width: 80%;
+    font-size: 1.5rem;
+}
+
+.section-2 .text-popup .icon {
+    font-size: 2.5rem;
+    color: var(--flamespark-red);
+}
+
+.section-2 .continue-button {
+    margin-top: 30px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.section-2 .continue-button:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Snippets cinematic styles for index==1 */
+.snippets { width: 100%; max-width: 1000px; margin: 0 auto; position: relative; height: 220px; display:flex; align-items:center; justify-content:center; }
+.text-snippet { position: absolute; display:flex; gap: 18px; align-items:center; justify-content:center; opacity: 0; transform: translateY(18px) scale(0.985) rotate(-0.4deg); transition: opacity 0.65s cubic-bezier(.2,.9,.3,1), transform 0.65s cubic-bezier(.2,.9,.3,1); text-align:left; padding: 0 6%; }
+.text-snippet.visible { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+.snippet-icon { flex: 0 0 64px; display:flex; align-items:center; justify-content:center; }
+.snippet-icon svg { width: 64px; height: 64px; filter: drop-shadow(0 14px 28px rgba(0,0,0,0.18)); color: var(--flamespark-red); }
+.snippet-text { font-size: 1.2rem; max-width: 780px; margin: 0; }
+
+.snippet-controls { margin-top: 14px; display:flex; gap: 10px; justify-content: center; }
+.snippet-btn { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: inherit; padding: 10px 14px; border-radius: 8px; cursor: pointer; }
+.snippet-btn[disabled] { opacity: 0.35; cursor: not-allowed; }
+.snippet-btn.primary { background: linear-gradient(90deg, var(--flamespark-orange), var(--flamespark-red)); color: white; border: none; font-weight:700; }
+
+/* Intro flag adds a subtle pop/saturation for first reveal */
+.snippets.intro .text-snippet.visible { filter: saturate(1.08) contrast(1.02); transform: translateY(0) scale(1.02); }
+
+@media (max-width: 720px) {
+    .snippets { height: auto; padding: 1rem 0; }
+    .text-snippet { position: relative; transform: none; opacity: 1; display:flex; flex-direction:column; gap:12px; }
+    .text-snippet.visible { transform: none; }
+    .snippet-icon svg { width: 52px; height: 52px; color: var(--flamespark-red); }
+    .snippet-text { font-size: 1rem; }
+    .snippet-controls { position: static; margin-top: 12px; transform: none; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dots Navigation */
+.dots-nav {
+    position: fixed;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 100;
+}
+
+.dot {
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--flamespark-red);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0.6;
+}
+
+.dot.active {
+    background: var(--flamespark-red);
+    transform: scale(1.3);
+    opacity: 1;
+}
+
+.dot:hover {
+    opacity: 1;
+}
+
+.dot:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+@media (pointer: coarse) {
+    .dots-nav {
+        display: none;
+    }
+
+    .welcome-container {
+        overflow: auto;
+        scroll-snap-type: y mandatory;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+}
