@@ -171,6 +171,11 @@ body {
     transform: translateY(0) scale(1);
 }
 
+.section-3 .section-content {
+    transform: none;
+    perspective: 1000px;
+}
+
 .section-2.active .section-content {
     background: linear-gradient(135deg, var(--black), var(--flamespark-background));
     color: white;
@@ -205,6 +210,104 @@ body {
 .section-2 .continue-button:hover {
     opacity: 1;
     transform: scale(1.05);
+}
+
+.section-3.active .section-content {
+    background: var(--flamespark-red-accented);
+    color: white;
+}
+
+.section-3 .intro-text {
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    position: relative;
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    /* Cinematic ghostly/outlined look */
+    color: rgba(255,255,255,0.92);
+    text-shadow:
+        0 1px 0 rgba(0,0,0,0.20),
+        0 2px 0 rgba(0,0,0,0.18);
+    will-change: transform, filter;
+}
+
+/* Wipe-in from the right with fade */
+.section-3 .intro-text.wipe-in-right {
+    animation: wipeInRight 2000ms cubic-bezier(.2,.9,.3,1) both;
+    will-change: clip-path, opacity;
+}
+
+@keyframes wipeInRight {
+    0% {
+        opacity: 0;
+        clip-path: inset(0 0 0 100%);
+        -webkit-clip-path: inset(0 0 0 100%);
+    }
+    60% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+        -webkit-clip-path: inset(0 0 0 0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section-3 .intro-text.wipe-in-right {
+        animation: fadeInOnly 1200ms ease both;
+    }
+    @keyframes fadeInOnly {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+}
+
+/* 3D pop-in and ambient glow for the intro text */
+.section-3 .intro-text.typewriter-start {
+        animation:
+            pop3d 900ms cubic-bezier(.2,.9,.3,1) both,
+            glowPulse 5s ease-in-out 1200ms infinite;
+        transform-style: preserve-3d;
+}
+
+@keyframes pop3d {
+    0% {
+        transform: translateY(14px) translateZ(-120px) rotateX(12deg) rotateY(-6deg) scale(0.98);
+    }
+    60% {
+        transform: translateY(0) translateZ(0) rotateX(0deg) rotateY(0deg) scale(1.015);
+    }
+    100% {
+        transform: translateY(0) translateZ(0) rotateX(0deg) rotateY(0deg) scale(1);
+    }
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        filter: drop-shadow(0 14px 24px rgba(0,0,0,0.35)) drop-shadow(0 0 14px rgba(255,68,44,0.22));
+    }
+    50% {
+        filter: drop-shadow(0 18px 28px rgba(0,0,0,0.45)) drop-shadow(0 0 26px rgba(255,120,64,0.42));
+    }
+}
+
+/* Accessibility: respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    .section-3 .intro-text.typewriter-start {
+        animation: none !important;
+    }
+    .section-3 .intro-text { filter: none; }
+}
+
+/* Reduced motion fallback for left-to-right wipe */
+@media (prefers-reduced-motion: reduce) {
+    .section-3 .intro-text.wipe-in-left {
+        animation: none !important;
+    }
 }
 
 /* Snippets cinematic styles for index==1 */
@@ -292,5 +395,32 @@ body {
         scroll-snap-type: y mandatory;
         scroll-behavior: smooth;
         -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Wipe-in from the left with fade */
+.section-3 .intro-text.wipe-in-left {
+    animation: wipeInLeft 1400ms cubic-bezier(.18,.88,.22,1.02) both;
+    will-change: clip-path, opacity, filter;
+}
+
+@keyframes wipeInLeft {
+    0% {
+        opacity: 0;
+        clip-path: inset(0 100% 0 0);
+        -webkit-clip-path: inset(0 100% 0 0);
+        filter: blur(8px);
+    }
+    55% {
+        opacity: 0.75;
+        clip-path: inset(0 14% 0 0);
+        -webkit-clip-path: inset(0 14% 0 0);
+        filter: blur(3px);
+    }
+    100% {
+        opacity: 1;
+        clip-path: inset(0 0 0 0);
+        -webkit-clip-path: inset(0 0 0 0);
+        filter: blur(0);
     }
 }

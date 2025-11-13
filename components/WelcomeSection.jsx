@@ -140,6 +140,20 @@ export default function WelcomeSection({ index, isActive, scrollToSection }) {
     );
   }
 
+  if (index == 2)
+  {
+    const [wipeOnce, setWipeOnce] = useState(false);
+    useEffect(() => {
+      if (isActive) setWipeOnce(true);
+    }, [isActive, wipeOnce]);
+
+    return (
+      <div className={`section-content${isActive ? " active" : ""}`} aria-hidden={!isActive}>
+        <h2 className={`bodyFont reset intro-text ${wipeOnce ? 'wipe-in-left typewriter-start' : ''}`}>But here's the thing...</h2>
+      </div>
+    );
+  }
+
   return (
     <div className={`section-content${isActive ? " active" : ""}`} aria-hidden={!isActive}>
       <></>
