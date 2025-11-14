@@ -1,0 +1,15 @@
+.section {
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 3rem;
+  color: white;
+}
+
+.section:nth-child(1) { background: #1e1e1e; }
+.section:nth-child(2) { background: #333; }
+.section:nth-child(3) { background: #555; }
