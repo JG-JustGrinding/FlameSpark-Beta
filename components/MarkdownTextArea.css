@@ -87,7 +87,7 @@
     width: 15px;
 }
 
-.submit-section .disabled {
+.input-options .submit-section .disabled {
     background-color: #525252;
     opacity: 0.5;
     pointer-events: none;

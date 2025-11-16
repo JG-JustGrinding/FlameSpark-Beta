@@ -1,19 +1,28 @@
 "use client";
+import { supabase } from '@/lib/supabaseClient';
 import React from 'react';
 import styles from './Header.module.css';
 import Link from 'next/link';
 
-// Reusable notification item component
-export default function Notification({ href = '#', colorClass = '', iconSrc = '/placeholder_generic.svg', title = 'Notification', timestamp = '', message = '' }) {
-  const Wrapper = href ? Link : React.Fragment;
+export default function Notification({ id = null, href = '#', colorClass = '', iconSrc = '/placeholder_generic.svg', title = 'Notification', timestamp = '', message = '' }) {
 
-  // If using Link, Next requires <a> inside; otherwise render a div
+  const handleClick = async (e) => {
+    e.preventDefault();
+    // Mark notification as read
+    const { error } = await supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("id", id);
+    // Navigate to the link
+    window.location.href = href;
+  }
+
   if (href) {
     return (
-      <a href={href} className={styles.notifItem}>
+      <a href={href} className={styles.notifItem} onClick={handleClick}>
         {colorClass && <div className={`${styles.colorBanner} ${styles[colorClass] || ''}`}></div>}
         <div className={styles.notifIcon}>
-          <img src={iconSrc} alt="Notification Icon" />
+          <img src={iconSrc ? iconSrc : "/placeholder_generic.svg"} alt="Notification Icon" />
         </div>
         <div className={styles.notifContent}>
           <div className={styles.titleAndDate}>

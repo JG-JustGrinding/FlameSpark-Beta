@@ -12,6 +12,7 @@ import { faBell, faStar } from '@fortawesome/free-regular-svg-icons';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
 import Notification from './notification';
+import NotificationPanel from './NotificationPanel';
 import SocialLinks from './SocialLinks';
 
 export default function Header({ forceAuthRedirect = false, isDashboardHeader = false, searchFieldText = "", project = null, onOpenMobileMenu = null }) {
@@ -34,13 +35,14 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
   const [unreadCount, setUnreadCount] = useState(0);
   const [goldenBadge, setGoldenBadge] = useState(false);
   const [badgePulse, setBadgePulse] = useState(false);
-  const [notifFilter, setNotifFilter] = useState('All');
+  const [notifFilter, setNotifFilter] = useState('');
   const notifFilters = ["All", "Projects", "Interactions", "Completions"];
   const socialEnabled = true;
 
-  // track unread counts per category; initially zero — you can wire these from the server
   const [unreadByFilter, setUnreadByFilter] = useState({ All: 0, Projects: 0, Interactions: 0, Completions: 0 });
+  const [supressCompletionsUnreadFilterIcon, setSupressCompletionsUnreadFilterIcon] = useState({ All: false, Projects: false, Interactions: false, Completions: false });
   const [socialOpen, setSocialOpen] = useState(false);
+
   const search = () => {
     if (!searchQuery.trim()) return;
   
@@ -56,6 +58,10 @@ export default function Header({ forceAuthRedirect = false, isDashboardHeader = 
   useEffect(() => {
     if (userSet && user == null && forceAuthRedirect) {
       router.push('/login');
+    }
+
+    if (user) {
+      setNotifFilter('All');
     }
   }, [userSet, user, forceAuthRedirect]);
 
@@ -108,6 +114,166 @@ useEffect(() => {
       document.removeEventListener('keydown', handleKey);
     };
   }, [userPanelOpen, notifOpen, socialOpen]);
+
+  const updateNotifications = async (opening) => {
+    if (!user) return;
+
+    if (!opening)
+    {
+      return
+    }
+
+    setUnreadCount(0 + unreadByFilter.Completions);
+    setUnreadByFilter(prev => {
+      const updated = {};
+
+      for (const key in prev) {
+        updated[key] = key.toLowerCase() === "completions" ? prev[key] : 0;
+      }
+
+      return updated;
+    });
+
+    await supabase
+    .from('profiles')
+    .update({ notifications_last_checked_at: new Date().toISOString() })
+    .eq('id', user?.id);
+  }
+
+useEffect(() => {
+  if (!user) return;
+
+  setSupressCompletionsUnreadFilterIcon(false);
+
+  const fetchUnread = async () => {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("notifications_last_checked_at")
+      .eq("id", user?.id)
+      .single();
+
+    if (!profile) return;
+
+    const { data: notifs } = await supabase
+      .from("notifications")
+      .select("id, category, created_at")
+      .eq("user_id", user?.id)
+      .or(
+        // normal notifications after last_checked
+        `created_at.gt.${profile.notifications_last_checked_at},` +
+        // completion notifications that are unread
+        `and(category.eq.completions:project_completion,is_read.eq.false)`
+      )
+      .order("created_at", { ascending: false });
+
+    if (!notifs) return;
+
+    const { count: completions } = await supabase
+      .from("notifications")
+      .select('*', { count: 'exact', head: true })
+      .eq("user_id", user?.id)
+      .eq("is_read", false)
+      .eq("category", "completions:project_completion");
+
+    // Count total unread
+    setUnreadCount(notifs.length);
+
+    // Assign to filters
+    const counters = {
+      All: notifs.length,
+      Projects: 0,
+      Interactions: 0,
+      Completions: completions || 0,
+    };
+
+    for (const n of notifs) {
+      const base = n.category.split(":")[0].trim().toLowerCase();
+      if (base === "projects") counters.Projects++;
+      if (base === "interactions") counters.Interactions++;
+    }
+
+    if (counters.Completions > 0) {
+      setGoldenBadge(true);
+    }
+
+    setUnreadByFilter(counters);
+  };
+
+  fetchUnread();
+}, [user]);
+
+useEffect(() => {
+  if (!user) return;
+
+  const channel = supabase
+    .channel("user_notifications")
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: `user_id=eq.${user?.id}`,
+      },
+      (payload) => {
+        // A new notification arrived
+        setUnreadCount(prev => prev + 1);
+
+        // Update filter unread counts
+        setUnreadByFilter(prev => {
+          const newCounts = { ...prev, All: prev.All + 1 };
+
+          if (payload.new.category.toLowerCase().includes("projects")) newCounts.Projects++;
+          if (payload.new.category.toLowerCase().includes("interactions")) newCounts.Interactions++;
+          if (payload.new.category.toLowerCase().includes("completions")) newCounts.Completions++;
+
+          return newCounts;
+        });
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, [user]);
+
+useEffect(() => {
+    const handle = async () => {
+      // When changing to completions filter, clear unread for that filter
+      if (notifFilter.toLowerCase() == 'completions') {
+        setSupressCompletionsUnreadFilterIcon(true);
+      }
+
+      // Subtract unread count for selected filter
+      setUnreadCount(prev => {
+        const filterUnread = unreadByFilter[notifFilter] || 0;
+        return Math.max(prev - filterUnread, 0);
+      });
+
+      // update the other filters to remove the count of other filters because user has viewed notifications
+      setUnreadByFilter(prev => {
+        const updated = {};
+
+        for (const key in prev) {
+          if (notifFilter.toLowerCase() === key.toLowerCase() || notifFilter.toLowerCase() === 'all') {
+            updated[key] = 0;
+          } else {
+            updated[key] = prev[key];
+          }
+        }
+        return updated;
+      });
+      
+      await supabase
+      .from('profiles')
+      .update({ notifications_last_checked_at: new Date().toISOString() })
+      .eq('id', user?.id);
+    }
+
+  handle();
+
+  }, [notifFilter]);
 
   return (
     <header className={`${styles.header} titleFont`}>
@@ -217,10 +383,7 @@ useEffect(() => {
                       setNotifOpen(opening);
                       setUserPanelOpen(false);
                       if (opening) {
-                        /* mark as read when opened (clear total badge) */
-                        setUnreadCount(0);
-                        /* clear unread for the currently selected filter */
-                        setUnreadByFilter(prev => ({ ...prev, [notifFilter]: 0, All: 0 }));
+                        updateNotifications(opening);
                       }
                     }}
                     aria-label="Open notifications"
@@ -236,7 +399,7 @@ useEffect(() => {
                   </button>
                   
                   <img ref={avatarRef} src={avatar} alt="User Avatar" className={`${styles.pfp} pfp-shape`}
-                        onClick={() => {setUserPanelOpen(!userPanelOpen); setNotifOpen(false); }} />
+                    onClick={() => {setUserPanelOpen(!userPanelOpen); setNotifOpen(false); }} />
                 </div>
                 <div ref={userDropdownRef} className={`${styles.userDropdown} ${userPanelOpen ? styles.open : ""}`}>
                   <div className={`${styles.userDisplay} ${styles.titleFont}`}>
@@ -244,7 +407,7 @@ useEffect(() => {
                     <span>{username}</span>
                   </div>
                   <div className={`${styles.options} ${styles.bodyFont}`}>
-                    <a href={`/user/${user.id}`}>
+                    <a href={`/user/${user?.id}`}>
                       <FontAwesomeIcon className={styles.optionIcon} icon={faUser} />
                       <span className="bodyFont">View Profile</span>
                     </a>
@@ -285,41 +448,16 @@ useEffect(() => {
           )}
       </div>
       {/* Notification panel */}
-      <div ref={notifRef} className={`${styles.notifPanel} ${notifOpen ? styles.open : ""}`}>
-        <div className={styles.notifHeader}>
-          <strong>Notifications</strong>
-          <div className={styles.notifFilters} role="tablist" aria-label="Notification filters">
-            {notifFilters.map((f) => (
-              <button
-                key={f}
-                className={`${styles.notifFilter} ${notifFilter === f ? styles.active : ''}`}
-                onClick={() => setNotifFilter(f)}
-                role="tab"
-                aria-selected={notifFilter === f}
-              >
-                {f}
-                {unreadByFilter[f] > 0 && <span className={`${styles.notifDot} ${f === "Completions" ? styles.golden : ""}`} aria-hidden="true"></span>}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className={`${styles.notifList} bodyFont`}>
-          {/* Placeholder - integrate real notifications later; filter state is available as `notifFilter` */}
-          <div className={styles.notifItemNoNew}>No new notifications</div>
-          <Notification
-            href="#"
-            colorClass="red"
-            iconSrc="/placeholder_generic.svg"
-            title="Notification Title"
-            timestamp="2h ago"
-            message="This is a sample notification content."
-          />
-        </div>
-        {/* Sticky social links footer inside the notification panel */}
-        <div className={styles.notifFooter}>
-          <SocialLinks />
-        </div>
-      </div>
+      <NotificationPanel
+        panelRef={notifRef}
+        open={notifOpen}
+        filters={notifFilters}
+        activeFilter={notifFilter}
+        onChangeFilter={setNotifFilter}
+        unreadByFilter={unreadByFilter}
+        suppressCompletionFilterIcon={supressCompletionsUnreadFilterIcon}
+        user={user}
+      />
     </header>
   );
 }

@@ -54,6 +54,7 @@ export default function ProjectPage(){
     const searchParams = useSearchParams();
     const isCompleted = useRef(false);
     const allowIgnoreComplete = false;
+    const [leaveMessage, setLeaveMessage] = useState(getRandomLeaveMessage());
 
     useEffect(() => {
         async function run(){
@@ -710,20 +711,20 @@ export default function ProjectPage(){
         }
     }
 
-    const messages = [
-        "It won’t be the same without you!",
-        "Your presence makes all the difference!",
-        "We’d love for you to be part of this journey!",  
-        "It’s people like you who make this possible!",
-        "Thanks for believing in what we’re creating!",
-        "You’re helping make something special happen!",
-        "Together, we can create something amazing.",
-        "The journey is more fun when shared.",
-        "Thank you for being part of the journey so far!",
-        "We’re grateful for every moment you share with us!"
-    ];
-
     function getRandomLeaveMessage() {
+        const messages = [
+            "It won’t be the same without you!",
+            "Your presence makes all the difference!",
+            "We’d love for you to be part of this journey!",  
+            "It’s people like you who make this possible!",
+            "Thanks for believing in what we’re creating!",
+            "You’re helping make something special happen!",
+            "Together, we can create something amazing.",
+            "The journey is more fun when shared.",
+            "Thank you for being part of the journey so far!",
+            "We’re grateful for every moment you share with us!"
+        ];
+
         const index = Math.floor(Math.random() * messages.length);
         return messages[index];
     }
@@ -810,7 +811,7 @@ export default function ProjectPage(){
                                 <span className="description">{project?.description}</span>
                                 <div className="actions">
                                     {!projectActionSet && <button className="button-shape bodyFont skeleton">Leave Project</button>}
-                                    {(!isOwner && hasJoined && projectActionSet) && <button className="button-shape bodyFont button-red-harsh" onClick={() => setLeaveProjectPanelOpen(true)}>Leave Project</button>}
+                                    {(!isOwner && hasJoined && projectActionSet) && <button className="button-shape bodyFont button-red-harsh" onClick={() => {setLeaveMessage(getRandomLeaveMessage()); setLeaveProjectPanelOpen(true)}}>Leave Project</button>}
                                     {(!isOwner && !hasJoined && projectActionSet) && <button className="button-shape bodyFont button-red" onClick={() => JoinProject()} disabled={isJoining}>{isJoining ? "Joining..." : "Join Project"}</button>}
                                     {(isOwner && projectActionSet) && <a href={`/project/${id}/dashboard`}><button className="button-shape bodyFont button-yellow">Project Dashboard</button></a>}
                                 </div>
@@ -833,7 +834,7 @@ export default function ProjectPage(){
                                 <h2 className="titleFont cardTitle">Project Description</h2>
                                 <span className="description">{project?.description}</span>
                                 <div className="actions">
-                                    {(!isOwner && hasJoined) && <button className="button-shape bodyFont button-red-harsh" onClick={() => setLeaveProjectPanelOpen(true)}>Leave Project</button>}
+                                    {(!isOwner && hasJoined) && <button className="button-shape bodyFont button-red-harsh" onClick={() => {setLeaveMessage(getRandomLeaveMessage()); setLeaveProjectPanelOpen(true)}}>Leave Project</button>}
                                     {(!isOwner && !hasJoined) && <button className="button-shape bodyFont button-red" onClick={() => JoinProject()} disabled={isJoining}>{isJoining ? "Joining..." : "Join Project"}</button>}
                                     {isOwner && <a href={`/project/${id}/dashboard`}><button className="button-shape bodyFont button-yellow">Project Dashboard</button></a>}
                                 </div>
@@ -938,8 +939,8 @@ export default function ProjectPage(){
                                         <h2 className="titleFont reset">{postTypes[postMainTypeIndex].name} Post{(creationSelectionIndex == 1 && currentPostIndex != 0) ? ` (Section ${currentPostIndex + 1})`: ""}</h2>
                                         {(creationSelectionIndex == 0 || (creationSelectionIndex == 1 && currentPostIndex == 0)) &&
                                         <>
-                                        <CappedInput label="Post Title (Optional)" maxLength={100} value={posts[currentPostIndex].postTitle} onChange={(e) => setPostTitle(e.target.value)} id="post-name"/>
-                                        <CappedInput label="Post Description (Optional)" maxLength={200} value={posts[currentPostIndex].postDescription} onChange={(e) => setPostDescription(e.target.value)} id="post-description"/>
+                                        <CappedInput label="Post Title" maxLength={100} value={posts[currentPostIndex].postTitle} onChange={(e) => setPostTitle(e.target.value)} id="post-name"/>
+                                        <CappedInput label="Post Description" maxLength={200} value={posts[currentPostIndex].postDescription} onChange={(e) => setPostDescription(e.target.value)} id="post-description"/>
                                         </>}
 
                                         <CappedInput className={`${posts[currentPostIndex].postType == "text" ? "" : "hide"}`} label="Text Content" maxLength={1500} value={posts[currentPostIndex].textContent} 
@@ -1111,7 +1112,7 @@ export default function ProjectPage(){
                     <div className="panel-content bodyFont">
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setLeaveProjectPanelOpen(false)}/>
                         <h2 className="titleFont reset">Are you sure you want to leave {project.title}?</h2>
-                        <span><i>“{getRandomLeaveMessage()}”</i></span>
+                        <span><i>“{leaveMessage}”</i></span>
                         <button className="button-shape button-red-harsh" onClick={() => LeaveProjectFunction()} disabled={isLeaving}>{isLeaving ? "Leaving..." : "Leave Project"}</button>
                     </div>
                 </div>

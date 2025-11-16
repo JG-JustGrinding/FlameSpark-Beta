@@ -1,15 +1,43 @@
-.section {
-  width: 100vw;
+.landing-container {
+  position: relative;
   height: 100vh;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-size: 3rem;
-  color: white;
+  width: 100%;
+  overflow: hidden; /* prevents normal scrolling */
+  touch-action: none; /* mobile swipe control */
 }
 
-.section:nth-child(1) { background: #1e1e1e; }
-.section:nth-child(2) { background: #333; }
-.section:nth-child(3) { background: #555; }
+.viewport {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.slides {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+.slide {
+  height: 100vh;
+  width: 100%;
+}
+
+/* Demo backgrounds */
+.slide-1 { background: #ffd369; }
+.slide-2 { background: #ff8c42; }
+.slide-3 { background: #8ecae6; }
+.slide-4 { background: #219ebc; }
+.slide-1 { background: #f6d365; }
+.slide-2 { background: #fda085; }
+.slide-3 { background: #a1c4fd; }
+.slide-4 { background: #c2e9fb; }
+
+/* For mobile swiping (to avoid "bounce") */
+html, body {
+  overscroll-behavior: none;
+  margin: 0;
+  padding: 0;
+}

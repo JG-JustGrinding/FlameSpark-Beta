@@ -79,7 +79,7 @@ export default function Poll({
         }
 
         if (hasVoted) return;
-
+        
         const { error } = await supabase.rpc("cast_vote", { p_option_id: optionId });
 
         if (error) {
