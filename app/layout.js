@@ -1,4 +1,4 @@
-import { Lato, Montserrat, Mouse_Memoirs } from 'next/font/google';
+import { Lato, Montserrat, Mouse_Memoirs, Quicksand } from 'next/font/google';
 import "./globals.css";
 
 const flameSparkFont = Mouse_Memoirs({
@@ -13,7 +13,7 @@ const lato = Lato({
   weight: ['400', '700'] 
 });
 
-const montserrat = Montserrat({ 
+const montserrat = Quicksand({ 
   variable: "--montserrat",
   subsets: ['latin'], 
   weight: ['400', '700'] 

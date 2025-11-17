@@ -1,0 +1,132 @@
+.slide-layout h2 {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin: 40px 0;
+}
+
+.slide-layout h3 {
+    font-size: 2rem;
+    font-weight: semi-bold;
+    margin-bottom: 10px;
+    margin: 0;
+}
+
+.slide-layout p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin: 0;
+    margin-bottom: 25px;
+    font-weight: bold;
+}
+
+.slide-layout {
+    padding: 60px 40px;
+}
+
+/* Generic two-column layout: text left, image right */
+.slide-layout .content-row {
+  display: flex;
+  gap: 32px;
+  align-items: center; /* vertically center image relative to text */
+}
+
+.slide-layout .content-row.reverse {
+  flex-direction: row-reverse;
+}
+
+.slide-layout .text-col {
+  flex: 1 1 60%;
+  min-width: 0;
+}
+
+.slide-layout .image-col {
+  flex: 0 0 40%;
+  display: flex;
+  justify-content: center;
+}
+
+.slide-layout .image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+}
+
+/* Stacked layout and centering helpers */
+.slide-layout .stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.slide-layout.centered {
+  text-align: center;
+}
+
+.slide-layout.centered .section-container p {
+  margin-left: 0;
+}
+
+/* Feature grid cards */
+.slide-layout .feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.slide-layout .feature-card {
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+}
+
+.slide-layout-0 {
+  display: flex;
+  flex-direction: column;
+  text-align: start;
+  gap: 40px;
+  padding: 40px;
+  height: 100%;
+  width: 100%;
+}
+
+.slide-layout-0 .section-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.slide-layout-0 .section-container p {
+    margin-left: 15px;
+}
+
+.slide-layout-0 p {
+    color: var(--flamespark-red);
+}
+
+.slide-layout .continue-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+/* Responsive: stack on narrow screens */
+@media (max-width: 900px) {
+  .slide-layout .content-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .slide-layout .image-col,
+  .slide-layout .text-col {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+  .slide-layout .image-col {
+    justify-content: center;
+  }
+
+  .slide-layout .feature-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}

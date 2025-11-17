@@ -276,11 +276,11 @@ export default function PostPage() {
                     </a>
                 </div>
                 <div className="content card">
-                        <div className="title-date">
-                            {post?.title && <h1 className="titleFont reset">{post?.title}</h1>}
-                            {post?.created_at &&  <p className="post-date label-color bodyFont reset">{timeAgo(post?.created_at)}</p>}
-                        </div>
-                        {post?.description && <h2 className="bodyFont reset normal-weight label-color">{post?.description}</h2>}
+                    <div className="title-date">
+                        {post?.title && <h1 className="titleFont reset">{post?.title}</h1>}
+                        {post?.created_at &&  <p className="post-date label-color bodyFont reset">{timeAgo(post?.created_at)}</p>}
+                    </div>
+                    {post?.description && <h2 className="bodyFont reset normal-weight label-color">{post?.description}</h2>}
                     <PostContentView postContent={post?.content} defaultStyling={true}/>
                     <div className="post-bottom bodyFont">
                         <div className={`rating${ratingLoading ? " skeleton" : ""}`}>

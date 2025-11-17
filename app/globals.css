@@ -47,7 +47,7 @@ body {
 }
 
 .titleFont {
-  font-family: var(--lato), var(--montserrat), sans-serif;
+  font-family: "quicksand", var(--lato), var(--montserrat), sans-serif;
 }
 
 .bodyFont {
@@ -147,6 +147,10 @@ body {
   background-color: transparent;
   color: var(--black);
   border: 1px solid var(--black);
+}
+
+.button-shape.full-round {
+  border-radius: 9999px;
 }
 
 .styled-link:not(:hover) {
