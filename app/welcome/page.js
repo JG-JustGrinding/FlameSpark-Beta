@@ -14,6 +14,7 @@ export default function LandingPage() {
   const [slide2CarouselDone, setSlide2CarouselDone] = useState(false);
   const carouselTimelineRef = useRef(null);
   const carouselIndexRef = useRef(0);
+  const hasSkippedRef = useRef(false);
   const messages = [
     "Most ideas never get even a chance to shine.",
     "Even the most amazing ideas can be overshadowed by more popular trends before they can be made into a complete creation.",
@@ -44,6 +45,7 @@ export default function LandingPage() {
       gsap.set(items, { opacity: 0 });
       setSlide2CarouselIndex(0);
       carouselIndexRef.current = 0;
+      hasSkippedRef.current = false;
       setSlide2CarouselDone(false);
 
       const tl = gsap.timeline({ paused: false });
@@ -52,11 +54,15 @@ export default function LandingPage() {
       items.forEach((el, i) => {
         // For last item, keep it visible and set done
         tl.addLabel(`item-${i}-in`);
-        tl.call(() => { setSlide2CarouselIndex(i); carouselIndexRef.current = i; });
-        tl.to(el, { opacity: 1, duration: 1.4, ease: 'power2.out' });
+        tl.call(() => { 
+          setSlide2CarouselIndex(i); 
+          carouselIndexRef.current = i;
+          hasSkippedRef.current = false; // Reset skip flag for new item
+        });
+        tl.to(el, { opacity: 1, duration: 1.0, ease: 'power2.out' });
         if (i < items.length - 1) {
           // hold, then mark fade-out start label, then fade out
-          tl.to({}, { duration: 3.2 });
+          tl.to({}, { duration: 2.6 });
           tl.addLabel(`item-${i}-out`);
           tl.to(el, { opacity: 0, duration: 1.2, ease: 'power2.in' });
         } else {
@@ -70,19 +76,54 @@ export default function LandingPage() {
 
   // Click handler to speed progression
   const speedUpCarousel = () => {
-    if (slide2Index !== 1) return;
+    if (!carouselTimelineRef.current) return;
     const tl = carouselTimelineRef.current;
-    if (!tl || slide2CarouselDone) return;
-    const i = carouselIndexRef.current;
-    if (i >= messages.length - 1) return; // last item has no fade-out
-    // Try to jump to this item's fade-out start
-    const label = `item-${i}-out`;
-    const t = typeof tl.getLabelTime === 'function' ? tl.getLabelTime(label) : -1;
-    if (t >= 0) {
-      tl.play(t);
-      return;
+    const currentIdx = carouselIndexRef.current;
+    
+    // If we're on the last item or already done, do nothing
+    if (currentIdx >= messages.length - 1 || slide2CarouselDone) return;
+    
+    // If we've already skipped this item, don't skip again
+    if (hasSkippedRef.current) return;
+    
+    // Jump to the fade-out label of the current item
+    const fadeOutLabel = `item-${currentIdx}-out`;
+    if (tl.labels[fadeOutLabel] !== undefined) {
+      hasSkippedRef.current = true;
+      tl.seek(fadeOutLabel);
     }
-    // If no label (e.g., already at last), do nothing
+  };
+
+  const goToNextMessage = () => {
+    if (!carouselTimelineRef.current) return;
+    const tl = carouselTimelineRef.current;
+    const currentIdx = carouselIndexRef.current;
+    
+    // If we're on the last item, do nothing
+    if (currentIdx >= messages.length - 1) return;
+    
+    // Jump to the next item's fade-in label
+    const nextIdx = currentIdx + 1;
+    const nextLabel = `item-${nextIdx}-in`;
+    if (tl.labels[nextLabel] !== undefined) {
+      tl.seek(nextLabel);
+    }
+  };
+
+  const goToPrevMessage = () => {
+    if (!carouselTimelineRef.current) return;
+    const tl = carouselTimelineRef.current;
+    const currentIdx = carouselIndexRef.current;
+    
+    // If we're on the first item, do nothing
+    if (currentIdx <= 0) return;
+    
+    // Jump to the previous item's fade-in label
+    const prevIdx = currentIdx - 1;
+    const prevLabel = `item-${prevIdx}-in`;
+    if (tl.labels[prevLabel] !== undefined) {
+      tl.seek(prevLabel);
+    }
   };
 
   const { containerRef, scrollToPage } = usePageScroller({
@@ -109,9 +150,9 @@ export default function LandingPage() {
             <img src="/logo_NoPadding_Transparent.png" alt="FlameSpark logo" />
           </a>
           <nav className="nav" aria-label="Primary">
+            <a href="/blogs" className="bodyFont">Blogs</a>
             <a href="/" className="bodyFont">Discover</a>
             <a href="/explore" className="bodyFont">Explore</a>
-            <a href="/create" className="bodyFont">Create</a>
           </nav>
           <div className="cta">
             <a href="/signup" className="button-shape red-color bodyFont" aria-label="Sign up">Become a Beta Tester</a>
@@ -138,7 +179,7 @@ export default function LandingPage() {
               </div>
             </div>
           </section>
-          <section className="slide slide-2" onClick={speedUpCarousel}>
+          <section className="slide slide-2" onClick={goToNextMessage}>
             {slide2Index === 0 && (
               <div className="title-card">
                 <h2 className="titleFont">The Problem</h2>

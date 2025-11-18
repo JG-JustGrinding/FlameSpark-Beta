@@ -214,7 +214,6 @@ body {
   align-items: center;
   cursor: pointer;
   margin-top: 30px;
-  margin-bottom: 15px;
 }
 
 .slide-2 {
@@ -265,6 +264,9 @@ body {
   text-align: center;
   font-size: 1.65rem;
   display: none;
+  min-height: 165px;
+  align-items: end;
+  justify-content: center;
 }
 
 .text-carousel .carousel-item.active {
@@ -331,7 +333,7 @@ body {
   display: flex;
   gap: 8px;
   justify-content: center;
-  margin-top: 6px;
+  margin-top: 3px;
 }
 
 .slide-2 .progress-dot {

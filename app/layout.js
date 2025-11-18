@@ -13,11 +13,18 @@ const lato = Lato({
   weight: ['400', '700'] 
 });
 
-const montserrat = Quicksand({ 
+const montserrat = Montserrat({ 
   variable: "--montserrat",
   subsets: ['latin'], 
   weight: ['400', '700'] 
 });
+
+const quicksand = Quicksand({ 
+  variable: "--quicksand",
+  subsets: ['latin'], 
+  weight: ['400', '700'] 
+});
+
 export const metadata = {
   title: "FlameSpark",
   description: "Where the Go-Getters Grow",
@@ -26,7 +33,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${lato.variable} ${montserrat.variable} ${flameSparkFont.variable}`}>
+      <body className={`${lato.variable} ${montserrat.variable} ${quicksand.variable} ${flameSparkFont.variable}`}>
         {children}
       </body>
     </html>

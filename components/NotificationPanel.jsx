@@ -5,6 +5,8 @@ import Notification from "./notification";
 import SocialLinks from "./SocialLinks";
 import { fetchUserNotifications, timeAgo } from "@/lib/projectFunctions";
 import { BetterPaginator } from "@/lib/infinitePostFeed";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faNewspaper } from "@fortawesome/free-solid-svg-icons";
 
 export default function NotificationPanel({
   panelRef,
@@ -55,7 +57,13 @@ export default function NotificationPanel({
       aria-label="Notifications panel"
     >
       <div className={styles.notifHeader}>
-        <strong>Notifications</strong>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <strong style={{fontSize: '1.35rem'}}>Notifications</strong>
+          <a href="/blogs"style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <FontAwesomeIcon icon={faNewspaper} />
+            <h4 className="reset" style={{ fontWeight: 'bold', fontSize: '0.95rem' }}>Blogs</h4>
+          </a>
+        </div>
         <div
           className={styles.notifFilters}
           role="tablist"

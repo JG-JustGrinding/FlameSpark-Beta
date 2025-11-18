@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import '../lib/fontawesome'
 import { useUser } from "@/lib/useUser";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faInbox, faUser, faGear, faInfo, faPencil, faBell as faBellSolid, faInfoCircle, faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faInbox, faUser, faGear, faInfo, faPencil, faBell as faBellSolid, faInfoCircle, faStar as faStarSolid, faNewspaper } from '@fortawesome/free-solid-svg-icons'
 import { faBell, faStar } from '@fortawesome/free-regular-svg-icons';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
@@ -324,6 +324,7 @@ useEffect(() => {
           <a href="/home">Home</a>
           <a href="/explore">Explore</a>
           <a href="/create">Create</a>
+          {!user && <a href="/blogs">Blogs</a>}
         </nav>
         {/* Mobile menu search button: visible inside the mobile menu (helpful for very small screens) */}
         <div className={styles.mobileMenuSearchButtonContainer}>
@@ -425,8 +426,6 @@ useEffect(() => {
                 </>
               ) : (
                 <>
-                  <a href="/login"><button className={`${styles.logIn} ${styles.animate}`}>Log In</button></a>
-                  <a href="/signup"><button className={`${styles.signUp} ${styles.animate}`}>Sign Up</button></a>
                   <div className={styles.socialWrapper}>
                     <button
                       ref={socialButtonRef}
@@ -442,6 +441,8 @@ useEffect(() => {
                       <SocialLinks />
                     </div>
                   </div>
+                  <a href="/login"><button className={`${styles.logIn} ${styles.animate}`}>Log In</button></a>
+                  <a href="/signup"><button className={`${styles.signUp} ${styles.animate}`}>Sign Up</button></a>
                 </>
               )}
             </>

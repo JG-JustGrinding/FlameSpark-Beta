@@ -43,11 +43,11 @@ body {
 
 .flameSparkFont {
   /* Ensure font-family fallbacks are comma-separated so the browser can resolve them correctly */
-  font-family: var(--flameSpark-font), var(--lato), sans-serif;
+  font-family: var(--flameSpark-font), var(--quicksand), var(--lato), sans-serif;
 }
 
 .titleFont {
-  font-family: "quicksand", var(--lato), var(--montserrat), sans-serif;
+  font-family: var(--quicksand), var(--montserrat), sans-serif;
 }
 
 .bodyFont {
