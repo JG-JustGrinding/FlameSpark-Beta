@@ -17,6 +17,15 @@
   background: transparent;
   text-decoration: none;
   transition: background 150ms ease, transform 120ms ease, color 150ms ease;
+  gap: 8px;
+  padding: 0 8px;
+  width: auto;
+  min-width: 34px;
+}
+
+.icon span {
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .icon:hover {
@@ -24,7 +33,7 @@
   transform: translateY(-2px);
 }
 
-.icon :global(svg) {
+.icon :global(svg):not(.fontSizeControl) {
   width: 18px;
   height: 18px;
 }
