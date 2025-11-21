@@ -7,7 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import '../lib/fontawesome'
 import { useUser } from "@/lib/useUser";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faInbox, faUser, faGear, faInfo, faPencil, faBell as faBellSolid, faGlobe, faInfoCircle, faStar as faStarSolid, faNewspaper } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faBullhorn, faInbox, faUser, faGear, faInfo, faPencil, faBell as faBellSolid, faGlobe, faInfoCircle, faStar as faStarSolid, faNewspaper } from '@fortawesome/free-solid-svg-icons'
 import { faBell, faStar } from '@fortawesome/free-regular-svg-icons';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons'
 import Link from "next/link";
@@ -435,7 +435,7 @@ useEffect(() => {
                       aria-haspopup="true"
                       aria-expanded={socialOpen}
                     >
-                      {socialEnabled && <FontAwesomeIcon className={styles.socialWrapperIcon} icon={faGlobe} />}
+                      {socialEnabled && <FontAwesomeIcon className={styles.socialWrapperIcon} icon={faBullhorn} />}
                     </button>
                     <div ref={socialRef} className={`${styles.socialDropdown} ${socialOpen ? styles.open : ''}`}>
                       <a href="/blogs" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontWeight: 'bold', justifyContent: 'center' }}>
