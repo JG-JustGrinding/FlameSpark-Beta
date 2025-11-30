@@ -7,40 +7,30 @@ const blogPosts = [
   {
     id: "the-story-of-flamespark",
     title: "The Story of FlameSpark: Where the Go-Getters Grow",
-    excerpt: "Learn how to create your first project and start sharing your ideas with the community.",
-    coverImage: "https://t3.ftcdn.net/jpg/01/37/95/98/360_F_137959806_doSGnNfHz3smjII5ATZpBpHELJie82Vb.jpg",
+    excerpt: "The why, how, and what behind **FlameSpark**: the platform that gives everyone a chance to shine.",
+    coverImage: "/Thumbnail_Future.png",
     author: "FlameSpark",
     authorImage: "/FLAMESPARK_WITHBG_CIRCULAR.svg",
-    date: "2025-11-15",
+    date: "2025-11-30",
+    readTime: "2 min read",
+    tags: ["Introduction", "Innovation"],
+    showDate: false,
+  },
+  {
+    id: "how-traditional-social-media-kills-ideas",
+    title: "How Traditional Social Media Kills Ideas",
+    excerpt: "How social media platforms prioritize popularity over potential, preventing new ideas from getting the recognition they deserve.",
+    coverImage: "/Thumbnail_Fail.png",
+    author: "FlameSpark",
+    authorImage: "/FLAMESPARK_WITHBG_CIRCULAR.svg",
+    date: "2025-11-30",
     readTime: "5 min read",
-    tags: ["Tutorial", "Getting Started"]
+    tags: ["Social Media", "Revelation"],
+    showDate: false,
   },
-  {
-    id: 2,
-    title: "Building a Community Around Your Project",
-    excerpt: "Discover strategies to engage supporters and grow an active community for your creative projects.",
-    coverImage: "https://t3.ftcdn.net/jpg/01/37/95/98/360_F_137959806_doSGnNfHz3smjII5ATZpBpHELJie82Vb.jpg",
-    author: "FlameSpark",
-    authorImage: "/FLAMESPARK_WITHBG_CIRCULAR.svg",
-    date: "2025-11-10",
-    readTime: "8 min read",
-    tags: ["Community", "Tips"]
-  },
-  {
-    id: 3,
-    title: "The Power of Early-Stage Ideas",
-    excerpt: "Why sharing your ideas early can lead to better feedback and stronger final products.",
-    coverImage: "https://t3.ftcdn.net/jpg/01/37/95/98/360_F_137959806_doSGnNfHz3smjII5ATZpBpHELJie82Vb.jpg",
-    author: "FlameSpark",
-    authorImage: "/FLAMESPARK_WITHBG_CIRCULAR.svg",
-    date: "2025-11-05",
-    readTime: "6 min read",
-    tags: ["Ideas", "Innovation"]
-  }
 ];
 
 export default function Blogs() {
-
   return (
     <div className="blogs-page">
       <Header />
@@ -63,6 +53,7 @@ export default function Blogs() {
               date={post.date}
               readTime={post.readTime}
               tags={post.tags}
+              showDate={post.showDate}
             />
           ))}
         </div>

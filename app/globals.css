@@ -89,6 +89,10 @@ body {
   text-align: center;
 }
 
+.button-shape.slim {
+  padding: .25em 2rem;
+}
+
 .input-field {
   padding: 10px;
   border-radius: 5px;

@@ -7,7 +7,7 @@ import { faClock, faCalendar, faArrowLeft, faHeart as faHeartSolid, faSpinner } 
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import "@/styles/BlogArticle.css";
 
-export default function BlogArticle({ blogId, article, children }) {
+export default function BlogArticle({ blogId, article, children, related = null }) {
   const { liked, count, like, unlike, actionInProgress, loading } = useBlogLike(blogId);
 
   const handleLike = () => {
@@ -40,9 +40,9 @@ export default function BlogArticle({ blogId, article, children }) {
                 <span className="bodyFont">{article.author}</span>
               </div>
               <div className="meta-info bodyFont">
-                <span>
+                {article.showDate && <span>
                   <FontAwesomeIcon icon={faCalendar} /> {new Date(article.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                </span>
+                </span>}
                 <span>
                   <FontAwesomeIcon icon={faClock} /> {article.readTime}
                 </span>
@@ -59,6 +59,26 @@ export default function BlogArticle({ blogId, article, children }) {
           <div className="article-body bodyFont">
             {children}
           </div>
+
+          {related && (
+            <div className="related-article">
+              <h3 className="titleFont related-title">Related Article</h3>
+              <a className="related-card" href={related.href || '#'}>
+                <div className="related-media">
+                  <img src={related.coverImage} alt={related.title} />
+                </div>
+                <div className="related-info">
+                  <span className="bodyFont related-link">Read Article →</span>
+                  <div className="related-text">
+                    <h4 className="titleFont">{related.title}</h4>
+                    {related.description && (
+                      <p className="bodyFont related-description label-color">{related.description}</p>
+                    )}
+                  </div>
+                </div>
+              </a>
+            </div>
+          )}
 
           {blogId && <div className="article-likes">
             <button 
