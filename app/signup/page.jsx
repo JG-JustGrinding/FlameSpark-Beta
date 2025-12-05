@@ -105,7 +105,7 @@ export default function SignupPage() {
             <button className="right button button-shape bodyFont cursor-default">Sign Up</button>
           </div>
 
-          <h1 className="titleFont header-size">Sign Up for FlameSpark-BETA</h1>
+          <h1 className="titleFont header-size">Sign Up for FlameSpark-Beta!</h1>
 
           {error && <p className="titleFont error-message">{error}</p>}
 
