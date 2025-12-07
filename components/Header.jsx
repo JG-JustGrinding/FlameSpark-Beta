@@ -276,7 +276,7 @@ useEffect(() => {
   }, [notifFilter]);
 
   return (
-    <header className={`${styles.header} titleFont`}>
+    <header className={`${styles.header} titleFont` + (isDashboardHeader ? ` ${styles.dashboardNav}` : '')}>
 
       {/* Logo */}
       <div className={styles.logoContainer}>
@@ -308,9 +308,9 @@ useEffect(() => {
         </>
       ) : (
         <>
-          <a href="/">Discover</a>
           <a href={`/project/${project.id}/preview`}>Project Preview</a>
           <a href={`/project/${project.id}`}>View Project</a>
+          <a href="/">Exit</a>
         </>
       )}
       </nav>

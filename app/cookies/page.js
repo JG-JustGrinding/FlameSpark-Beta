@@ -1,10 +1,23 @@
-"use client";
 import Header from "@/components/Header";
 import PolicyPage from "@/styles/PolicyPage.css";
 
+export const metadata = {
+  title: "Cookies Policy - FlameSpark",
+  description: "Our cookies policy and how we use cookies on FlameSpark.",
+  openGraph: {
+    title: "Cookies Policy - FlameSpark",
+    description: "Our cookies policy and how we use cookies on FlameSpark.",
+    url: `${process.env.DOMAIN_NAME}/cookies`,
+  },
+  twitter: {
+    card: "summary",
+    title: "Cookies Policy - FlameSpark",
+    description: "Our cookies policy and how we use cookies on FlameSpark.",
+  },
+};
+
 export default function CookiesPage() {
     // The policy can be found on termly
-
     const html = 
     `<style>
   [data-custom-class='body'], [data-custom-class='body'] * {

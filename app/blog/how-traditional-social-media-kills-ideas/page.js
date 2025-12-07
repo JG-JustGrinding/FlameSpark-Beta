@@ -6,16 +6,16 @@ import { faInstagram, faTiktok, faTwitch, faYoutube } from "@fortawesome/free-br
 import { faDice } from "@fortawesome/free-solid-svg-icons";
 
 export default function HowTraditionalSocialMediaKillsIdeas() {
-  const article = {
-    title: "How Traditional Social Media Kills Ideas",
-    coverImage: "/Thumbnail_Fail.png",
-    author: "FlameSpark",
-    authorImage: "/FLAMESPARK_WITHBG_CIRCULAR.svg",
-    date: "2025-11-30",
-    readTime: "5 min read",
-    tags: ["Social Media", "Revelation"],
-    likes: 0,
-    showDate: false,
+    const article = {
+        title: "How Traditional Social Media Kills Ideas",
+        coverImage: "/Thumbnail_Fail.png",
+        author: "FlameSpark",
+        authorImage: "/FLAMESPARK_WITHBG_CIRCULAR.svg",
+        date: "2025-11-30",
+        readTime: "5 min read",
+        tags: ["Social Media", "Revelation"],
+        likes: 0,
+        showDate: false,
     }
 
   return (

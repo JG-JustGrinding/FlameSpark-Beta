@@ -3,10 +3,11 @@
 import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Link from "next/link";
-import Header from "@/components/Header";
+import Header from "@/components/Header.jsx";
 import styles from "@/styles/create.module.css";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default function CreatePage() {
   const router = useRouter();

@@ -1,7 +1,41 @@
-"use client";
 import Header from "@/components/Header";
 import BlogCard from "@/components/BlogCard";
 import "@/styles/BlogsPage.css";
+
+export const metadata = {
+  title: "Blogs - FlameSpark",
+  description: "Stories, insights, and more from FlameSpark!",
+
+  alternates: {
+    canonical: `${process.env.DOMAIN_NAME}/blogs`,
+  },
+
+  openGraph: {
+    title: "FlameSpark Blogs: Stories, Insights, and More!",
+    description:
+      "Stories, insights, and more from FlameSpark.",
+    url: `${process.env.DOMAIN_NAME}/blogs`,
+    siteName: "FlameSpark",
+    type: "website",
+    images: [
+      {
+        url: `${process.env.DOMAIN_NAME}/blogs_banner.png`,
+        width: 1200,
+        height: 630,
+        alt: "FlameSpark Blogs Banner",
+      }
+    ],
+    authors: ["FlameSpark"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "FlameSpark Blogs: Stories, Insights, and More!",
+    description:
+      "Stories, insights, and more from FlameSpark.",
+    images: [`${process.env.DOMAIN_NAME}/blogs_banner.png`],
+    creator: "@FlameSpark",
+  },
+};
 
 const blogPosts = [
   {
@@ -42,8 +76,8 @@ export default function Blogs() {
 
         <div className="blogs-grid">
           {blogPosts.map((post) => (
-            <BlogCard 
-              key={post.id} 
+            <BlogCard
+              key={post.id}
               id={post.id}
               title={post.title}
               excerpt={post.excerpt}

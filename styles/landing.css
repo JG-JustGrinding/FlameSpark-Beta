@@ -2,6 +2,7 @@
 
 html {
   scroll-behavior: smooth;
+  --light-background: #eef0f2;
 }
 
 /* Landing Header */
@@ -13,7 +14,7 @@ html {
   background: var(--flamespark-background);
   z-index: 1000;
   padding: 16px 0;
-  border-bottom: 1px solid #eef0f2;
+  border-bottom: 1px solid var(--light-background);
   transform: translateY(0);
   transition: transform 0.3s ease;
 }
@@ -169,9 +170,8 @@ html {
   color: var(--white) !important;
 }
 
-/* Common Container */
 .landing-container {
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -216,7 +216,7 @@ html {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background-color: #eef0f2;
+  background-color: var(--light-background);
   color: var(--black);
   padding: 120px 0 80px;
   scroll-margin-top: 80px;
@@ -307,7 +307,7 @@ html {
 
 .hero-image img {
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   height: auto;
   filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.2));
   animation: glowPulse 6.5s ease-in-out infinite;
@@ -335,10 +335,10 @@ html {
 
 /* About Section */
 .landing-about {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  background: var(--white);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background-color: var(--light-background);
 }
 
 .about-split {
@@ -378,7 +378,6 @@ html {
   justify-content: center;
   padding: 80px 60px;
   padding-top: 20px;
-  background: var(--white);
 }
 
 .about-content h2 {
@@ -455,11 +454,11 @@ html {
 
 /* CTA Cards Section */
 .landing-cta-cards {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  background: var(--white);
-  padding: 100px 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background-color: var(--light-background);
+    padding: 100px 0;
 }
 
 .cta-cards-grid {
@@ -469,19 +468,19 @@ html {
 }
 
 .cta-card {
-  padding: 40px;
-  background: var(--white);
-  border: 2px solid #ccc;
-  border-radius: 16px;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  color: var(--black);
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    background-color: var(--light-background);
+    border: 2px solid #ccc;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: var(--black);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
 .cta-card::before {
@@ -547,7 +546,7 @@ html {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 

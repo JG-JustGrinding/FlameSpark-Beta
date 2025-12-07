@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PrimaryPageLayout from "@/components/PrimaryPageLayout";
 import PrimaryProject from "@/components/PrimaryProject";
 import "@/styles/SearchPage.css";
@@ -23,7 +23,9 @@ export default function Search() {
     {
         //router.push("/");
     }
-  
+
+    document.title = `Search Results for '${searchQuery}' - FlameSpark`;
+
     return (
         <PrimaryPageLayout title={`Search Results for '${searchQuery}'`} description={loading ? "Loading..." : `${itemCount} Result${itemCount != 1 ? "s" : ""}`} searchFieldText={query}>
             <div className="search">

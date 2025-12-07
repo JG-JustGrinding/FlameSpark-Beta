@@ -828,16 +828,22 @@
 }
 
 @media(max-width: 1024px) {
-    .header .navLinks {
+    .header:not(.dashboardNav) .navLinks {
         display: none;
     }
 
-    .header .hamburger {
+    .header:not(.dashboardNav) .hamburger {
         display: flex;
     }
 
     .header .userDropdown .options .blogsOption {
         display: none !important;
+    }
+}
+
+@media(max-width: 875px) {
+    .header.dashboardNav .navLinks {
+        display: none;
     }
 }
 
@@ -851,6 +857,10 @@
     }
 
     .header .mobileOnly {
+        display: flex;
+    }   
+
+    .header.dashboardNav .hamburger {
         display: flex;
     }
 }

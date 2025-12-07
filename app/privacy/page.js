@@ -1,6 +1,20 @@
-"use client";
 import Header from "@/components/Header";
 import PolicyPage from "@/styles/PolicyPage.css";
+
+export const metadata = {
+  title: "Privacy Policy - FlameSpark",
+  description: "Learn how FlameSpark collects, uses, and protects your personal information.",
+  openGraph: {
+    title: "Privacy Policy - FlameSpark",
+    description: "Learn how FlameSpark collects, uses, and protects your personal information.",
+    url: `${process.env.DOMAIN_NAME}/privacy`,
+  },
+  twitter: {
+    card: "summary",
+    title: "Privacy Policy - FlameSpark",
+    description: "Learn how FlameSpark collects, uses, and protects your personal information.",
+  },
+};
 
 export default function PrivacyPage() {
     // The policy can be found on termly

@@ -1,5 +1,5 @@
 "use client";
-import Header from "@/components/Header";
+import Header from "@/components/Header.jsx";
 import styles from "@/styles/ErrorPage.module.css";
 import { useRouter } from "next/navigation";
 
