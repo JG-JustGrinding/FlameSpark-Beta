@@ -144,12 +144,35 @@
         }
 
 .header .authButtons .pfp {
-    max-height: 100%;
-    aspect-ratio: 1 / 1;
-    width: auto;
-    background-color: rgba(0, 0, 0, 0.2);
     height: 40px;
+    width: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: rgba(0, 0, 0, 0.08);
     cursor: pointer;
+    overflow: hidden;
+}
+
+/* Optional: smoother appearance before image loads */
+.header .authButtons .pfp::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.1), rgba(0,0,0,0.06));
+    animation: pfpShimmer 1.4s ease-in-out infinite;
+}
+
+.header .authButtons .pfp[src]::before {
+    content: none; /* hide shimmer once src is present */
+}
+
+@keyframes pfpShimmer {
+    0% { background-position: -100% 0; }
+    100% { background-position: 200% 0; }
 }
 
 .header .authButtons .inbox {
