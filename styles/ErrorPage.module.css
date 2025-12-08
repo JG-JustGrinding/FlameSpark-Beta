@@ -62,6 +62,16 @@
   margin-top: 20px;
 }
 
+@media(max-width: 1200px) {
+  .warningBody {
+    padding: 80px;
+  }
+
+  .warningBody h1 {
+    font-size: 64px;
+  }
+}
+
 @media(max-width: 768px) {
   .main {
     flex-direction: column;

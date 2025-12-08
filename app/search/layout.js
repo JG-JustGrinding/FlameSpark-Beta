@@ -6,12 +6,11 @@ export const metadata = {
 		follow: true,
 	},
 
-    alternates: {
-        canonical: `${process.env.DOMAIN_NAME}/search`,
-    },
+	alternates: {
+		canonical: `${process.env.DOMAIN_NAME}/search`,
+	},
 };
 
 export default function SearchLayout({ children }) {
 	return children;
 }
-

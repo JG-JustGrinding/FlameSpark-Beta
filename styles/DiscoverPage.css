@@ -1,0 +1,51 @@
+.paginator-load-more {
+    width: 100%;
+}
+
+.end-of-discover {
+    width: 100%;
+    margin: 24px auto 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.end-of-discover .titleFont {
+    display: block;
+    text-align: center;
+    font-size: 1.35rem;
+}
+
+.end-of-discover p {
+    text-align: center;
+    color: var(--black);
+}
+
+.end-of-discover .cta {
+    display: inline-block;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: var(--flamespark-red);
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 700;
+    transition: transform 120ms ease, filter 120ms ease;
+}
+
+.end-of-discover .cta:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+@media (max-width: 640px) {
+    .end-of-discover {
+        padding: 18px;
+        border-radius: 14px;
+    }
+    .end-of-discover .titleFont {
+        font-size: 1.15rem;
+    }
+}

@@ -2,7 +2,7 @@
 import Header from "@/components/Header";
 import styles from "@/styles/ErrorPage.module.css";
 
-export default function NotFound() {
+export default function ErrorPage() {
   return (
     <div className={styles.container}>
       <Header />

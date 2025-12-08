@@ -1,0 +1,100 @@
+.create-page-login-notice {
+  max-width: 600px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.create-page-login-notice .overlay-close {
+    color: white;
+}
+
+.create-page-login-notice-content {
+  padding: 32px;
+  text-align: center;
+}
+
+.create-page-login-notice-header {
+  background: linear-gradient(135deg, var(--flamespark-orange) 0%, var(--flamespark-red) 100%);
+  padding: 24px 32px;
+  margin: 0;
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.create-page-login-notice-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  background-color: var(--flamespark-background);
+  border-radius: 50%;
+}
+
+.create-page-login-notice-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--white);
+  text-align: center;
+}
+
+.create-page-login-notice-content p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-color);
+  margin: 0 0 30px 0;
+}
+
+.create-page-login-notice-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.create-page-login-notice-actions a {
+  padding: 12px 24px;
+  font-size: 1rem;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 140px;
+  text-align: center;
+}
+
+.create-page-login-notice-actions a.primary {
+  background: var(--flamespark-red);
+  color: var(--white);
+  border: 2px solid var(--flamespark-red);
+}
+
+.create-page-login-notice-actions a.primary:hover {
+  background: var(--flamespark-red);
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.create-page-login-notice-actions a.secondary {
+  background: var(--white);
+  color: var(--flamespark-orange);
+  border: 2px solid var(--flamespark-orange);
+}
+
+.create-page-login-notice-actions a.secondary:hover {
+  background: var(--flamespark-orange);
+  color: var(--white);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 500px) {
+  .create-page-login-notice-actions {
+    flex-direction: column-reverse;
+  }
+  
+  .create-page-login-notice-actions a {
+    min-width: 100%;
+  }
+}

@@ -1,3 +1,6 @@
+import { supabaseServerClient } from "@/lib/supabaseServerClient";
+import { redirect } from "next/navigation";
+
 export const metadata = {
   title: "Log In - FlameSpark",
   description: "Log in to your FlameSpark account to follow projects and support upcoming ideas and creations.",
@@ -21,6 +24,13 @@ export const metadata = {
   },*/
 };
 
-export default function LoginLayout({ children }) {
+export default async function LoginLayout({ children }) {
+  const supabase = await supabaseServerClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    redirect("/");
+  }
+
   return children;
 }

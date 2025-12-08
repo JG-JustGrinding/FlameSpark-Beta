@@ -244,6 +244,12 @@ input[type="file"] {
   cursor: pointer;
 }
 
+input.disabled, textarea.disabled, .disabled {
+    cursor: default;
+    background-color: rgba(230, 230, 230, 0.3);
+    color: rgb(84, 84, 84);
+    opacity: 0.7;
+}
 
 @keyframes shimmer {
   100% {

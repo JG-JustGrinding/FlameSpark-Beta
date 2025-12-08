@@ -2,9 +2,10 @@ import Header from "@/components/Header";
 import UserClient from "./UserClient.jsx";
 import { supabase } from "@/lib/supabaseClient.js";
 import { getUser, getUserJoinedProjects } from "@/lib/projectFunctions";
+import ErrorPage from "@/components/error.jsx";
 
 export default async function UserPage({ params }) {
-  const { id } = params;
+  const { id } = await params;
   let error = null;
   let user = null;
   let projects = [];
@@ -29,11 +30,51 @@ export default async function UserPage({ params }) {
     error = err.message;
   }
 
+  if (error) {
+    return (
+      <>
+        <ErrorPage />
+      </>
+    );
+  }
+
   return (
     <>
       <Header />
-      {error && <span className="error-message bodyFont">{error}</span>}
       <UserClient user={user} projects={projects} joinedProjects={joinedProjects} />
     </>
   );
+}
+
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+
+  try {
+    const { data: userData, error } = await getUser(id);
+
+    if (error || !userData) throw error || new Error("User not found");
+
+    return {
+      title: `${userData.username ? userData.username : "No Username"} - Profile | FlameSpark`,
+      description: `View ${userData.username ? userData.username : "No Username"}'s profile on FlameSpark. See their created projects, joined projects, and activity.`,
+      openGraph: {
+        title: `${userData.username ? userData.username : "No Username"} - Profile | FlameSpark`,
+        description: `View ${userData.username ? userData.username : "No Username"}'s profile on FlameSpark. See their created projects, joined projects, and activity.`,
+        url: `https://flamespark.com/user/${id}`,
+        images: userData.avatar_url ? [userData.avatar_url] : undefined,
+        type: "profile",
+      },
+      twitter: {
+        card: "summary",
+        title: `${userData.username ? userData.username : "No Username"} - Profile | FlameSpark`,
+        description: `View ${userData.username ? userData.username : "No Username"}'s profile on FlameSpark.`,
+        images: userData.avatar_url ? [userData.avatar_url] : undefined,
+      },
+    };
+  } catch (err) {
+    return {
+      title: `User Not Found | FlameSpark`,
+      description: `The requested user does not exist.`,
+    };
+  }
 }

@@ -35,7 +35,7 @@ export default function CompletedProject({
 
         {links && links.length > 0 && (
           <div className="completion-links">
-            <h4 className="links-title">{creator?.username} has attached some links with the completion of their project. Check them out to support their launch!</h4>
+            <h4 className="links-title">{creator?.username} has attached some links with the completion of their project. Check them out to support their completion!</h4>
             <ul>
               {links.map((l, i) => (
                 <li key={i}><a href={l.url} target="_blank" rel="noopener noreferrer"><FontAwesomeIcon icon={faLink}/> <span>{l.text || l.url}</span></a></li>
@@ -52,9 +52,9 @@ export default function CompletedProject({
           )}
 
           {onDiscover ? (
-            <button className="button-shape red-color" onClick={onDiscover}>Go to Discover</button>
+            <button className="button-shape red-color" onClick={onDiscover}>Exit</button>
           ) : (
-            <a className="button-shape red-color" href={discoverHref}>Go to Discover</a>
+            <a className="button-shape red-color" href={discoverHref}>Exit</a>
           )}
         </div>
       </div>

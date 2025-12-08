@@ -18,13 +18,17 @@ export default function Search() {
     const [loading, setLoading] = useState(false);
     const [itemCount, setItemCount] = useState("0");
     const [filter, setFilter] = useState("all");
-    
-    if (!query)
-    {
-        //router.push("/");
-    }
 
-    document.title = `Search Results for '${searchQuery}' - FlameSpark`;
+    useEffect(() => {
+        if (typeof document !== "undefined") {
+            document.title = `Search Results for '${searchQuery}' - FlameSpark`;
+        }
+    }, [searchQuery]);
+
+    // Keep local state in sync if the URL query changes
+    useEffect(() => {
+        setSearchQuery(query);
+    }, [query]);
 
     return (
         <PrimaryPageLayout title={`Search Results for '${searchQuery}'`} description={loading ? "Loading..." : `${itemCount} Result${itemCount != 1 ? "s" : ""}`} searchFieldText={query}>

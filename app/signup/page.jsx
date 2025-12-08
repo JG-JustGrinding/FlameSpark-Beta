@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Header from "@/components/Header";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faTag, faLock, faKey } from "@fortawesome/free-solid-svg-icons";
@@ -11,6 +11,21 @@ import "@/styles/auth.css";
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const rawRedirect = searchParams.get("redirectUrl") || "/";
+
+  const sanitizeRedirect = (url) => {
+    try {
+      if (typeof url !== "string") return "/";
+      if (!url.startsWith("/")) return "/";
+      if (url.length > 2048) return "/";
+      return url;
+    } catch {
+      return "/";
+    }
+  };
+
+  const redirectUrl = sanitizeRedirect(rawRedirect);
   const [accessKey, setAccessKey] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -18,16 +33,6 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-      const checkUser = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session?.user) {
-          router.push("/");
-      }
-      };
-      checkUser();
-  }, [router, supabase]);
 
   const handleSignup = async () => {
     setError("");
@@ -62,15 +67,16 @@ export default function SignupPage() {
       setLoading(false);
       setError(error.message);
     } else {
-        router.push("/?show=verify_email");    
+        router.push(redirectUrl || "/?show=verify_email");    
       }
   };
 
     const handleGoogleLogin = async () => {
+      const absoluteRedirect = `${window.location.origin}${redirectUrl}`;
       const { data, error } = await supabase.auth.signInWithOAuth({
           provider: "google",
           options: {
-          redirectTo: 'http://localhost:3000',
+          redirectTo: absoluteRedirect,
           },
       });
 

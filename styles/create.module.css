@@ -186,7 +186,7 @@ body {
   cursor: pointer;
 }
 
-.submit:disabled {
+.submit:disabled, .submit.disabled {
     background-color: rgba(35, 35, 35, .5);
     cursor: default;
 }
