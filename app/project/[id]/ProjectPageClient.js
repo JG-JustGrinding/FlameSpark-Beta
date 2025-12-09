@@ -103,6 +103,10 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
         window.scrollTo(0, 0);
 
         setSelectedFilter(index);
+        // Reset posts
+        setProjectPosts([]);
+        setFetchPage(0);
+        setHasMore(true);
     }
 
     useEffect(() => {

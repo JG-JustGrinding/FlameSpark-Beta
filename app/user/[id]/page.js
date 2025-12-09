@@ -8,8 +8,13 @@ export default async function UserPage({ params }) {
   const { id } = await params;
   let error = null;
   let user = null;
-  let projects = [];
-  let joinedProjects = [];
+  let initialProjects = [];
+  let initialJoinedProjects = [];
+  let initialHasMoreCreated = true;
+  let initialHasMoreJoined = true;
+  const PAGE_SIZE = 10;
+  let totalCreatedCount = 0;
+  let totalJoinedCount = 0;
 
   try {
     if (!id) throw new Error("User ID is missing from the URL.");
@@ -21,11 +26,25 @@ export default async function UserPage({ params }) {
     const { data: projectData, error: projectError } = await supabase
       .from("projects")
       .select("id, title, tagline, description, tags, cover_image, icon")
-      .eq("owner_id", id);
+      .eq("owner_id", id)
+      .order("id", { ascending: false })
+      .limit(PAGE_SIZE);
     if (projectError) throw projectError;
-    projects = projectData || [];
+    initialProjects = projectData || [];
 
-    joinedProjects = await getUserJoinedProjects(id);
+    // Determine hasMore for created
+    const { count: createdCount } = await supabase
+      .from("projects")
+      .select("id", { count: "exact", head: true })
+      .eq("owner_id", id);
+    totalCreatedCount = createdCount || 0;
+    initialHasMoreCreated = totalCreatedCount > initialProjects.length;
+
+    // Joined projects initial
+    const joinedAll = await getUserJoinedProjects(id);
+    initialJoinedProjects = joinedAll.slice(0, PAGE_SIZE);
+    initialHasMoreJoined = joinedAll.length > initialJoinedProjects.length;
+    totalJoinedCount = joinedAll.length;
   } catch (err) {
     error = err.message;
   }
@@ -41,7 +60,17 @@ export default async function UserPage({ params }) {
   return (
     <>
       <Header />
-      <UserClient user={user} projects={projects} joinedProjects={joinedProjects} />
+      <UserClient
+        user={user}
+        initialProjects={initialProjects}
+        initialJoinedProjects={initialJoinedProjects}
+        initialHasMoreCreated={initialHasMoreCreated}
+        initialHasMoreJoined={initialHasMoreJoined}
+        pageSize={PAGE_SIZE}
+        userId={id}
+        totalCreatedCount={totalCreatedCount}
+        totalJoinedCount={totalJoinedCount}
+      />
     </>
   );
 }

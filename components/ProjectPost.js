@@ -200,7 +200,7 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
                 <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
                 <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
             </div>
-            <a className={`comments${commentCount != null ? "" : " skeleton"}`} href={`${window.location.pathname}/post/${postId}`}>
+            <a className={`comments${commentCount != null ? "" : " skeleton"}`} href={`/project/${projectId}/post/${postId}`}>
                 <FontAwesomeIcon className="comment-icon" icon={faComment}/>
                 <span className="bold">{shortenNumber(commentCount) || 0}</span>
             </a>

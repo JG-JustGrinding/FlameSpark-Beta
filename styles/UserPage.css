@@ -1,5 +1,6 @@
 .banner {
     width: 100%;
+    min-height: 100px;
     height: 100px;
     background: linear-gradient(45deg, var(--flamespark-red), var(--flamespark-orange));
     background-size: 200% 200%;
@@ -145,6 +146,10 @@
     display: flex;
     gap: 5px;
     max-width: 100%;
+}
+
+.paginator-load-more {
+    width: 100%;
 }
 
 @media(max-width: 768px) {
