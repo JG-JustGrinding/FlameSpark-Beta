@@ -193,18 +193,21 @@ html, body {
 
     .side-images {
         width: 100%;
-        max-height: 100px;
+        max-height: 150px;
     }
 
     .side-images-container {
         max-height: inherit;
         flex-direction: row;
+        overflow-x: auto;
     }
 
     .side-image-container {
         max-height: inherit;
-        width: auto;
+        min-width: 150px;
+        width: 150px;
         height: 100%;
+        flex-shrink: 0;
     }
 
     .join-button {

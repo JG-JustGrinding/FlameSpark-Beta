@@ -10,6 +10,8 @@ export default function SignupNotice({
   showLogo = true,
   loginHref = "/login",
   signupHref = "/signup",
+  loginText = "Login",
+  signupText = "Create Account",
   disableClose = false,
   panelClass = "create-page-login-notice",
 }) {
@@ -24,8 +26,8 @@ export default function SignupNotice({
       <div className="create-page-login-notice-content bodyFont">
         <p>{message}</p>
         <div className="create-page-login-notice-actions bold">
-          <Link href={loginHref} className="button-shape secondary">Login</Link>
-          <Link href={signupHref} className="button-shape primary">Create Account</Link>
+          <Link href={loginHref} className="button-shape secondary">{loginText}</Link>
+          <Link href={signupHref} className="button-shape primary">{signupText}</Link>
         </div>
       </div>
     </PanelOverlay>

@@ -622,6 +622,12 @@ button:disabled {
     }
 }
 
+@media(max-width: 768px) {
+    .side-section.mobile .card.other {
+        padding: 10px;
+    }
+}
+
 @media(min-width: 769px) {
     .coming-soon-panel .title {
         font-size: 3.5rem;
@@ -641,7 +647,7 @@ button:disabled {
     }
 
     .side-section.mobile .card.other {
-        flex: .5;
+        flex: .6;
     }
 }
 
@@ -649,6 +655,10 @@ button:disabled {
     .side-section.mobile .card {
         width: 100%;
         z-index: 2;
+    }
+
+    .side-section.mobile .card.other {
+        padding: 20px;
     }
 }
 

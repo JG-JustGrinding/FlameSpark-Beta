@@ -1,7 +1,7 @@
 .create-page-login-notice {
   max-width: 600px;
   padding: 0;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .create-page-login-notice .overlay-close {
@@ -63,6 +63,9 @@
   flex: 1;
   min-width: 140px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .create-page-login-notice-actions a.primary {

@@ -1,13 +1,8 @@
 import Header from "@/components/Header";
-import "@/styles/preview.css";
 import { getUser } from "@/lib/projectFunctions";
 import PreviewClient from "./PreviewClient.jsx";
 import ErrorPage from "@/components/error.jsx";
 import { supabase } from "@/lib/supabaseClient.js";
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-export const runtime = "nodejs";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;

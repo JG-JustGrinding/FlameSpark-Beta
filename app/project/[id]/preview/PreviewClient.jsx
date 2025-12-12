@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { isUserJoinedOrOwner, joinProject } from "@/lib/projectFunctions";
 import SignupNotice from "@/components/SignupNotice";
+import "@/styles/preview.css";
 
 export default function PreviewClient({ id, project, previewMedia, creatorInfo }) {
   const router = useRouter();
@@ -141,8 +142,10 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo }
         isOpen={showSignup}
         onClose={() => setShowSignup(false)}
         message="Log in or create a FlameSpark-Beta account to join and support projects!"
-        loginHref={`/login?redirectUrl=/project/${id}/preview`}
-        signupHref={`/signup?redirectUrl=/project/${id}/preview`}
+        loginText="View Project Anyway"
+        loginHref={`/project/${id}`}
+        signupText="Login"
+        signupHref={`/login?redirectUrl=/project/${id}/preview`}
       />
     </main>
   );

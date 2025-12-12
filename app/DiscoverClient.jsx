@@ -137,7 +137,7 @@ export default function DiscoverClient({ initialProjects = [], initialError = ""
                 You’ve reached the end of the Discover page!
               </div>
               <p className="reset">
-                FlameSpark is a new, upcoming platform. As more creators join, more projects will appear.
+                FlameSpark is a new and upcoming platform. As more creators join, more projects will appear.
               </p>
               <p className="reset">
                 Want to contribute? Create a project to start your journey!

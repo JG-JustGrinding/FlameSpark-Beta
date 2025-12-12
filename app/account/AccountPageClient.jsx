@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Header from "@/components/Header";
-import "../../styles/account.css";
-import { useUser } from "@/lib/useUser";
+import "@/styles/account.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTag, faBook, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { getUser } from "@/lib/projectFunctions";
@@ -71,7 +70,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
     }
 
     async function cancelNewAvatar() {
-        setAvatar(current_avatar || initialProfile?.avatar_url || "/profile_icon_colored.svg");
+        setAvatar(initialProfile?.avatar_url || "/profile_icon_colored.svg");
         setNewProfilePending(false);
         fileInputRef.current.value = '';
         setProfileSuccess("");
@@ -93,7 +92,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
 
             if (!file) return;
 
-            const oldAvatarUrl = current_avatar || initialProfile?.avatar_url;
+            const oldAvatarUrl = initialProfile?.avatar_url;
 
             const fileExt = file.name.split(".").pop();
             const fileName = `${user.id}.${Date.now()}.${fileExt}`;
@@ -139,7 +138,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
             fileInputRef.current.value = '';
         } catch (error) {
             setProfileError("Error: " + error.message);
-            setAvatar(current_avatar || initialProfile?.avatar_url || "/profile_icon_colored.svg");
+            setAvatar(initialProfile?.avatar_url || "/profile_icon_colored.svg");
             fileInputRef.current.value = '';
             setNewAvatarFile(null);
         } finally {

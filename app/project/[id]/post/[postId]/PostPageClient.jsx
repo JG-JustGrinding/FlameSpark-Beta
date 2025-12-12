@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useUser } from "@/lib/useUser";
 import { useRouter } from "next/navigation";
 import { faShare, faArrowUp, faArrowDown, faEllipsisH, faTrash, faPaperPlane, faArrowRight } from "@fortawesome/free-solid-svg-icons";
-import { createComment, shortenNumber, getProject, getPost, fetchComments, timeAgo, isUserJoinedOrOwner, getPostRating, getUserRating, ratePost, fetchProjectPageOtherPosts } from "@/lib/projectFunctions";
+import { createComment, shortenNumber, getProject, getPost, fetchComments, timeAgo, isUserJoinedOrOwner, getPostRating, getUserRating, ratePost, fetchProjectPageOtherPosts, fetchReplyCount } from "@/lib/projectFunctions";
 import Header from "@/components/Header";
 import "@/styles/PostPage.css";
 import "@/styles/ProjectPost.css";
@@ -151,6 +151,10 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
         router.push(`/project/${id}`);
     }
 
+    async function FetchCommentsFunction(postId, page, pageSize, filter = "") {
+        return await fetchComments(postId, page, pageSize, filter);
+    }
+
     async function submitComment() {
         if (commentInput.trim() === "") {
             return;
@@ -257,14 +261,16 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                         }
 
                         <div className="comments-section">
-                            <Paginator fetchFunction={fetchComments} projectId={postId}
+                            <Paginator fetchFunction={FetchCommentsFunction} projectId={postId}
                             renderItem={(comment, idx) => (
                                 <Comment key={idx} id={comment.id} postId={postId} isOwner={user?.id === comment.user_id} posterId={comment.user_id} username={comment.username} avatar={comment.avatar_url || "/profile_icon_colored.svg"} date={comment.created_at} body={comment.content} replyCount={comment.reply_count} user={user} currentUsername={username} currentAvatar={avatar} editCommentFunction={editComment.bind(null, comment)} edited={comment.was_edited} deleteCommentFunction={() => deleteComment(comment)} deleting={comment.deleting} reportCommentFunction={reportComment.bind(null, comment)} removeReportButton={comment.removeReportButton || !user} canReply={user}/>
                             )}
                             updateItem={commentUpdateItem}
-                            limit={10}
+                            limit={20}
                             filter={refetchFilter}
                             noneFoundMessage=""
+                            askLoadMore={true}
+                            askLoadMoreAfter={30}
                             />
                         </div>
                     </div>

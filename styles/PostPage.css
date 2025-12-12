@@ -243,12 +243,7 @@ span.break {
     .card {
         padding: 15px;
     }
-
-    .comments-container {
-        max-height: 1500px;
-        overflow-y: auto;
-    }
-
+    
     .main .back {
         position: sticky;
         top: 75px;

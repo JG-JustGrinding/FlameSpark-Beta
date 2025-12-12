@@ -289,6 +289,13 @@ export default function Comment({
                 <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeRaw, [rehypeSanitize, schema]]}
                 components={{
                     p: ({ node, ...props }) => <p className="bodyFont comment-body reset" {...props} />,
+                    a: ({ node, ...props }) => (
+                        <a
+                          {...props}
+                          target={props.target || "_blank"}
+                          rel={(props.rel ? props.rel + " " : "") + "noopener noreferrer"}
+                        />
+                    ),
                 }}>{processedBody}</ReactMarkdown>
                 {id && <div className="bottom-options label-color">
                     {((replyCountOverride || replyCount) > 0 && replyCountOverride != 0) && <div className="bodyFont body-size replies-count bold no-select-pointer" onClick={() => {setRepliesOpen(value => !value)}} style={{display: "flex", gap: "3px", alignItems: "center"}}>
@@ -344,6 +351,13 @@ export default function Comment({
                 <ReactMarkdown remarkPlugins={[remarkGfm, remarkBreaks]} rehypePlugins={[rehypeRaw, [rehypeSanitize, schema]]}
                 components={{
                     p: ({ node, ...props }) => <p className="bodyFont comment-body reset" {...props} />,
+                    a: ({ node, ...props }) => (
+                        <a
+                          {...props}
+                          target={props.target || "_blank"}
+                          rel={(props.rel ? props.rel + " " : "") + "noopener noreferrer"}
+                        />
+                    ),
                 }}>{processedEditPanelText}</ReactMarkdown>
                 {editPanelError && <span className="error-message bodyFont">{editPanelError}</span>}
             </PanelOverlay>
