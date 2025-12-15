@@ -19,13 +19,18 @@ import { Paginator } from "@/lib/infinitePostFeed";
 import PostContentView from "@/components/PostContentView";
 import OtherPost from "@/components/OtherPost";
 import ShareButton from "@/components/ShareButton";
+import SignupNotice from "@/components/SignupNotice";
 
 export default function PostPage({id, postId, post, project, seed, otherPostsState }) {
     const { user, userSet, avatar, username } = useUser();
     const router = useRouter();
 
+    const contentRef = useRef(null);
+    const sideRef = useRef(null);
+
     const [refetchFilter, setRefetchFilter] = useState(""); // this is for refetching comments when the user submits a comment
     const [otherPosts, setOtherPosts] = useState(otherPostsState || []);
+    const [otherPostsPage, setOtherPostsPage] = useState(otherPostsState?.length > 0 ? 1 : 0);
 
     const [isJoinedSet, setIsJoinedSet] = useState(false);
     const [isJoined, setIsJoined] = useState(false);
@@ -37,6 +42,7 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
     const [commentInputDisabled, setCommentInputDisabled] = useState(false);
     const [commentInputLoading, setCommentInputLoading] = useState(false);
     const [commentUpdateItem, setCommentUpdateItem] = useState(null);
+    const [showSignupNotice, setShowSignupNotice] = useState(false);
 
     useEffect(() => {
         if (!userSet)
@@ -47,7 +53,7 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
         if (!user)
         {
             setIsJoinedSet(true);
-            setIsJoined(true); // turn "join" button into "view" button
+            setIsJoined(true);
             setCommentInputDisabled(true);
         }
 
@@ -57,6 +63,9 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                 const result = await isUserJoinedOrOwner(user.id, id);
                 setIsJoined(result);
                 setIsJoinedSet(true);
+            } else {
+                setIsJoinedSet(true);
+                setIsJoined(false);
             }
         };
 
@@ -76,6 +85,26 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
             setOtherPagePosts();
         }
     }, []);
+
+    useEffect(() => {
+        const checkHeights = () => {
+            if (contentRef.current && sideRef.current) {
+                const contentHeight = contentRef.current.offsetHeight;
+                const sideHeight = sideRef.current.offsetHeight;
+                
+                console.log(`Content height: ${contentHeight}px, Side section height: ${sideHeight}px`);
+
+                if (sideHeight < contentHeight) {
+                    console.log(`Side section height (${sideHeight}px) is less than content height (${contentHeight}px)`);
+                }
+            }
+        };
+
+        // Check after a short delay to ensure DOM has fully rendered
+        const timer = setTimeout(checkHeights, 100);
+        
+        return () => clearTimeout(timer);
+    }, [otherPosts, post, project]);
 
     useEffect(() => {
         async function GetRating() {
@@ -107,8 +136,8 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
     }, []);
 
     function UpdateRating(value) {
-        if (!user)
-        {
+        if (!user) {
+            setShowSignupNotice(true);
             return;
         }
 
@@ -126,23 +155,23 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
         try {
             await ratePost(postId, user?.id, value);
         } catch (err) {
-            if (err.notLoggedIn)
-            {
-                window.location.href = "/login";
+            if (err?.notLoggedIn || !user) {
+                setShowSignupNotice(true);
+                return;
             }
         }
     }
 
     const viewOrJoinProject = async () => {
         if (user == null){
-            router.push(`/project/${id}`);
+            setShowSignupNotice(true);
             return;
         }
         
         if (!isJoined)
         {
             try {
-            await joinProject(user.id, id);
+                await joinProject(user.id, id);
             } catch (error) {
 
             }
@@ -235,7 +264,7 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                         <FontAwesomeIcon className="back-button reset" icon={faArrowLeft}/>
                     </a>
                 </div>
-                <div className="content card">
+                <div className="content card" ref={contentRef}>
                     <div className="title-date">
                         {post?.title && <h1 className="titleFont reset">{post?.title}</h1>}
                         {post?.created_at &&  <p className="post-date label-color bodyFont reset">{timeAgo(post?.created_at)}</p>}
@@ -275,7 +304,7 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                         </div>
                     </div>
                 </div>
-                <div className="side-section">
+                <div className="side-section" ref={sideRef}>
                     <div className={`project-info card`}>
                         <a href={`/project/${project?.id}`} className="project styled-link">
                             <img className="project-icon pfp-shape" src={project?.icon} alt="Project Icon"></img>
@@ -297,7 +326,12 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                     </div>}
                 </div>
             </main>
-
+            <SignupNotice
+                isOpen={showSignupNotice}
+                onClose={() => setShowSignupNotice(false)}
+                title="Join the FlameSpark-Beta Community"
+                messageIndex={1}
+            />
         </div>
 		</>
 	);

@@ -12,6 +12,7 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo }
   const [user, setUser] = useState(null);
   const [isJoinedSet, setIsJoinedSet] = useState(false);
   const [isJoined, setIsJoined] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [currentImage, setCurrentImage] = useState(project?.cover_image || null);
   const [showSignup, setShowSignup] = useState(false);
 
@@ -68,11 +69,30 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo }
     router.push(`/project/${id}`);
   };
 
-  let previewImageIndex = 0;
+  useEffect(() => {
+    if (previewMedia && previewMedia.length > 0) {
+      // initialize to cover image if present, else first media
+      const startIndex = Math.max(
+        0,
+        previewMedia.findIndex(m => m.url === (project?.cover_image || previewMedia[0]?.url))
+      );
+      setCurrentIndex(startIndex);
+      setCurrentImage(previewMedia[startIndex]?.url);
+    }
+  }, [previewMedia, project?.cover_image]);
+
   const nextImage = () => {
-    previewImageIndex++;
-    if (previewImageIndex >= previewMedia.length) previewImageIndex = 0;
-    setCurrentImage(previewMedia[previewImageIndex].url);
+    if (!previewMedia || previewMedia.length === 0) return;
+    const next = (currentIndex + 1) % previewMedia.length;
+    setCurrentIndex(next);
+    setCurrentImage(previewMedia[next].url);
+  };
+
+  const prevImage = () => {
+    if (!previewMedia || previewMedia.length === 0) return;
+    const prev = (currentIndex - 1 + previewMedia.length) % previewMedia.length;
+    setCurrentIndex(prev);
+    setCurrentImage(previewMedia[prev].url);
   };
 
   return (
@@ -84,9 +104,9 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo }
         </div>
         <div className="right">
           {!isJoinedSet && (
-            <button className={`button-shape bodyFont skeleton join-button body-size cursor-default`} disabled>
+            <a href={`/project/${id}`} className={`button-shape bodyFont skeleton join-button body-size cursor-default`}>
               View Project
-            </button>
+            </a>
           )}
           {isJoinedSet && (
             <button
@@ -101,16 +121,33 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo }
       <div className="images">
         <div className="current-image">
           <img src={currentImage} />
+          {previewMedia?.length > 1 && (
+          <>
           <div className="arrows">
-            <div className="arrow left"></div>
-            <div className="arrow right" onClick={nextImage}></div>
+            <div className="arrow left no-select-pointer" onClick={prevImage}>&#10094;</div>
+            <div className="arrow right no-select-pointer" onClick={nextImage}>&#10095;</div>
           </div>
+            <div className="dots">
+              {previewMedia.map((_, i) => (
+                <button
+                  key={i}
+                  className={"dot" + (i === currentIndex ? " active" : "")}
+                  aria-label={`Go to image ${i + 1}`}
+                  onClick={() => {
+                    setCurrentIndex(i);
+                    setCurrentImage(previewMedia[i].url);
+                  }}
+                />
+              ))}
+            </div>
+            </>
+          )}
         </div>
         <div className="side-images">
           <h2 className="titleFont">Images</h2>
           <div className="side-images-container">
-            {previewMedia.map((media, i) => (
-              <div key={i} className="side-image-container" onClick={() => setCurrentImage(media.url)}>
+              {previewMedia.map((media, i) => (
+                <div key={i} className="side-image-container" onClick={() => { setCurrentIndex(i); setCurrentImage(media.url); }}>
                 <img src={media.url} alt={`Preview ${i}`} />
               </div>
             ))}

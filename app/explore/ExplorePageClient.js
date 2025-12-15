@@ -6,6 +6,7 @@ import "@/styles/ExplorePage.css";
 import "@/styles/ProjectPost.css";
 import "@/styles/Home.css";
 import HomePagePost from "@/components/HomePagePost";
+import SignupNotice from "@/components/SignupNotice";
 import { fetchExplorePagePosts, ratePost } from "@/lib/projectFunctions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
@@ -25,6 +26,7 @@ export default function ExplorePageClient({ initialPosts = [], initialSeed }) {
     const seedRef = useRef(initialSeed ?? (Math.random() * 2 - 1));
     const seed = seedRef.current;
     const { user } = useUser();
+    const [showSignupNotice, setShowSignupNotice] = useState(false);
 
     const postBufferRef = useRef([]);
     const BUFFER_THRESHOLD = 3;   // tweak as needed
@@ -170,6 +172,11 @@ useEffect(() => {
 
     async function rateProjectPost(post, userId, value)
     {
+        if (!userId) {
+          setShowSignupNotice(true);
+          return;
+        }
+
         try {
             await ratePost(post.post_id, userId, value);
         } catch (err) {
@@ -193,6 +200,11 @@ useEffect(() => {
             </div>
             {(posts.length > 0 && currentCard != posts.length - 1) && <button className="nav right" onClick={scrollRight}>&#10095;</button>}
         </div>
+        <SignupNotice
+            isOpen={showSignupNotice}
+            onClose={() => setShowSignupNotice(false)}
+            messageIndex={1}
+        />
         </PrimaryPageLayout>
     )
 }

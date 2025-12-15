@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { shortenNumber, truncate } from '@/lib/projectFunctions';
+import SignupNotice from '@/components/SignupNotice.jsx';
 
 export default function Poll({
     pollId,
@@ -12,10 +13,10 @@ export default function Poll({
   const [hasVoted, setHasVoted] = useState(false);
   const [votedOptionId, setVotedOptionId] = useState(null);
   const [totalVotes, setTotalVotes] = useState(null);
+    const [showSignupNotice, setShowSignupNotice] = useState(false);
 
   // Fetch only poll options (no votes)
   const fetchPollOptions = async () => {
-
     const { data: hasVotedData, error: hasVotedError } = await supabase.rpc("has_user_voted", {
         p_poll_id: pollId
     });
@@ -68,15 +69,15 @@ export default function Poll({
   }
 
   const handleVote = async (optionId) => {
-        setPollDisabled(true);
-
         const { data } = await supabase.auth.getUser();
 
         if (!data.user)
         {
-            window.location.href = '/login';
+            setShowSignupNotice(true);
             return;
         }
+
+        setPollDisabled(true);
 
         if (hasVoted) return;
         
@@ -142,6 +143,12 @@ export default function Poll({
         ))}
     </ul>
     {(hasVoted && totalVotes != null) && <span style={{marginRight: "auto"}} className='bodyFont label-color'>{shortenNumber(totalVotes || 0)} Vote{totalVotes != 1 ? "s" : ""}</span>}
+    <SignupNotice
+        isOpen={showSignupNotice}
+        onClose={() => setShowSignupNotice(false)}
+        title="Join the FlameSpark-Beta Community"
+        message="Log in or create an account to gain access to FlameSpark-Beta and vote in polls!"
+    />
     </>
   );
 }

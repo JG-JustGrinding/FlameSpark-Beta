@@ -6,7 +6,7 @@ export default function SignupNotice({
   isOpen,
   onClose,
   title = "Join the FlameSpark-Beta Community!",
-  message = "To gain full access to FlameSpark-Beta and create projects, please log in or create an account.",
+  message = "To gain full access to FlameSpark-Beta, please log in or create an account.",
   showLogo = true,
   loginHref = "/login",
   signupHref = "/signup",
@@ -14,7 +14,22 @@ export default function SignupNotice({
   signupText = "Create Account",
   disableClose = false,
   panelClass = "create-page-login-notice",
+  messageIndex = -1 // for using the same message in multiple places
 }) {
+
+  function getMessageByIndex(index) {
+    const messages = [
+      "To gain full access to FlameSpark-Beta and create projects, please log in or create an account.",
+      "Log in or create an account to become a beta tester for FlameSpark and access exclusive features!"
+    ];
+
+    if (index >= 0 && index < messages.length) {
+      return messages[index];
+    }
+
+    return message;
+  }
+
   return (
     <PanelOverlay isOpen={isOpen} onClose={onClose} disableClose={disableClose} panelClass={panelClass}>
       <div className="create-page-login-notice-header">
@@ -24,7 +39,7 @@ export default function SignupNotice({
         <h3 className="titleFont">{title}</h3>
       </div>
       <div className="create-page-login-notice-content bodyFont">
-        <p>{message}</p>
+        <p>{getMessageByIndex(messageIndex)}</p>
         <div className="create-page-login-notice-actions bold">
           <Link href={loginHref} className="button-shape secondary">{loginText}</Link>
           <Link href={signupHref} className="button-shape primary">{signupText}</Link>

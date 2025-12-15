@@ -373,6 +373,15 @@ button.remove {
   object-fit: contain;
 }
 
+/* Handle SVGs and blob previews which may not have intrinsic dimensions */
+.postImages img[src$=".svg"],
+.postImages img[src^="blob:"] {
+    width: 100%;
+    height: auto;
+    max-height: 100%;
+    display: block;
+}
+
 .postImageContainer button {
   width: 100%;
   background-color: var(--flamespark-red-accented);

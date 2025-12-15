@@ -17,6 +17,7 @@ import "@/styles/project.css"
 import "@/styles/ProjectPost.css";
 import "@/styles/projectCreatePanel.css"
 import ProjectPost from "@/components/ProjectPost";
+import SignupNotice from "@/components/SignupNotice.jsx";
 import { Paginator } from "@/lib/paginator";
 import CappedInput from "@/components/CappedInput";
 import InfiniteScroll from "@/lib/infinitePostFeed";
@@ -45,6 +46,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
     const router = useRouter();
     const searchParams = useSearchParams();
     const [leaveMessage, setLeaveMessage] = useState(getRandomLeaveMessage());
+    const [showSignupNotice, setShowSignupNotice] = useState(false);
 
     const fetchPostsFunction = async (page) => {
         const posts = await fetchPosts(id, page, pageSize, filters[selectedFilter]);
@@ -160,6 +162,11 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
 
     async function rateProjectPost(post, userId, value)
     {
+        if (!userId) {
+            setShowSignupNotice(true);
+            return;
+        }
+        
         try {
             await ratePost(post.id, userId, value);
         } catch (err) {
@@ -628,7 +635,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
     async function JoinProject() {
         if (!user)
         {
-            router.push("/login");
+            setShowSignupNotice(true);
             return;
         }
 
@@ -876,8 +883,9 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                                             <label className={`bodyFont`}>Images (up to {MAX_POST_IMAGES})</label>
                                             {posts[currentPostIndex].imageContent.length > 0 && <span className="label-color bodyFont">{posts[currentPostIndex].imageContent.length} {posts[currentPostIndex].imageContent.length != 1 ? "Images" : "Image"}</span>}
                                             <div className="image-file-field">
-                                                <input type="file" accept="image/*" className="bodyFont input-field" multiple onChange={(e) => {handlePostImageChange(e, currentPostIndex)}} />
+                                                <input type="file" accept=".jpg,.jpeg,.png,.webp,.avif,.gif" className="bodyFont input-field" multiple onChange={(e) => {handlePostImageChange(e, currentPostIndex)}} />
                                             </div>
+                                            <span className="label-color bodyFont caption-size">{posts[currentPostIndex].imageContent.length} / {MAX_POST_IMAGES} images</span>
                                             <div className="postImages">
                                                 {posts[currentPostIndex].imageContent.map((content, i) => (
                                                 <div key={i} className="postImageContainer">
@@ -889,9 +897,10 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                                         </div>
 
                                         <div className={`poll-creator ${posts[currentPostIndex].postType == "poll" ? "" : "hide"}`}>
-                                            <CappedInput className="poll-creator-input" label="Poll Options" hideCounter={true} maxLength={50} value={currentPollText} onChange={(e) => setCurrentPollText(e.target.value)} id="post-poll-text">
+                                            <CappedInput className="poll-creator-input" label={`Poll Options (Max ${MAX_POLL_OPTIONS})`} hideCounter={true} maxLength={50} value={currentPollText} onChange={(e) => setCurrentPollText(e.target.value)} id="post-poll-text">
                                             {posts[currentPostIndex].pollContent.length < MAX_POLL_OPTIONS && <button className="add-button no-select-pointer" onClick={() => {addNewPollOption(currentPollText)}}><FontAwesomeIcon icon={faPlus}/></button> }
                                             </CappedInput>
+                                            <span className="label-color bodyFont caption-size">{posts[currentPostIndex].pollContent.length} / {MAX_POLL_OPTIONS} options</span>
                                             <div className="poll-options-container">
                                                 {posts[currentPostIndex].pollContent.map((content, i) => (
                                                 <div key={i} className="poll-option">
@@ -1036,6 +1045,12 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                     </div>
                 </div>
                 }
+                <SignupNotice
+                    isOpen={showSignupNotice}
+                    onClose={() => setShowSignupNotice(false)}
+                    title="Join the FlameSpark-Beta Community"
+                    messageIndex={1}
+                />
             </div>
         </div>
     )

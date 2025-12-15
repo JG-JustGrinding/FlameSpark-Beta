@@ -12,6 +12,21 @@
 .container {
     padding: 50px 75px;
     width: 100%;
+    max-width: 3500px;
+    margin: 0 auto;
+}
+
+/* Adapt container padding across screen sizes */
+@media (max-width: 1440px) {
+    .container {
+        padding: 40px 60px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .container {
+        padding: 28px 40px;
+    }
 }
 
 .container-no-padding {
@@ -29,29 +44,6 @@
 .container .title h1, .container .title p {
     margin: 0px;
     padding: 0px;
-}
-
-.content {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    align-self: flex-start;
-    height: auto;
-    gap: 30px;
-    justify-content: space-between;
-}
-
-.project {
-    max-width: 340px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
-    align-self: start;
-    cursor: pointer;
-    text-decoration: none;
-    color: var(--black);
-    margin-bottom: 20px;
 }
 
 .cover-image-wrapper {
@@ -146,7 +138,7 @@
 @media(max-width: 768px) {
     .container {
         justify-content: center;
-        padding: 5px;
+        padding: 20px;
     }
 
     .project {
@@ -160,5 +152,11 @@
 
     .title h1 {
         font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding: 16px;
     }
 }

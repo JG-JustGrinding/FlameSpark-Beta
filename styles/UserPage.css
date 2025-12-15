@@ -91,22 +91,6 @@
     color: var(--black);
 }
 
-.project {
-    max-width: 510px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    justify-content: center;
-    align-self: start;
-    cursor: pointer;
-}
-
-.relations .relations-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 50px;
-}
-
 .cover-image-wrapper {
     aspect-ratio: 16 / 9;
     width: 100%;

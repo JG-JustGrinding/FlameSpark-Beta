@@ -172,7 +172,7 @@ export default function MarkdownTextArea({
 			placeholder={placeholder}
 			maxLength={maxLength}
 			isTextArea={true}
-			className={`markdown ${disabled ? "disabled" : ""} ${className}`}
+			className={`markdown ${disabled ? "disabled no-disable-coloring" : ""} ${className}`}
 			id={id}
             disabled={disabled}
 			noMinHeight={noMinHeight}

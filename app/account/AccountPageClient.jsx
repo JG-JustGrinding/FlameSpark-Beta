@@ -239,7 +239,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                                     <div className="change-container bodyFont">
                                         <p className="label">Change Image:</p>
                                         <div className="options">
-                                            <input className="button-shape changeButton" type="file" accept="image/*" ref={fileInputRef} onChange={onNewAvatarUploaded} disabled={uploading} />
+                                            <input className="button-shape changeButton" type="file" accept=".jpg,.jpeg,.png,.webp,.avif,.gif" ref={fileInputRef} onChange={onNewAvatarUploaded} disabled={uploading} />
                                             {newProfilePending && <button className="button-shape save-pfp-button" disabled={uploading} onClick={uploadAvatar}>{uploading ? "Saving..." : "Save"}</button>}
                                             {newProfilePending && !uploading && <button className="button-shape cancel-pfp-button" onClick={cancelNewAvatar}>Cancel</button>}
                                         </div>

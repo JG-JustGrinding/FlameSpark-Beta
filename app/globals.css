@@ -218,6 +218,11 @@ body {
   pointer-events: none;
 }
 
+.unstyled-link {
+  text-decoration: none;
+  color: inherit;
+}
+
 .reset {
   margin: 0;
   padding: 0;
@@ -244,7 +249,7 @@ input[type="file"] {
   cursor: pointer;
 }
 
-input.disabled, textarea.disabled, .disabled {
+input.disabled, textarea.disabled, .disabled:not(.no-disable-coloring) {
     cursor: default;
     background-color: rgba(230, 230, 230, 0.3);
     color: rgb(84, 84, 84);

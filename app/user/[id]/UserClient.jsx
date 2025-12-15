@@ -1,5 +1,6 @@
 "use client";
 import "@/styles/UserPage.css";
+import "@/styles/content.css";
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Paginator } from "@/lib/paginator";
@@ -66,7 +67,7 @@ export default function UserClient({ user, initialProjects = [], initialJoinedPr
             <span className={`bodyFont ${selectedIndex == 0 ? "selected" : ""}`} onClick={() => setSelectedIndex(0)}>Created Projects</span>
             <span className={`bodyFont ${selectedIndex == 1 ? "selected" : ""}`} onClick={() => setSelectedIndex(1)}>Joined Projects</span>
           </div>
-          <div className="relations-content">
+          <div className="content">
             {selectedIndex == 0 && (
               <Paginator
                 items={createdProjects}

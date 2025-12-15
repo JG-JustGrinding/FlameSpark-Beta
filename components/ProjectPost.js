@@ -154,17 +154,17 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
     
     return (
     <>
-    <div className="post card no-overflow text">
+    <article className="post card no-overflow text">
         <div className={`post-top ${(!postTitle && !postDescription) ? "align-center" : ""}`}>
-            <img className="icon pfp-shape" alt="post-icon" src={icon}></img>
+            <img className="icon pfp-shape" alt={`${postTitle || 'Project'} post icon`} src={icon} />
             <div className="info">
                 <div className="title-info">
                     <div className="title-desc">
                         <div className="title-date">
-                            {postTitle && <span className="post-title titleFont header-size">{postTitle}</span>}
-                            <span className="post-date label-color bodyFont">{`${dateDifference}${wasEdited ? "" : ""}`}</span>
+                            {postTitle && <h3 className="post-title titleFont header-size reset normal-weight">{postTitle}</h3>}
+                            <time className="post-date label-color bodyFont" aria-label={`Posted ${dateDifference}`}>{`${dateDifference}${wasEdited ? "" : ""}`}</time>
                         </div>
-                        <span className="post-title bodyFont body-size label-color reset">{postDescription}</span>
+                        {postDescription && <p className="post-title bodyFont body-size label-color reset">{postDescription}</p>}
                     </div>
                 </div>
             </div>
@@ -206,7 +206,7 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
             </a>
             <ShareButton postId={postId} projectId={projectId}/>
         </div>
-    </div>
+    </article>
     <PanelOverlay isOpen={editPanelOpen} onClose={() => setEditPanelOpen(false)} panelClass='edit'>
         <h3 className='reset'>Edit Post</h3>
         <CappedInput label="Post Title" value={editPostTitle} onChange={(e) => setEditPostTitle(e.target.value)} id="edit-post-title" className='edit-post-input extra-margin' maxLength={100} />

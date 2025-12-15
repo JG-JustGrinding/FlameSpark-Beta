@@ -45,6 +45,8 @@ export default async function DashboardLayout({ children, params }) {
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
+  const supabase = await supabaseServerClient();
+
   try {
     const { data: projectData, error: projectError } = await supabase
       .from("projects")
@@ -60,7 +62,8 @@ export async function generateMetadata({ params }) {
       alternates: { canonical: `${process.env.DOMAIN_NAME}/project/${id}/dashboard` },
     };
   }
-  catch {
+  catch (e) {
+    console.error("Failed to fetch project metadata", e);
     return {
       title: "Project Dashboard - FlameSpark",
       robots: { index: false, follow: false },

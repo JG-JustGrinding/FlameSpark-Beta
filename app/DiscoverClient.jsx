@@ -7,6 +7,7 @@ import { useUser } from "@/lib/useUser";
 import Link from "next/link";
 import { Paginator } from "@/lib/paginator";
 import "@/styles/DiscoverPage.css";
+import "@/styles/content.css";
 
 const PAGE_SIZE = 10;
 
@@ -140,7 +141,10 @@ export default function DiscoverClient({ initialProjects = [], initialError = ""
                 FlameSpark is a new and upcoming platform. As more creators join, more projects will appear.
               </p>
               <p className="reset">
-                Want to contribute? Create a project to start your journey!
+                Want to contribute? Create a project to start your journey! 
+              </p>
+              <p className="reset">
+                Until then, stick around to continue your support of FlameSpark and its future creators.
               </p>
               <div style={{ marginTop: 12 }}>
                 <Link href="/create" className="bodyFont" style={{

@@ -43,6 +43,7 @@ export default function PostContentView({ postContent = null, className = '', de
                     <img
                         src={currentPostContent?.content?.[0]} 
                         alt="image post"
+                        loading='lazy'
                     />
                 ) : (
                     <Carousel images={currentPostContent?.content}/>

@@ -100,18 +100,18 @@ const HomePagePost = ({postId, title = "", description = "", dateCreated, postCo
     }
 
     return (
-        <div className={`post` + (className ? ` ${className}` : "")}>
-            <div className="post-header">
+        <article className={`post` + (className ? ` ${className}` : "")}>
+            <header className="post-header">
                 <div className="post-text">
-                    <span className="post-title titleFont bold">{title}</span>
-                    <span className="post-description bodyFont label-color">{description}</span>
+                    <h3 className="post-title titleFont reset bold">{title}</h3>
+                    {description && <p className="post-description bodyFont reset label-color">{description}</p>}
                 </div>
-                <span className="post-description bodyFont label-color">{dateDifference}</span>
-            </div>
+                <time className="post-description bodyFont label-color" aria-label={`Posted ${dateDifference}`}>{dateDifference}</time>
+            </header>
             <PostContentView postContent={postContent} audioRef={audioRef} iframeRef={iframeRef}/>
             <div className="post-footer">
-                <a className="post-project" href={`project/${projectId}` + (goToPreview ? "/preview" : "")}>
-                    <img className="post-project-icon pfp-shape" src={projectIcon} alt="Project Icon"></img>
+                <a className="post-project" href={`project/${projectId}` + (goToPreview ? "/preview" : "")} aria-label={`View ${projectName}`}>
+                    <img className="post-project-icon pfp-shape" src={projectIcon} alt={`${projectName} icon`} />
                     <span className="post-project-name bodyFont bold">{projectName}</span>
                 </a>
                 <div className="post-stats bodyFont">
@@ -120,14 +120,14 @@ const HomePagePost = ({postId, title = "", description = "", dateCreated, postCo
                         <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
                         <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
                     </div>
-                    <a className={`comments${commentCount != null ? "" : " skeleton"}`} href={`/project/${projectId}/post/${postId}`} style={{display: "flex"}}>
-                        <FontAwesomeIcon className="comment-icon" icon={faComment}/>
+                    <a className={`comments${commentCount != null ? "" : " skeleton"}`} href={`/project/${projectId}/post/${postId}`} style={{display: "flex"}} aria-label={`${shortenNumber(commentCount) || 0} comments`}>
+                        <FontAwesomeIcon className="comment-icon" icon={faComment} />
                         <span className="bold">{shortenNumber(commentCount) || 0}</span>
                     </a>
                     <ShareButton postId={postId} projectId={projectId} forceLeft={true}/>
                 </div>
             </div>
-        </div>
+        </article>
     )
 }
 

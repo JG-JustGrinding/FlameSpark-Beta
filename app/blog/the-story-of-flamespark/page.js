@@ -108,8 +108,8 @@ export function generateMetadata() {
             url: `${process.env.DOMAIN_NAME}/FLAMESPARK_WITHBG_CIRCULAR.svg`
           }
         },
-        datePublished: "2025-12-07",
-        dateModified: "2025-12-07"
+        datePublished: "2025-12-16",
+        dateModified: "2025-12-16"
       })
     }
   };

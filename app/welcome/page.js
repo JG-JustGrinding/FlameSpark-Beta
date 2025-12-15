@@ -105,16 +105,16 @@ export default function LandngPage() {
             <h2 className="titleFont">About FlameSpark</h2>
             
             <div className="about-section">
-              <h3 className="titleFont bold">A Platform Built for Creators and their Ideas</h3>
+              <h3 className="titleFont bold">🌟 A Platform Built to Change how Ideas Come to Life</h3>
               <p className="bodyFont">
-                FlameSpark is an upcoming social-media platform that focuses on the creator and their hard work put into completing their projects. We provide a platform for you to organically grow an audience with no worries of time, competition, or cost.
+                FlameSpark is an upcoming social-media platform that focuses on the journey of creation. Our goal is to power a new way for creators to showcase and grow an audience for their ideas and creations. Traditional ways to gain recognition, such as paid advertising or relying on social media algorithms, often leave creators feeling lost and unheard. FlameSpark aims to change that by providing a platform where every creator has the opportunity to let their ideas shine.
               </p>
             </div>
 
             <div className="about-section">
-              <h3 className="titleFont bold">Making Discovery Possible for Every Creator</h3>
+              <h3 className="titleFont bold">🔎 Making Discovery Possible for Every Creator</h3>
               <p className="bodyFont">
-                We understand that acquiring an audience is among the most difficult tasks for anyone who puts work into creating something. We want to change that and make it possible for everyone to have their creations noticed!
+                FlameSpark utilizes a unique take on content discovery, allowing creators to grow their community as they work on their projects and with our non-competitive algorithm. Even new creators have a chance to be discovered and grow their audience organically. By focusing on the journey of creation, FlameSpark encourages creators to share their progress, challenges, and get feedback with their community, creating an amazing story behind every project.
               </p>
             </div>
           </div>

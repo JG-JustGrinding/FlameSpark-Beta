@@ -44,6 +44,14 @@ export default function CreatePage({ initialUser }) {
   const [user, setUser] = useState(initialUser);
   const [showAuthOverlay, setShowAuthOverlay] = useState(false);
 
+  const MAX_COVER_BYTES = 3 * 1024 * 1024;
+  const MAX_ICON_BYTES = 3 * 1024 * 1024;
+  const MAX_PREVIEW_BYTES = 3 * 1024 * 1024;
+  
+  const projectCoverErrorMessage = `In FlameSpark-Beta, project cover images must be under ${MAX_COVER_BYTES / (1024 * 1024)}MB`;
+  const projectIconErrorMessage = `In FlameSpark-Beta, Project logos must be under ${MAX_ICON_BYTES / (1024 * 1024)}MB`;
+  const projectPreviewErrorMessage = `In FlameSpark-Beta, each project preview image must be under ${MAX_PREVIEW_BYTES / (1024 * 1024)}MB`;
+
   // Guard: block interactions when not logged in and log the attempt
   const guardInteraction = (e) => {
     if (!user) {
@@ -102,8 +110,15 @@ export default function CreatePage({ initialUser }) {
     }
 
     if (e.target.files && e.target.files[0]) {
-      setCoverImage(URL.createObjectURL(e.target.files[0]));
-      setCoverUpload(e.target.files[0]);
+      // 3MB limit for cover image
+      const file = e.target.files[0];
+      if (file.size > MAX_COVER_BYTES) {
+        setError(projectCoverErrorMessage)
+        e.target.value = '';
+        return;
+      }
+      setCoverImage(URL.createObjectURL(file));
+      setCoverUpload(file);
     } else {
       setCoverImage(null);
       setCoverUpload(null); 
@@ -118,8 +133,14 @@ export default function CreatePage({ initialUser }) {
     }
 
     if (e.target.files && e.target.files[0]) {
-      setIconImage(URL.createObjectURL(e.target.files[0]));
-      setIconUpload(e.target.files[0]);
+      const file = e.target.files[0];
+      if (file.size > MAX_ICON_BYTES) {
+        setError(projectIconErrorMessage);
+        e.target.value = '';
+        return;
+      }
+      setIconImage(URL.createObjectURL(file));
+      setIconUpload(file);
     } else {
       setIconImage(null);
       setIconUpload(null);
@@ -130,10 +151,19 @@ export default function CreatePage({ initialUser }) {
     if (guardInteraction(e)) return;
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
-      const newUrls = newFiles.map((file) => URL.createObjectURL(file));
+      // filter out files that are too large, and set error
+      const validFiles = [];
+      for (const file of newFiles) {
+        if (file.size > MAX_PREVIEW_BYTES) {
+          setError(projectPreviewErrorMessage);
+          continue;
+        }
+        validFiles.push(file);
+      }
+      const newUrls = validFiles.map((file) => URL.createObjectURL(file));
 
       const combined = [...previewImages, ...newUrls].slice(0, MAX_PREVIEW_IMAGES);
-      const combinedFiles = [...previewUpload, ...newFiles].slice(0, MAX_PREVIEW_IMAGES);
+      const combinedFiles = [...previewUpload, ...validFiles].slice(0, MAX_PREVIEW_IMAGES);
 
       setPreviewImages(combined);
       setPreviewUpload(combinedFiles);
@@ -205,6 +235,16 @@ export default function CreatePage({ initialUser }) {
       projectId = project.id;
 
       // 2. Upload files
+      // Double-check sizes before upload
+      if (coverUpload && coverUpload.size > MAX_COVER_BYTES) {
+        throw new Error(projectCoverErrorMessage);
+      }
+      if (iconUpload && iconUpload.size > MAX_ICON_BYTES) {
+        throw new Error(projectIconErrorMessage);
+      }
+      if (previewUpload && previewUpload.some(f => f.size > MAX_PREVIEW_BYTES)) {
+        throw new Error(projectPreviewErrorMessage);
+      }
       const coverUrl = await uploadFile(
         "project-covers",
         `${projectId}/cover-${timestamp}.png`,
@@ -364,7 +404,7 @@ export default function CreatePage({ initialUser }) {
           <div className={`${styles.field} ${styles.mb}`}>
             <label className="bodyFont">Cover Image (16:9)</label>
               <div className={styles.fileAndImage}>
-                <input type="file" accept="image/*" onChange={handleCoverChange}
+                <input type="file" accept=".jpg,.jpeg,.png,.webp,.avif" onChange={handleCoverChange}
                   onClick={guardInteraction}
                   onMouseDown={guardInteraction}
                   className={`bodyFont input-field ${!user ? 'disabled' : ''}`} />
@@ -373,7 +413,7 @@ export default function CreatePage({ initialUser }) {
 
             <label className={`${styles.mt} bodyFont`}>Project Logo</label>
               <div className={`${styles.fileAndImage} ${styles.projectLogo}`}>
-                <input type="file" accept="image/*" onChange={handleIconChange}
+                <input type="file" accept=".jpg,.jpeg,.png,.webp,.avif" onChange={handleIconChange}
                   onClick={guardInteraction}
                   onMouseDown={guardInteraction}
                   className={`bodyFont input-field pfp-shape ${!user ? 'disabled' : ''}`}/>
@@ -384,7 +424,7 @@ export default function CreatePage({ initialUser }) {
             {previewImages.length > 0 && <span className="label-color bodyFont">{previewImages.length} {previewImages.length != 1 ? "Images" : "Image"}</span>}
             <input
               type="file"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png,.webp,.avif"
               className={`bodyFont input-field ${!user ? 'disabled' : ''}`}
               multiple
               ref={fileInputRef}
@@ -427,6 +467,7 @@ export default function CreatePage({ initialUser }) {
       <SignupNotice
         isOpen={showAuthOverlay}
         onClose={() => setShowAuthOverlay(false)}
+        messageIndex={0}
       />
     </>
   );
