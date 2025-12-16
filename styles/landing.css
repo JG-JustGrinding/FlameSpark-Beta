@@ -345,6 +345,61 @@ html {
   width: 100%;
   min-height: 100vh;
 }
+/* About section card styling */
+.landing-about .about-section {
+  position: relative;
+  background: var(--white);
+  border-radius: 12px;
+  padding: 0px 18px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  margin: 14px 0;
+  overflow: hidden;
+  animation: aboutSlideUp 420ms ease both;
+  will-change: transform, opacity;
+}
+
+/* Gradient accent stripe on the left */
+.landing-about .about-section::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--flamespark-red), var(--flamespark-orange-accented));
+}
+
+/* Paragraph readability and drop cap */
+.landing-about .about-section p.bodyFont {
+  line-height: 1.75;
+  color: var(--black);
+}
+
+/* Gentle slide-up on load */
+@keyframes aboutSlideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.landing-about .accent {
+  color: var(--flamespark-red);
+  font-weight: 800;
+}
+
+
+/*
+.landing-about .accent-2 {
+  font-weight: 800;
+}
+.highlight {
+  font-weight: 800;
+}
+
+.landing-about .keyword {
+  color: var(--flamespark-orange);
+  font-weight: 700;
+}
+*/
 
 .about-visual {
   background-image: url('/landing/geometric_background_bright.png');

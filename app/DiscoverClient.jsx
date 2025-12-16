@@ -15,7 +15,7 @@ export default function DiscoverClient({ initialProjects = [], initialError = ""
   const [errorMessage, setErrorMessage] = useState(initialError || "");
   const [warningMessage, setWarningMessage] = useState("");
   const [projects, setProjects] = useState(initialProjects || []);
-  const [page, setPage] = useState(initialProjects?.length > 0 ? 1 : 0);
+  const [page, setPage] = useState(initialProjects?.length > 0 ? 0 : -1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const { user } = useUser();

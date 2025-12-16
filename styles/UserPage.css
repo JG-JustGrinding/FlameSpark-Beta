@@ -1,7 +1,7 @@
 .banner {
     width: 100%;
-    min-height: 100px;
-    height: 100px;
+    min-height: max(min(100px, 10vh), 25px);
+    height: max(min(100px, 10vh), 25px);
     background: linear-gradient(45deg, var(--flamespark-red), var(--flamespark-orange));
     background-size: 200% 200%;
     background-attachment: fixed; /* subtle parallax on scroll */
@@ -145,6 +145,10 @@
         flex-direction: column;
     }
 
+    .profile-image {
+        margin-top: 10px;
+    }
+
     .info-container {
         text-align: center;
     }
@@ -169,5 +173,18 @@
 @media (max-width: 1024px) {
     .user-info {
         flex-direction: column;
+    }
+}
+
+@media (max-width: 600px) {
+    .profile-image {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+@media (max-width: 400px) {
+    .items * {
+        font-size: 0.8rem;
     }
 }

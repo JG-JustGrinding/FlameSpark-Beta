@@ -3,7 +3,7 @@ import SkeletonImage from "./SkeletonImage";
 const PrimaryProject = ({project}) => {
     return (
         <article className="project">
-            <a href={`project/${project?.id}/preview`} aria-label={`Preview ${project?.title}`}>
+            <a href={`project/${project?.id}/preview`} className="cover-image-wrapper" aria-label={`Preview ${project?.title}`}>
                 <SkeletonImage src={project?.cover_image} alt={`${project?.title} cover image`} className="cover-image-wrapper" imageClassName="cover-image" />
             </a>
             <p className="bodyFont tagline label"><i>{project?.tagline}</i></p>

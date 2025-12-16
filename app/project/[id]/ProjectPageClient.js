@@ -24,12 +24,13 @@ import InfiniteScroll from "@/lib/infinitePostFeed";
 
 export default function ProjectPage({ project, isOwner, hasJoined, initialPosts, otherProjects, filters = ["Recent", "Oldest", "Top"], pageSize = 10 }) {
     const [projectPosts, setProjectPosts] = useState(initialPosts);
-    const [fetchPage, setFetchPage] = useState(initialPosts?.length > 0 ? 1 : 0);
+    const [fetchPage, setFetchPage] = useState(initialPosts?.length > 0 ? 0 : -1);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
 
     const filterIcons = [faClock, faHourglass, faStar];
     const [selectedFilter, setSelectedFilter] = useState(0);
+    const fromFilterChange = useRef(false); // to prevent double fetching on intial filter change
     const pages = ["Posts", "To-Do List", "Timeline", "Community"];
     const pageIcons = [faLayerGroup, faListCheck, faTimeline, faGlobe];
     const [selectedPage, setSelectedPage] = useState(0);
@@ -104,17 +105,36 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
 
         window.scrollTo(0, 0);
 
+        setLoading(true);
+        fromFilterChange.current = true;
         setSelectedFilter(index);
-        // Reset posts
-        setProjectPosts([]);
-        setFetchPage(0);
-        setHasMore(true);
     }
 
+
     useEffect(() => {
-        //setFetchPage(0);
-        //setProjectPosts([]);
-        //setHasMore(true);
+        const handleFilter = async () => {
+            if (!fromFilterChange.current) {
+                return;
+            }
+
+            fromFilterChange.current = false;
+            
+            setProjectPosts([]);
+            setFetchPage(0);
+            setHasMore(true);
+
+            const newPosts = await fetchPosts(id, 0, pageSize, filters[selectedFilter]);
+
+            setProjectPosts(newPosts);
+
+            if (newPosts.length < pageSize) {
+                setHasMore(false);
+            }
+
+            setLoading(false);
+        }
+
+        handleFilter();
     }, [selectedFilter]);
 
     

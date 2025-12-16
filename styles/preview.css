@@ -27,10 +27,107 @@ html, body {
     justify-content: space-between;
 }
 
-.top .left {
+.top .left, .top .right {
     display: flex;
     align-items: center;
     gap: 5px;
+}
+
+.top .right {
+    gap: 10px;
+}
+
+.top .display {
+    display: flex;
+    align-items: center;
+    border-radius: 0px;
+}
+
+.display .text {
+    margin: 0px 6px;
+}
+
+.display.completed {
+    color: var(--flamespark-green);
+}
+
+.display.completed {
+    border: 2px solid var(--flamespark-green);
+}
+
+.display.early-support {
+    color: #fff;
+    background-color: var(--flamespark-orange);
+}
+
+.display.early-support {
+    border: 2px solid var(--flamespark-orange);
+}
+
+.display .box {
+    width: 24px;
+    height: 24px;
+    font-size: 1.1rem;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.display.completed .box {
+    background-color: var(--flamespark-green);
+}
+
+.display.early-support .box {
+    background-color: #fff;
+    color: var(--flamespark-orange)
+}
+
+/* Appearance animations for status displays */
+.display {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+    animation: displayAppear 280ms ease-out forwards;
+    will-change: opacity, transform;
+}
+
+.display.completed {
+    animation-delay: 60ms;
+}
+
+.display.early-support {
+    animation-delay: 120ms;
+}
+
+.display .box {
+    opacity: 0;
+    transform: scale(0.6) rotate(-6deg);
+    animation: boxPop 360ms cubic-bezier(.2,.8,.2,1) forwards;
+    animation-delay: 140ms;
+    will-change: transform, opacity;
+}
+
+.display.completed .box { animation-delay: 180ms; }
+.display.early-support .box { animation-delay: 220ms; }
+
+@keyframes displayAppear {
+    from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes boxPop {
+    0%   { opacity: 0; transform: scale(0.6) rotate(-6deg); }
+    60%  { opacity: 1; transform: scale(1.08) rotate(0deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .display,
+    .display .box {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
 }
 
 .project-logo {
@@ -134,6 +231,26 @@ html, body {
 
 .join-button.blue {
     background-color: var(--flamespark-blue);
+}
+
+.join-button.appear {
+    opacity: 0;
+    /* transform: translateY(6px); */
+    animation: joinButtonAppear 220ms ease-out forwards;
+    will-change: opacity, transform;
+}
+
+@keyframes joinButtonAppear {
+    from { opacity: 0; /*transform: translateY(6px); */}
+    to   { opacity: 1; /*transform: translateY(0); */}
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .join-button.appear {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
 }
 
 .current-image{

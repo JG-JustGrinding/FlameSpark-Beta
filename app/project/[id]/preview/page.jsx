@@ -1,5 +1,5 @@
 import Header from "@/components/Header";
-import { getUser } from "@/lib/projectFunctions";
+import { getUser, getProjectViews } from "@/lib/projectFunctions";
 import PreviewClient from "./PreviewClient.jsx";
 import ErrorPage from "@/components/error.jsx";
 import { supabase } from "@/lib/supabaseClient.js";
@@ -62,6 +62,7 @@ export default async function ProjectPreview({ params }){
   let project = null;
   let previewMedia = [];
   let creatorInfo = null;
+  let projectViewCount = 0;
 
   if (!id) {
       return (
@@ -75,7 +76,7 @@ export default async function ProjectPreview({ params }){
         const { supabase } = await import("@/lib/supabaseClient");
         const { data: projectData, error: projectError } = await supabase
           .from("projects")
-          .select("id, owner_id, title, tagline, description, tags, cover_image, icon")
+          .select("id, owner_id, title, tagline, description, tags, cover_image, icon, is_completed")
           .eq("id", id)
           .single();
         if (projectError) throw projectError;
@@ -96,6 +97,9 @@ export default async function ProjectPreview({ params }){
         const { data: userData, error: userError } = await getUser(projectData.owner_id);
         if (userError) throw userError;
         creatorInfo = userData;
+
+        projectViewCount = await getProjectViews(id);
+        if (projectViewCount.error) throw projectViewCount.error;
       } catch (err) {
         return (
           <>
@@ -107,7 +111,7 @@ export default async function ProjectPreview({ params }){
     return (
         <>
             <Header />
-            <PreviewClient id={id} project={project} previewMedia={previewMedia} creatorInfo={creatorInfo} />
+            <PreviewClient id={id} project={project} previewMedia={previewMedia} creatorInfo={creatorInfo} viewCount={projectViewCount} />
         </>
     );
 }

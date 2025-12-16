@@ -6,8 +6,10 @@ import { supabase } from "@/lib/supabaseClient";
 import { isUserJoinedOrOwner, joinProject } from "@/lib/projectFunctions";
 import SignupNotice from "@/components/SignupNotice";
 import "@/styles/preview.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faExclamation } from "@fortawesome/free-solid-svg-icons";
 
-export default function PreviewClient({ id, project, previewMedia, creatorInfo }) {
+export default function PreviewClient({ id, project, previewMedia, creatorInfo, viewCount }) {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [isJoinedSet, setIsJoinedSet] = useState(false);
@@ -101,8 +103,20 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo }
         <div className="left">
           <img src={project?.icon} width={48} height={48} alt="Project logo" className="project-logo" />
           <h1 className="titleFont header-size project-title">{project?.title}</h1>
+          {project?.is_completed && <div className="display completed">
+            <div className="box">
+              <FontAwesomeIcon icon={faCheck} className="check-icon" />
+            </div>
+            <span className="bodyFont bold text">Completed</span>
+          </div>}
         </div>
         <div className="right">
+        {(viewCount < 100 && isJoinedSet && !isJoined && !project.is_completed) && <div className="display early-support">
+          <div className="box">
+            <FontAwesomeIcon icon={faExclamation} className="check-icon" />
+          </div>
+          <span className="bodyFont bold text">Be among the first supporters!</span>
+        </div>}
           {!isJoinedSet && (
             <a href={`/project/${id}`} className={`button-shape bodyFont skeleton join-button body-size cursor-default`}>
               View Project
@@ -110,7 +124,7 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo }
           )}
           {isJoinedSet && (
             <button
-              className={`button-shape bodyFont join-button ${isJoined ? "blue" : "red"} body-size`}
+              className={`button-shape bodyFont join-button ${isJoined ? "blue" : "red"} body-size appear`}
               onClick={viewOrJoinProject}
             >
               {isJoined ? "View Project" : "Join Project"}

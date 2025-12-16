@@ -52,6 +52,8 @@ export default function SkeletonImage({
 						...(imgStyle || {}),
 						opacity: loaded ? 1 : 0,
 						transition: "opacity 200ms ease",
+						width: '100%',
+						height: '100%',
 					}}
 					onLoad={handleLoad}
 					onError={handleError}

@@ -107,14 +107,14 @@ export default function LandngPage() {
             <div className="about-section">
               <h3 className="titleFont bold">🌟 A Platform Built to Change how Ideas Come to Life</h3>
               <p className="bodyFont">
-                FlameSpark is an upcoming social-media platform that focuses on the journey of creation. Our goal is to power a new way for creators to showcase and grow an audience for their ideas and creations. Traditional ways to gain recognition, such as paid advertising or relying on social media algorithms, often leave creators feeling lost and unheard. FlameSpark aims to change that by providing a platform where every creator has the opportunity to let their ideas shine.
+                <span className="accent">FlameSpark</span> is an upcoming social-media platform that focuses on the <span className="highlight">journey of creation</span>. Our goal is to power a <span className="keyword">new way</span> for creators to showcase and grow an audience for their ideas and creations. Traditional ways to gain recognition, such as <span className="accent-2">paid advertising</span> or relying on <span className="accent-2">social media algorithms</span>, often leave creators feeling <span className="highlight">lost and unheard</span>. <span className="accent">FlameSpark</span> aims to change that by providing a platform where every creator has the opportunity to <span className="highlight">let their ideas shine!</span>
               </p>
             </div>
 
             <div className="about-section">
               <h3 className="titleFont bold">🔎 Making Discovery Possible for Every Creator</h3>
               <p className="bodyFont">
-                FlameSpark utilizes a unique take on content discovery, allowing creators to grow their community as they work on their projects and with our non-competitive algorithm. Even new creators have a chance to be discovered and grow their audience organically. By focusing on the journey of creation, FlameSpark encourages creators to share their progress, challenges, and get feedback with their community, creating an amazing story behind every project.
+                <span className="accent">FlameSpark</span> utilizes a <span className="keyword">unique take</span> on <span className="highlight">content discovery</span>, allowing creators to grow their community as they work on their projects and with our <span className="keyword">non-competitive algorithm</span>. Even new creators have a chance to be discovered and grow their audience <span className="keyword">organically</span>. By focusing on the <span className="highlight">journey of creation</span>, <span className="accent">FlameSpark</span> encourages creators to share their <span className="keyword">progress</span>, <span className="keyword">challenges</span>, and get <span className="keyword">feedback</span> with their community, creating an <span className="highlight">amazing story</span> behind every project.
               </p>
             </div>
           </div>
@@ -139,7 +139,7 @@ export default function LandngPage() {
                 </div>
                 <p className="bodyFont">
                 <b>
-                  It all starts with the creation of your project. A project is a display of your journey towards finishing your creation.
+                  It all starts with the creation of your project. A project is a showcase of your journey towards finishing your creation.
                 </b></p>
               </div>
             </div>

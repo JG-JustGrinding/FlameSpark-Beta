@@ -749,6 +749,16 @@
     border-radius: 8px;
 }
 
+/* Inline search inside the hamburger menu (hidden by default) */
+.header .mobileMenuSearchInline {
+    display: none;
+    padding: 6px 0 10px 0;
+}
+
+.header .mobileMenu .searchContainer {
+    width: 100%;
+}
+
 
 .header .userDropdown .userDisplay img {
     border-radius: 50%;
@@ -834,6 +844,10 @@
         border-radius: 50%
     }
 
+    .header .mobileMenuSearchClose {
+        font-size: 1.5rem;
+    }
+
 .hide {
     display: none;
 }
@@ -914,5 +928,15 @@
     .header .authButtons.unlogged .logIn {
         padding: 0.2rem 1rem;
         flex: 1;
+    }
+}
+
+@media (max-width: 325px) {
+    .header .mobileMenuSearchInline {
+        display: block;
+    }
+    .header .mobileMenuSearchButtonContainer,
+    .header .mobileSearchButton {
+        display: none !important;
     }
 }

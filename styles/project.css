@@ -31,6 +31,7 @@ h1, img {
     align-items: center;
     justify-content: space-between;
     color: var(--black);
+    flex-wrap: wrap;
 }
 
 .topbar .selected {
@@ -650,11 +651,11 @@ button:disabled {
     }
 
     .topbar .project-info {
-        flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 8px;
         text-align: center;
+        flex-wrap: wrap;
     }
 
     .topbar .project-actions {

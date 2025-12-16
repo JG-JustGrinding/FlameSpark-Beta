@@ -321,7 +321,7 @@ useEffect(() => {
           <a href="/create">Create</a>
           {!user && <a href="/blogs">Blogs</a>}
         </nav>
-        {/* Mobile menu search button: visible inside the mobile menu (helpful for very small screens) */}
+        {/* Mobile menu search button (default). Hidden on extremely small screens. */}
         <div className={styles.mobileMenuSearchButtonContainer}>
           <button
             className={styles.mobileMenuSearchButton}
@@ -330,6 +330,24 @@ useEffect(() => {
           >
             <Image src="/search.svg" alt="Search" width={20} height={20} />
           </button>
+        </div>
+        {/* Inline search input shown only on extremely small screens via CSS */}
+        <div className={styles.mobileMenuSearchInline}>
+          <div className={styles.searchContainer}>
+            <input
+              placeholder="Search here..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && (setMobileOpen(false), search())}
+            />
+            <button
+              className={styles.searchIconContainer}
+              onClick={() => { setMobileOpen(false); search(); }}
+              aria-label="Search"
+            >
+              <Image src="/search.svg" alt="Search" width={20} height={20} />
+            </button>
+          </div>
         </div>
         {!user && <div className={styles.mobileSocials}>
           <SocialLinks />
@@ -350,7 +368,7 @@ useEffect(() => {
       </div>
 
       {searchOpen && <div className={`${styles.mobileSearch}`}>
-        <p className="bodyFont label-color no-select-pointer" onClick={() => setSearchOpen(false)}>X</p>
+        <p className={`bodyFont no-select-pointer ${styles.mobileSearchClose}`} role="button" onClick={() => setSearchOpen(false)}><FontAwesomeIcon icon={faCircleXmark} /></p>
         <div className={`${styles.searchContainer}`}>
           <input placeholder="Search here..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === "Enter" && search()} />
           <button className={styles.searchIconContainer} onClick={() => {search()}}>
