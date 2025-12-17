@@ -1,4 +1,5 @@
 /* used for pages that display projects in a way where you want a grid layout */
+/* not gonna lie I have no idea where the styling for the primaryprojects is so im just gonna put some here xc */
 
 .content {
   display: grid;
@@ -19,4 +20,21 @@
   text-decoration: none;
   color: var(--black);
   width: 100%;
+}
+
+.project .project-name {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  align-items: center;
+}
+
+.project .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.project .completed-label {
+  color: var(--flamespark-green);
+  font-size: 1rem;
 }

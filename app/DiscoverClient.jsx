@@ -43,7 +43,12 @@ export default function DiscoverClient({ initialProjects = [], initialError = ""
   }, []);
 
   const fetchProjects = async (nextPage) => {
-    const { data, error } = await supabase.rpc("get_random_projects", { limit_count: PAGE_SIZE });
+    const { data, error } = await supabase.rpc("get_random_projects", 
+      { 
+        limit_count: PAGE_SIZE,
+        excluded_projects: projects.map((p) => p.id),
+      }
+    );
     if (error) {
       setLoading(false);
       return [];

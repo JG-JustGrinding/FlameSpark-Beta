@@ -141,6 +141,11 @@ ul li {
     background-color: var(--shadow);
 }
 
+.post-bottom .completed-label, .post-footer .completed-label {
+    color: var(--flamespark-green);
+    font-size: 1.2rem;
+}
+
 .rating > * {
     padding: 5px;
     border-radius: 50%;

@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useUser } from '@/lib/useUser';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
-import { faL, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faL, faLink, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
 import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { timeAgo } from "@/lib/projectFunctions";
 import { extractYouTubeId, getPostRating, getUserRating, shortenNumber, getPostCommentCount } from '@/lib/projectFunctions';
@@ -12,7 +12,7 @@ import Carousel from './Carousel';
 import PostContentView from './PostContentView';
 import ShareButton from './ShareButton';
 
-const HomePagePost = ({postId, title = "", description = "", dateCreated, postContent, projectName = "", projectIcon = "", projectId, className="", rateFunction = null, goToPreview = false, disableContent = false, currentPostIndex = 0, postIndex = 0, previousIndex}) => {
+const HomePagePost = ({postId, title = "", description = "", dateCreated, postContent, projectName = "", projectIcon = "", projectId, className="", rateFunction = null, goToPreview = false, disableContent = false, is_project_completed = false, currentPostIndex = 0, postIndex = 0, previousIndex}) => {
     const dateDifference = timeAgo(dateCreated);
     const [postRating, setPostRating] = useState(0);
     const [userRating, setUserRating] = useState(0);
@@ -113,6 +113,7 @@ const HomePagePost = ({postId, title = "", description = "", dateCreated, postCo
                 <a className="post-project" href={`project/${projectId}` + (goToPreview ? "/preview" : "")} aria-label={`View ${projectName}`}>
                     <img className="post-project-icon pfp-shape" src={projectIcon} alt={`${projectName} icon`} />
                     <span className="post-project-name bodyFont bold">{projectName}</span>
+                    {is_project_completed && <FontAwesomeIcon className="completed-label" icon={faCircleCheck}/>}
                 </a>
                 <div className="post-stats bodyFont">
                     <div className={`rating${ratingLoading ? " skeleton" : ""}`}>

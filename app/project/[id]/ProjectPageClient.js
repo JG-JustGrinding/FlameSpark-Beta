@@ -848,7 +848,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                             <h2 className="bodyFont reset">Create Post</h2>
                             <div className="post-options">
                                 <span className={`bodyFont label-color no-select-pointer ${creationSelectionIndex == 0 ? "selected" : ""}`} onClick={() => {setCreationSelectionIndex(0); setCurrentPostIndex(0);}}>Post</span>
-                                <span className={`bodyFont label-color no-select-pointer ${creationSelectionIndex == 1 ? "selected" : ""}`} onClick={() => setCreationSelectionIndex(1)}>Multipost</span>
+                                {false && <span className={`bodyFont label-color no-select-pointer ${creationSelectionIndex == 1 ? "selected" : ""}`} onClick={() => setCreationSelectionIndex(1)}>Multipost</span>}
                             </div>
                         </div>
 

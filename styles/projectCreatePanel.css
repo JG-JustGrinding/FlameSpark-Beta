@@ -416,3 +416,25 @@ button.remove {
         padding-bottom: 20px;
     }
 }
+
+@media(max-width: 480px)
+{
+    .create-panel .create-content {
+        flex-direction: column;
+    }
+
+    .create-panel .create-content .post-type-options {
+        width: 100%;
+        min-width: unset;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+        padding: 10px 0;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        height: auto;
+    }
+}

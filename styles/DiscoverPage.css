@@ -1,7 +1,3 @@
-.paginator-load-more {
-    width: 100%;
-}
-
 .end-of-discover {
     width: 100%;
     margin: 24px auto 0 auto;
@@ -39,6 +35,11 @@
 .end-of-discover .cta:hover {
     transform: translateY(-1px);
     filter: brightness(1.05);
+}
+
+.paginator-load-more {
+    width: 100%;
+    grid-template-columns: 1 / -1;
 }
 
 @media (max-width: 640px) {

@@ -1,4 +1,6 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SkeletonImage from "./SkeletonImage";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
 const PrimaryProject = ({project}) => {
     return (
@@ -12,6 +14,7 @@ const PrimaryProject = ({project}) => {
                 <div className="project-nameandtags">
                     <h3 className="project-name titleFont bold reset">
                         <a href={`project/${project?.id}/preview`} className="unstyled-link">{project?.title}</a>
+                        {project?.is_completed && <FontAwesomeIcon className="completed-label" icon={faCheckCircle}/>}
                     </h3>
                     {project?.tags?.length > 0 && (
                         <div className="tags bodyFont label caption-size" role="list" aria-label="Project tags">

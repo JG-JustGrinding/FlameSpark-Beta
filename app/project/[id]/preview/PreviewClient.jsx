@@ -55,12 +55,12 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo, 
   }, [id]);
 
   const viewOrJoinProject = async () => {
-    if (!user) {
+    if (!user && !project.is_completed) {
       setShowSignup(true);
       return;
     }
 
-    if (!isJoined) {
+    if (!isJoined && !project.is_completed) {
       try {
         await joinProject(user.id, id);
       } catch (error) {
@@ -73,7 +73,6 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo, 
 
   useEffect(() => {
     if (previewMedia && previewMedia.length > 0) {
-      // initialize to cover image if present, else first media
       const startIndex = Math.max(
         0,
         previewMedia.findIndex(m => m.url === (project?.cover_image || previewMedia[0]?.url))
@@ -124,10 +123,10 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo, 
           )}
           {isJoinedSet && (
             <button
-              className={`button-shape bodyFont join-button ${isJoined ? "blue" : "red"} body-size appear`}
+              className={`button-shape bodyFont join-button ${(isJoined || project.is_completed) ? "blue" : "red"} body-size appear`}
               onClick={viewOrJoinProject}
             >
-              {isJoined ? "View Project" : "Join Project"}
+              {isJoined || project.is_completed ? "View Project" : "Join Project"}
             </button>
           )}
         </div>
