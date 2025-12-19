@@ -6,7 +6,7 @@ import { useUser } from "@/lib/useUser";
 import '@/lib/fontawesome'
 import { deletePost, getPostRating, getUserRating } from '@/lib/projectFunctions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faArrowDown, faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck, faShare, faFireFlameCurved } from '@fortawesome/free-solid-svg-icons'
+import { faLink, faBars, faEllipsisVertical, faEllipsisH, faThumbTack, faPenToSquare, faEraser, faT, faLayerGroup, faImage, faPoll, faVolumeLow, faVideo, faCheck, faShare, faFireFlameCurved } from '@fortawesome/free-solid-svg-icons'
 import { faComment } from '@fortawesome/free-regular-svg-icons'
 import { editPost, extractYouTubeId, timeAgo, shortenNumber, getPostCommentCount } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
@@ -196,9 +196,9 @@ const ProjectPost = ({postId, icon, postTitle = "", postDescription = "", postCo
         <PostContentView postContent={postContent} />
         <div className="post-bottom bodyFont">
             <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
-                <FontAwesomeIcon className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateFunction(1); UpdateRating(1)}}/>
+                <button className={`vote up${userRating == 1 ? " selected" : ""}`} onClick={() => {rateFunction(1); UpdateRating(1)}}>▲</button>
                 <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
-                <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
+                <button className={`vote down${userRating == -1 ? " selected" : ""}`} onClick={() => {rateFunction(-1); UpdateRating(-1)}}>▼</button>
             </div>
             <a className={`comments${commentCount != null ? "" : " skeleton"}`} href={`/project/${projectId}/post/${postId}`}>
                 <FontAwesomeIcon className="comment-icon" icon={faComment}/>

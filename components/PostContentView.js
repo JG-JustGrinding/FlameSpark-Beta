@@ -12,7 +12,7 @@ import Poll from './Poll';
 export default function PostContentView({ postContent = null, className = '', defaultStyling = false, audioRef = null, iframeRef = null }) {
     const [currentPostPartIndex, setCurrentPostPartIndex] = useState(0);
     const [currentPostContent, setCurrentPostContent] = useState(null);
-    
+
     useEffect(() => {
         if (postContent?.length > 0) {
             setCurrentPostContent(postContent[currentPostPartIndex % postContent.length]);

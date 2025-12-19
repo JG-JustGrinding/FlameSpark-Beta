@@ -25,7 +25,7 @@ export default async function UserPage({ params }) {
 
     const { data: projectData, error: projectError } = await supabase
       .from("projects")
-      .select("id, title, tagline, description, tags, cover_image, icon")
+      .select("id, title, tagline, description, tags, cover_image, icon, is_completed")
       .eq("owner_id", id)
       .order("id", { ascending: false })
       .limit(PAGE_SIZE);

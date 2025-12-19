@@ -5,7 +5,6 @@ import { useUser } from '@/lib/useUser';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faComment } from "@fortawesome/free-regular-svg-icons";
 import { faL, faLink, faCircleCheck } from '@fortawesome/free-solid-svg-icons';
-import { faArrowUp, faArrowDown } from "@fortawesome/free-solid-svg-icons";
 import { timeAgo } from "@/lib/projectFunctions";
 import { extractYouTubeId, getPostRating, getUserRating, shortenNumber, getPostCommentCount } from '@/lib/projectFunctions';
 import Carousel from './Carousel';
@@ -117,9 +116,9 @@ const HomePagePost = ({postId, title = "", description = "", dateCreated, postCo
                 </a>
                 <div className="post-stats bodyFont">
                     <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
-                        <FontAwesomeIcon className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateFunction(1); UpdateRating(1)}}/>
+                        <button className={`vote up${userRating == 1 ? " selected" : ""}`} onClick={() => {rateFunction(1); UpdateRating(1)}}>▲</button>
                         <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
-                        <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateFunction(-1); UpdateRating(-1)}}/>
+                        <button className={`vote down${userRating == -1 ? " selected" : ""}`} onClick={() => {rateFunction(-1); UpdateRating(-1)}}>▼</button>
                     </div>
                     <a className={`comments${commentCount != null ? "" : " skeleton"}`} href={`/project/${projectId}/post/${postId}`} style={{display: "flex"}} aria-label={`${shortenNumber(commentCount) || 0} comments`}>
                         <FontAwesomeIcon className="comment-icon" icon={faComment} />

@@ -4,6 +4,7 @@ import "@/styles/content.css";
 import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Paginator } from "@/lib/paginator";
+import PrimaryProject from "@/components/PrimaryProject";
 
 export default function UserClient({ user, initialProjects = [], initialJoinedProjects = [], initialHasMoreCreated = true, initialHasMoreJoined = true, pageSize = 10, userId, totalCreatedCount = 0, totalJoinedCount = 0 }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -20,7 +21,7 @@ export default function UserClient({ user, initialProjects = [], initialJoinedPr
     const from = page * pageSize;
     const { data, error } = await supabase
       .from("projects")
-      .select("id, title, tagline, description, tags, cover_image, icon")
+      .select("id, title, tagline, description, tags, cover_image, icon, is_completed")
       .eq("owner_id", userId)
       .order("id", { ascending: false })
       .range(from, from + pageSize - 1);
@@ -79,25 +80,7 @@ export default function UserClient({ user, initialProjects = [], initialJoinedPr
                 setLoading={setLoadingCreated}
                 fetchFunction={fetchCreated}
                 renderItem={(proj) => (
-                  <a className="project-link" key={proj.id} href={`/project/${proj.id}/preview`}>
-                    <div className="project">
-                      <div className="cover-image-wrapper">
-                        <img className="cover-image" src={proj.cover_image} alt="Cover image" />
-                      </div>
-                      <span className="bodyFont tagline label">
-                        <i>{proj.tagline}</i>
-                      </span>
-                      <div className="project-info">
-                        <img className="project-icon" src={proj.icon || "/default-icon.png"} alt="Project Icon" />
-                        <div className="project-nameandtags">
-                          <span className="project-name titleFont bold">{proj.title}</span>
-                          <div className="tags bodyFont label caption-size">
-                            <span className="text">{proj.tags?.join(", ")}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
+                  <PrimaryProject key={proj.id} project={proj} />
                 )}
               />
             )}
@@ -112,25 +95,7 @@ export default function UserClient({ user, initialProjects = [], initialJoinedPr
                 setLoading={setLoadingJoined}
                 fetchFunction={fetchJoined}
                 renderItem={(proj) => (
-                  <a className="project-link" key={proj.id} href={`/project/${proj.id}/preview`}>
-                    <div className="project">
-                      <div className="cover-image-wrapper">
-                        <img className="cover-image" src={proj.cover_image} alt="Cover image" />
-                      </div>
-                      <span className="bodyFont tagline label">
-                        <i>{proj.tagline}</i>
-                      </span>
-                      <div className="project-info">
-                        <img className="project-icon" src={proj.icon || "/default-icon.png"} alt="Project Icon" />
-                        <div className="project-nameandtags">
-                          <span className="project-name titleFont bold">{proj.title}</span>
-                          <div className="tags bodyFont label caption-size">
-                            <span className="text">{proj.tags?.join(", ")}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
+                  <PrimaryProject key={proj.id} project={proj} />
                 )}
               />
             )}

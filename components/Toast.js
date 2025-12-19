@@ -9,7 +9,7 @@ export default function Toast({ message = '', isOpen = false, onClose = () => {}
   }, [isOpen]);
 
   return (
-    <div className={`toast ${isOpen ? 'open' : ''}`} role="status" aria-live="polite">
+    <div className={`toast bodyFont ${isOpen ? 'open' : ''}`} role="status" aria-live="polite">
       {message}
     </div>
   );

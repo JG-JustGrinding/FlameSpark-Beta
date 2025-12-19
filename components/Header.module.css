@@ -33,115 +33,115 @@
     display: none;
 }
 
-    .header a:not(:hover) {
-        text-decoration: none;
-        color: var(--black);
-    }
+.header a:not(:hover) {
+    text-decoration: none;
+    color: var(--black);
+}
 
-    .header .navLinks {
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        gap: 35px;
-    }
+.header .navLinks {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 35px;
+}
 
-    .header .dashboardNav {
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-        gap: 35px;
-    }
+.header .dashboardNav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 35px;
+}
 
 
-    .header a {
-        font-weight: bold;
-    }
+.header a {
+    font-weight: bold;
+}
 
-    .header .searchContainer {
-        display: flex;
-        align-items: stretch;
-        width: fit-content;
-        max-height: 2rem;
-        flex-grow: 0.5;
-    }
+.header .searchContainer {
+    display: flex;
+    align-items: stretch;
+    width: fit-content;
+    max-height: 2rem;
+    flex-grow: 0.5;
+}
 
-        .header .searchContainer input {
-            padding: 0.25rem 0.5rem;
-            font-size: 1rem;
-            border: 1px solid var(--black);
-            outline: none;
-            border-radius: 99px 0 0 99px;
-            width: 100%;
-        }
+.header .searchContainer input {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    border: 1px solid var(--black);
+    outline: none;
+    border-radius: 99px 0 0 99px;
+    width: 100%;
+}
 
-        .header .searchContainer .searchIconContainer {
-            background-color: var(--black);
-            height: auto;
-            aspect-ratio: 1 / 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: none;
-            border-radius: 0 99px 99px 0;
-        }
+.header .searchContainer .searchIconContainer {
+    background-color: var(--black);
+    height: auto;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    border-radius: 0 99px 99px 0;
+}
 
-            .header .searchContainer .searchIconContainer img {
-                width: 80%;
-                height: 80%;
-                object-fit: contain;
-            }
+.header .searchContainer .searchIconContainer img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
 
-    .header .authButtons {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 5px;
-    }
+.header .authButtons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
 
-    .header .authButtons.userActive{
-        gap: 10px;
-    }
+.header .authButtons.userActive {
+    gap: 10px;
+}
 
-        .header .authButtons button:not(.socialButton) {
-            white-space: nowrap;
-            padding: 0.2rem 2rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-weight: bold;
-        }
+.header .authButtons button:not(.socialButton) {
+    white-space: nowrap;
+    padding: 0.2rem 2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: bold;
+}
 
-        .header .authButtons .logIn {
-            border: 2px solid var(--flamespark-red);
-            background-color: var(--flamespark-red);
-            color: var(--white);
-        }
+.header .authButtons .logIn {
+    border: 2px solid var(--flamespark-red);
+    background-color: var(--flamespark-red);
+    color: var(--white);
+}
 
-        .header .authButtons .signUp {
-            border: 2px solid var(--flamespark-blue);
-            background-color: var(--white);
-            color: var(--flamespark-blue);
-        }
+.header .authButtons .signUp {
+    border: 2px solid var(--flamespark-blue);
+    background-color: var(--white);
+    color: var(--flamespark-blue);
+}
 
-        .header .authButtons .logIn:hover {
-            background-color: var(--flamespark-red-tinted);
-            border-color: var(--flamespark-red-tinted);
-        }
+.header .authButtons .logIn:hover {
+    background-color: var(--flamespark-red-tinted);
+    border-color: var(--flamespark-red-tinted);
+}
 
-        .header .authButtons .signUp:hover {
-            border-color: var(--flamespark-blue-accented);
-            color: var(--flamespark-blue-accented);
-        }
+.header .authButtons .signUp:hover {
+    border-color: var(--flamespark-blue-accented);
+    color: var(--flamespark-blue-accented);
+}
 
-        .header .authButtons .animate:hover {
-            transform: scale(1.03);
-        }
+.header .authButtons .animate:hover {
+    transform: scale(1.03);
+}
 
-        .header .authButtons .animate:active {
-            filter: brightness(0.9);
-            transform: scale(0.97);
-        }
+.header .authButtons .animate:active {
+    filter: brightness(0.9);
+    transform: scale(0.97);
+}
 
 .header .authButtons .pfp {
     height: 40px;
@@ -162,17 +162,23 @@
     display: block;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, rgba(0,0,0,0.06), rgba(0,0,0,0.1), rgba(0,0,0,0.06));
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.06));
     animation: pfpShimmer 1.4s ease-in-out infinite;
 }
 
 .header .authButtons .pfp[src]::before {
-    content: none; /* hide shimmer once src is present */
+    content: none;
+    /* hide shimmer once src is present */
 }
 
 @keyframes pfpShimmer {
-    0% { background-position: -100% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+        background-position: -100% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
 }
 
 .header .authButtons .inbox {
@@ -201,7 +207,7 @@
     top: var(--header-height);
     right: 0px;
     background-color: var(--white);
-    box-shadow: 
+    box-shadow:
         -2px 2px 4px var(--shadow),
         2px 2px 4px var(--shadow);
     padding: 15px 20px;
@@ -243,7 +249,7 @@
 }
 
 .header .notifButton:focus-visible {
-    outline: 3px solid rgba(66,153,225,0.34);
+    outline: 3px solid rgba(66, 153, 225, 0.34);
     outline-offset: 2px;
 }
 
@@ -263,41 +269,70 @@
     justify-content: center;
     font-size: 0.72rem;
     font-weight: 700;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .header .notifBadge.golden {
-  background: linear-gradient(45deg, var(--flamespark-orange), var(--flamespark-orange-accented), var(--flamespark-orange));
-  background-size: 200% 200%;
-  color: var(--white);
-  animation: shimmer 3s ease-in-out infinite, glow 2.5s ease-in-out infinite alternate;
-  box-shadow: 0 0 10px var(--golden), 0 0 20px var(--flamespark-orange);
+    background: linear-gradient(45deg, var(--flamespark-orange), var(--flamespark-orange-accented), var(--flamespark-orange));
+    background-size: 200% 200%;
+    color: var(--white);
+    animation: shimmer 3s ease-in-out infinite, glow 2.5s ease-in-out infinite alternate;
+    box-shadow: 0 0 10px var(--golden), 0 0 20px var(--flamespark-orange);
 }
 
 
 /* Soft golden shimmer across the badge */
 @keyframes shimmer {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* Gentle glowing pulse */
 @keyframes glow {
-  0% { box-shadow: 0 0 6px rgba(255, 215, 0, 0.4), 0 0 12px rgba(255, 215, 0, 0.2); transform: scale(1); }
-  50% { box-shadow: 0 0 10px rgba(255, 255, 160, 0.9), 0 0 20px rgba(255, 215, 0, 0.7); transform: scale(1.08); }
-  100% { box-shadow: 0 0 6px rgba(255, 215, 0, 0.4), 0 0 12px rgba(255, 215, 0, 0.2); transform: scale(1); }
+    0% {
+        box-shadow: 0 0 6px rgba(255, 215, 0, 0.4), 0 0 12px rgba(255, 215, 0, 0.2);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 10px rgba(255, 255, 160, 0.9), 0 0 20px rgba(255, 215, 0, 0.7);
+        transform: scale(1.08);
+    }
+
+    100% {
+        box-shadow: 0 0 6px rgba(255, 215, 0, 0.4), 0 0 12px rgba(255, 215, 0, 0.2);
+        transform: scale(1);
+    }
 }
 
 /* small pulse for incoming notifications */
 .header .pulse {
-    animation: badge-pop 650ms cubic-bezier(.2,.8,.2,1);
+    animation: badge-pop 650ms cubic-bezier(.2, .8, .2, 1);
 }
 
 @keyframes badge-pop {
-    0% { transform: scale(.6); opacity: 0; }
-    60% { transform: scale(1.12); opacity: 1; }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(.6);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.12);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 /* Notification panel (anchored near the bell) */
@@ -317,7 +352,8 @@
     overflow-y: auto;
 }
 
-.header .notifPanel.open, .header .userDropdown.open {
+.header .notifPanel.open,
+.header .userDropdown.open {
     display: block;
 }
 
@@ -355,10 +391,11 @@
 }
 
 .header .notifFilter:hover {
-    background: rgba(0,0,0,0.04);
+    background: rgba(0, 0, 0, 0.04);
 }
 
-.header .notifFilter.active, .header .notifFilter[aria-selected="true"] {
+.header .notifFilter.active,
+.header .notifFilter[aria-selected="true"] {
     background: var(--flamespark-red);
     color: var(--white);
 }
@@ -371,7 +408,7 @@
     height: 8px;
     border-radius: 50%;
     background-color: var(--flamespark-red);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .header .notifDot.golden {
@@ -381,11 +418,12 @@
 .loadingBar {
     height: 4px;
     width: 100%;
-    background: linear-gradient(90deg, var(--flamespark-red), rgba(255,255,255,0));
+    background: linear-gradient(90deg, var(--flamespark-red), rgba(255, 255, 255, 0));
     border-radius: 999px;
     overflow: hidden;
     position: relative;
 }
+
 .loadingBar::after {
     content: '';
     position: absolute;
@@ -393,20 +431,25 @@
     left: -40%;
     height: 100%;
     width: 40%;
-    background: linear-gradient(90deg, rgba(255,255,255,0.25), rgba(255,255,255,0));
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0));
     animation: loadingBar 1s linear infinite;
 }
 
 @keyframes loadingBar {
-    from { left: -40%; }
-    to { left: 100%; }
+    from {
+        left: -40%;
+    }
+
+    to {
+        left: 100%;
+    }
 }
 
 /* Small spinner for centered loading */
 .loadingSpinner {
     width: 36px;
     height: 36px;
-    border: 4px solid rgba(0,0,0,0.08);
+    border: 4px solid rgba(0, 0, 0, 0.08);
     border-top-color: var(--flamespark-red);
     border-radius: 999px;
     animation: spin 1s linear infinite;
@@ -414,7 +457,9 @@
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .header .notifList {
@@ -490,35 +535,42 @@
 }
 
 .notifItem .colorBanner.golden {
-    background: linear-gradient(
-        120deg,
-        #E8B923,
-        #FFD56A,
-        #F0C13B,
-        #E8B923
-    );
+    background: linear-gradient(120deg,
+            #E8B923,
+            #FFD56A,
+            #F0C13B,
+            #E8B923);
     background-size: 250% 250%;
     animation: goldenShimmer 4.5s ease-in-out infinite,
-               goldenGlow 3s ease-in-out infinite alternate;
+        goldenGlow 3s ease-in-out infinite alternate;
     position: relative;
     overflow: hidden;
 }
 
 /* shimmering movement */
 @keyframes goldenShimmer {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* soft glowing pulse */
 @keyframes goldenGlow {
     0% {
-        box-shadow: 
+        box-shadow:
             0 0 4px rgba(255, 220, 120, 0.4),
             0 0 10px rgba(255, 200, 60, 0.3);
         transform: scale(1);
     }
+
     100% {
         box-shadow:
             0 0 10px rgba(255, 240, 180, 0.9),
@@ -535,20 +587,26 @@
     left: -40%;
     width: 80%;
     height: 100%;
-    background: linear-gradient(
-        100deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0.6) 50%,
-        transparent 100%
-    );
+    background: linear-gradient(100deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.6) 50%,
+            transparent 100%);
     transform: skewX(-20deg);
     animation: goldenSweep 3.5s ease-in-out infinite;
 }
 
 @keyframes goldenSweep {
-    0%   { left: -250%; }
-    60%  { left: 320%; }
-    100% { left: 320%; }
+    0% {
+        left: -250%;
+    }
+
+    60% {
+        left: 320%;
+    }
+
+    100% {
+        left: 320%;
+    }
 }
 
 
@@ -598,7 +656,7 @@
 .header .notifContent .notifMessage {
     font-size: 0.95rem;
     /* proper ellipsis behavior */
-    /*white-space: nowrap; only if you want to cut it off to 1 line*/ 
+    /*white-space: nowrap; only if you want to cut it off to 1 line*/
     overflow: hidden;
     text-overflow: ellipsis;
     display: block;
@@ -630,7 +688,8 @@
     flex-direction: column;
 }
 
-.header .userDropdown .options div, .header .userDropdown .options a{
+.header .userDropdown .options div,
+.header .userDropdown .options a {
     display: flex;
     gap: 5px;
     margin: 15px 0px;
@@ -648,22 +707,22 @@
     font-size: 2rem;
 }
 
-    .header .userDropdown .logoutButton {
-        background-color: transparent;
-        margin-top: 5px;
-        font-size: .8rem;
-    }
+.header .userDropdown .logoutButton {
+    background-color: transparent;
+    margin-top: 5px;
+    font-size: .8rem;
+}
 
-    .header .userDropdown .closeButton {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        -webkit-user-select: none;
-        cursor: pointer;
-    }
+.header .userDropdown .closeButton {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+}
 
 /* Sticky footer inside the notification panel */
 .header .notifFooter {
@@ -674,7 +733,8 @@
     border-top: 1px solid #eef2f7;
     display: flex;
     justify-content: center;
-    z-index: 1003; /* sit above notif content when necessary */
+    z-index: 1003;
+    /* sit above notif content when necessary */
 }
 
 /* Guest social links dropdown in the header */
@@ -767,86 +827,86 @@
     object-fit: cover;
 }
 
-    .header .hamburger {
-        display: none;
-        cursor: pointer;
-        flex-shrink: 0;
-    }
+.header .hamburger {
+    display: none;
+    cursor: pointer;
+    flex-shrink: 0;
+}
 
-    .header .mobileMenu {
-        position: fixed;
-        top: 0;
-        left: -100vw;
-        width: 100vw;
-        height: 100vh;
-        background: var(--white);
-        display: none;
-        flex-direction: column;
-        padding: 2rem;
-        gap: 1.5rem;
-        transition: left 0.3s ease;
-        z-index: 1000;
-    }
+.header .mobileMenu {
+    position: fixed;
+    top: 0;
+    left: -100vw;
+    width: 100vw;
+    height: 100vh;
+    background: var(--white);
+    display: none;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 1.5rem;
+    transition: left 0.3s ease;
+    z-index: 1000;
+}
 
-        .header .mobileMenu.open {
-            left: 0;
-            display: flex;
-        }
+.header .mobileMenu.open {
+    left: 0;
+    display: flex;
+}
 
-        .header .mobileMenu .navLinksMobile {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            flex-direction: column;
-            justify-content: safe center;
-            align-items: center;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            gap: 35px;
-        }
+.header .mobileMenu .navLinksMobile {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: safe center;
+    align-items: center;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 35px;
+}
 
-        .header .mobileMenu .closeButton {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
+.header .mobileMenu .closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
 
-    .header .mobileSearch {
-        position: absolute;
-        inset: 0;
-        background-color: var(--white);
-        display: flex;
-        justify-content: space-between;
-        margin: 0px 15px;
-        align-items: center;
-        gap: 15px;
-        z-index: 5;
-    }
+.header .mobileSearch {
+    position: absolute;
+    inset: 0;
+    background-color: var(--white);
+    display: flex;
+    justify-content: space-between;
+    margin: 0px 15px;
+    align-items: center;
+    gap: 15px;
+    z-index: 5;
+}
 
-    .header .mobileSearch .searchContainer {
-        flex: 1;
-    }
+.header .mobileSearch .searchContainer {
+    flex: 1;
+}
 
-    .header p {
-        font-size: 1.2rem;
-    }
+.header p {
+    font-size: 1.2rem;
+}
 
-    .header .mobileSearchButton {
-        background-color: var(--black);
-        height: auto;
-        aspect-ratio: 1 / 1;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        border: none;
-        border-radius: 50%
-    }
+.header .mobileSearchButton {
+    background-color: var(--black);
+    height: auto;
+    aspect-ratio: 1 / 1;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    border-radius: 50%
+}
 
-    .header .mobileMenuSearchClose {
-        font-size: 1.5rem;
-    }
+.header .mobileMenuSearchClose {
+    font-size: 1.5rem;
+}
 
 .hide {
     display: none;
@@ -895,7 +955,7 @@
 
     .header .mobileOnly {
         display: flex;
-    }   
+    }
 
     .header.dashboardNav .hamburger {
         display: flex;
@@ -911,6 +971,15 @@
 @media (max-width: 410px) {
     .header .mobileSearchButton.unlogged {
         display: none;
+    }
+
+    .header .mobileMenuSearchInline.unlogged {
+        display: block;
+    }
+
+    .header .mobileMenuSearchButtonContainer.unlogged,
+    .header .mobileSearchButton.unlogged {
+        display: none !important;
     }
 }
 
@@ -935,6 +1004,7 @@
     .header .mobileMenuSearchInline {
         display: block;
     }
+
     .header .mobileMenuSearchButtonContainer,
     .header .mobileSearchButton {
         display: none !important;

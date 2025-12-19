@@ -322,7 +322,7 @@ useEffect(() => {
           {!user && <a href="/blogs">Blogs</a>}
         </nav>
         {/* Mobile menu search button (default). Hidden on extremely small screens. */}
-        <div className={styles.mobileMenuSearchButtonContainer}>
+        <div className={`${styles.mobileMenuSearchButtonContainer} ${user ? "" : styles.unlogged}`}>
           <button
             className={styles.mobileMenuSearchButton}
             onClick={() => { setSearchOpen(true); setMobileOpen(false); }}
@@ -332,7 +332,7 @@ useEffect(() => {
           </button>
         </div>
         {/* Inline search input shown only on extremely small screens via CSS */}
-        <div className={styles.mobileMenuSearchInline}>
+        <div className={`${styles.mobileMenuSearchInline} ${user ? "" : styles.unlogged}`}>
           <div className={styles.searchContainer}>
             <input
               placeholder="Search here..."

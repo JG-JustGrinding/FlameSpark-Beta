@@ -5,7 +5,7 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 const PrimaryProject = ({project}) => {
     return (
         <article className="project">
-            <a href={`project/${project?.id}/preview`} className="cover-image-wrapper" aria-label={`Preview ${project?.title}`}>
+            <a href={`/project/${project?.id}/preview`} className="cover-image-wrapper" aria-label={`Preview ${project?.title}`}>
                 <SkeletonImage src={project?.cover_image} alt={`${project?.title} cover image`} className="cover-image-wrapper" imageClassName="cover-image" />
             </a>
             <p className="bodyFont tagline label"><i>{project?.tagline}</i></p>
@@ -13,7 +13,7 @@ const PrimaryProject = ({project}) => {
                 <img className="project-icon" src={project?.icon} alt={`${project?.title} icon`} />
                 <div className="project-nameandtags">
                     <h3 className="project-name titleFont bold reset">
-                        <a href={`project/${project?.id}/preview`} className="unstyled-link">{project?.title}</a>
+                        <a href={`/project/${project?.id}/preview`} className="unstyled-link">{project?.title}</a>
                         {project?.is_completed && <FontAwesomeIcon className="completed-label" icon={faCheckCircle}/>}
                     </h3>
                     {project?.tags?.length > 0 && (

@@ -4,7 +4,7 @@ import { faLink, faShare } from '@fortawesome/free-solid-svg-icons';
 import "./ShareButton.css";
 import Toast from './Toast';
 
-export default function ShareButton({postId = null, projectId = null, forceLeft = false}) {
+export default function ShareButton({postId = null, projectId = null, forceLeft = false, className = ''}) {
     const [sharePanelOpen, setSharePanelOpen] = useState(false);
     const [panelAlign, setPanelAlign] = useState('right');
     const shareRef = useRef(null);
@@ -94,14 +94,14 @@ export default function ShareButton({postId = null, projectId = null, forceLeft 
     }, []);
 
     return (
-        <div ref={shareRef} className='share-container'>
-            <FontAwesomeIcon className="share option" icon={faShare} onClick={() => {
+        <div ref={shareRef} className={`share-container ${className}`}>
+            <FontAwesomeIcon className="share option" icon={faShare} aria-label="Share" onClick={() => {
                 // decide alignment right before toggling
                 setPanelAlign(decideAlignment());
                 setSharePanelOpen(value => !value);
             }}/>
             
-            {sharePanelOpen && <div className={`share-panel ${panelAlign}`}>
+            {sharePanelOpen && <div className={`share-panel bodyFont ${panelAlign}`}>
                 <ul>
                     {(postId && projectId) &&<li className="no-select-pointer" onClick={() => {CopyLink(); setSharePanelOpen(false)}}>
                         <FontAwesomeIcon icon={faLink} />

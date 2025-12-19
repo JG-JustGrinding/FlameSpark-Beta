@@ -273,9 +273,9 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                     <PostContentView postContent={post?.content} defaultStyling={true}/>
                     <div className="post-bottom bodyFont">
                         <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
-                            <FontAwesomeIcon className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateProjectPost(1); UpdateRating(1)}}/>
+                            <button className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateProjectPost(1); UpdateRating(1)}}>▲</button>
                             <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
-                            <FontAwesomeIcon className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateProjectPost(-1); UpdateRating(-1)}}/>
+                            <button className={`vote down${userRating == -1 ? " selected" : ""}`} icon={faArrowDown} onClick={() => {rateProjectPost(-1); UpdateRating(-1)}}>▼</button>
                         </div>
                         <ShareButton postId={postId} projectId={id}/>
                     </div>

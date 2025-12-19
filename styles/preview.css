@@ -25,12 +25,24 @@ html, body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
 }
 
 .top .left, .top .right {
     display: flex;
     align-items: center;
     gap: 5px;
+    min-width: 0;
+}
+
+.top .left {
+    flex: 1;
+    overflow: hidden;
+}
+
+.project-title {
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .top .right {
@@ -208,6 +220,7 @@ html, body {
 .project-info .tags {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .tag {
@@ -364,9 +377,45 @@ html, body {
     height: 32px;
 }
 
+@media(max-width: 1024px) {
+    .top {
+        gap: 16px;
+    }
+    
+    .display .text {
+        font-size: 0.9rem;
+    }
+}
+
 @media(max-width: 768px) {
     .main-container{
         padding: 24px 16px;
+    }
+    
+    .top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .top .left, .top .right {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .top .right {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .display .text {
+        font-size: 0.85rem;
+    }
+    
+    .display .box {
+        width: 20px;
+        height: 20px;
+        font-size: 0.9rem;
     }
 
     .images {
@@ -396,16 +445,35 @@ html, body {
     .join-button {
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
+        width: 100%;
     }
 
     .project-title {
         font-size: 1.5rem;
+    }
+    
+    .project-logo {
+        width: 40px;
+        height: 40px;
     }
 }
 
 @media (max-width: 640px) {
     .main-container {
         padding: 16px;
+    }
+    
+    .top .left {
+        gap: 8px;
+    }
+    
+    .project-title {
+        font-size: 1.25rem;
+    }
+    
+    .project-logo {
+        width: 36px;
+        height: 36px;
     }
 }
 
