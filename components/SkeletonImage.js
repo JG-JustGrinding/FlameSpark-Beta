@@ -61,7 +61,7 @@ export default function SkeletonImage({
                     className={imageClassName}
 				/>
 			)}
-			{error && <div className={skeletonClassName} />}
+			{error && <div className={skeletonClassName} style={{width: '100%', height: '100%'}} />}
 		</div>
 	);
 }

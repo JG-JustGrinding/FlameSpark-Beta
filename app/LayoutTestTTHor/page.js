@@ -13,7 +13,7 @@ export const metadata = {
 		title: "Explore - FlameSpark",
 		description:
 			"Find new posts and discover new projects on FlameSpark. Explore amazing content from upcoming creations.",
-		url: `${process.env.NEXT_PUBLIC_BASE_URL}/explore`,
+		url: `${process.env.DOMAIN_NAME}/explore`,
 		siteName: "FlameSpark",
 		type: "website",
 	},
@@ -43,6 +43,6 @@ export default async function ExplorePage() {
 	}
 
 	return (
-		<ExplorePageClient initialPosts={initialPosts} initialSeed={seed} />
+		<ExplorePageClient initialPosts={initialPosts} initialSeed={seed} pageSize={INITIAL_SIZE} userId={id} />
 	);
 }

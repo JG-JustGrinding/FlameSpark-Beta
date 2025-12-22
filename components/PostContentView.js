@@ -33,7 +33,7 @@ export default function PostContentView({ postContent = null, className = '', de
 
     return (
     <>
-    {postContent?.length > 1 && <span className="label-color caption-size bodyFont">{currentPostPartIndex + 1} of {postContent?.length}</span>}
+    {postContent?.length > 1 && <span className="label-color caption-size bodyFont current-part-index-text">{currentPostPartIndex + 1} of {postContent?.length}</span>}
     <div className={`post-content` + (defaultStyling ? " post-content-view" : "") + (postContent ? "" : " skeleton") + (className ? " " + className : "")}>
         <div className="content">
             {currentPostContent?.contentType == "text" && <p className="text-post bodyFont body-size">{currentPostContent?.content}</p>}
@@ -56,7 +56,7 @@ export default function PostContentView({ postContent = null, className = '', de
                 className="video"
                 src={`https://www.youtube.com/embed/${extractYouTubeId(
                 currentPostContent?.content
-                )}`}
+                )}?enablejsapi=1`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 ref={iframeRef}

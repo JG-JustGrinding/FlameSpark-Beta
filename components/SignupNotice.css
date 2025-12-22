@@ -29,7 +29,7 @@
   height: 60px;
   object-fit: contain;
   background-color: var(--flamespark-background);
-  border-radius: 50%;
+  border-radius: 50% !important;
 }
 
 .create-page-login-notice-header h3 {

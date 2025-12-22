@@ -27,6 +27,8 @@
   pointer-events: none;
   display: block;
   z-index: 0;
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
 }
 
 .image.active {

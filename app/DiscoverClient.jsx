@@ -139,9 +139,9 @@ export default function DiscoverClient({ initialProjects = [], initialError = ""
           noneFoundMessage="No projects found."
           noMoreObject={
             <div className="end-of-discover bodyFont">
-              <div className="titleFont" style={{ fontSize: "1.25rem", fontWeight: 700, width: "100%" }}>
+              <h2 className="titleFont reset" style={{ fontSize: "1.25rem", fontWeight: 700, width: "100%" }}>
                 You’ve reached the end of the Discover page!
-              </div>
+              </h2>
               <p className="reset">
                 FlameSpark is a new and upcoming platform. As more creators join, more projects will appear.
               </p>

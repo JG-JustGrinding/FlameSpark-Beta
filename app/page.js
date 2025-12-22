@@ -15,7 +15,7 @@ export const metadata = {
     title: "FlameSpark",
     description:
       "Discover new projects on FlameSpark. Support creators, follow their journeys, and join amazing communities of upcoming creations.",
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/`,
+    url: `${process.env.DOMAIN_NAME}/`,
     siteName: "FlameSpark",
     type: "website",
     images: [`${process.env.DOMAIN_NAME}/flamespark_banner.png`],

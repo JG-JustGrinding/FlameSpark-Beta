@@ -9,7 +9,7 @@ export const metadata = {
     title: "Home - FlameSpark",
     description:
       "Get updates on followed projects and discover new posts on FlameSpark.",
-    url: `${process.env.NEXT_PUBLIC_BASE_URL}/home`,
+    url: `${process.env.DOMAIN_NAME}/home`,
     siteName: "FlameSpark",
     type: "website",
   },
