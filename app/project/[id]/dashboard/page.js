@@ -797,7 +797,7 @@ const removeLink = (index) => {
                             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px'}}>
                                 <FontAwesomeIcon icon={faLock} className="label-color icon" style={{fontSize: '5rem', color: 'var(--flamespark-red)', marginBottom: '8px'}}/>
                                 <h2 className="titleFont bold" style={{fontSize: '2.2rem', margin: 0}}>Feature In Development</h2>
-                                <span className="bodyFont label-color" style={{fontSize: '1.1rem', textAlign: 'center', maxWidth: '420px'}}>Thank you for being a member and supporting FlameSpark! This feature is currently in development and will be available soon.<br/>If you’re not a member yet, you can join below.</span>
+                                <span className="bodyFont label-color" style={{fontSize: '1.1rem', textAlign: 'center', maxWidth: '420px'}}>Thank you for being a member and supporting FlameSpark-Beta! This feature is currently in development and will be available soon.<br/>If you’re not a member yet, you can join below.</span>
                             </div>
                             <a href="https://patreon.com" target="_blank" rel="noopener noreferrer">
                                 <button className="button-shape bodyFont red-color" style={{marginTop: '18px', fontSize: '1.1rem', padding: '12px 32px'}}>Become a Member</button>

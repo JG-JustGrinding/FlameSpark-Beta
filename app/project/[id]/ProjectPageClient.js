@@ -1021,7 +1021,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                     <div className="panel-content">
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
-                        <span className="bodyFont bold body">We're currently in beta. Project to-do lists will launch after FlameSpark Beta gets enough members. Thank you for your support!</span>
+                        <span className="bodyFont bold body">We're currently in beta. Project to-do lists will launch after FlameSpark-Beta gets enough members. Thank you for your support!</span>
                         <div>
                             <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
                         </div>
@@ -1034,7 +1034,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                     <div className="panel-content">
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
-                        <span className="bodyFont bold body">We're currently in beta. Project timelines will launch after FlameSpark Beta gets enough members. Thank you for your support!</span>
+                        <span className="bodyFont bold body">We're currently in beta. Project timelines will launch after FlameSpark-Beta gets enough members. Thank you for your support!</span>
                         <div>
                             <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
                         </div>
@@ -1047,7 +1047,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                     <div className="panel-content">
                         <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => {setSelectedPage(0); setMobilePanelIndex(0);}}/>
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
-                        <span className="bodyFont bold body">We're currently in beta. Project community spaces will launch after FlameSpark Beta gets enough members. Thank you for your support!</span>
+                        <span className="bodyFont bold body">We're currently in beta. Project community spaces will launch after FlameSpark-Beta gets enough members. Thank you for your support!</span>
                         <div>
                             <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
                         </div>

@@ -32,7 +32,7 @@ export default function FlamepointsTeaser({ projectTitle = '', points = 0, nextT
 
             <div className="actions">
                 <button className="button-shape bodyFont" onClick={onClose}>Close</button>
-                <a href="/support" target="_blank" rel="noopener noreferrer"><button className="button-shape bodyFont red-color">Become a Member!</button></a>
+                <a href="/support" target="_blank" rel="noopener noreferrer"><button className="button-shape bodyFont red-color">Become a Member</button></a>
             </div>
         </div>
     );

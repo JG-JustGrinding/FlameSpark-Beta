@@ -407,15 +407,6 @@ export default function ExplorePageClient({ initialPosts, initialSeed, pageSize 
 		};
 	}, [currentIndex]);
 
-	useEffect(() => {
-		const setVH = () => {
-			document.documentElement.style.setProperty("--vh", `${window.innerHeight * 0.01}px`);
-		};
-		setVH();
-		window.addEventListener("resize", setVH);
-		return () => window.removeEventListener("resize", setVH);
-	}, []);
-
 	const maxIndex = hasMore ? posts.length - 1 : posts.length;
 	const showLeftArrow = currentIndex > 0;
 	const showRightArrow = currentIndex < maxIndex;
