@@ -38,12 +38,14 @@
 }
 
 @media (prefers-color-scheme: dark) {
+    /*
   .logoA.light {
     display: none;
   }
   .logoA.dark {
     display: block;
   }
+    */
 }
 
 .header .mobileOnly {

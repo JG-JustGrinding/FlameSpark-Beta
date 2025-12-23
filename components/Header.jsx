@@ -288,11 +288,7 @@ export default function Header({ isDashboardHeader = false, searchFieldText = ""
         </div>
 
         <a className={`${styles.logoA} ${styles.light}`} href="/">
-          <img src="/logo_NoPadding_Transparent.png" alt="FlameSpark logo"></img>
-        </a>
-
-        <a className={`${styles.logoA} ${styles.dark}`} href="/">
-          <img src="/logo_NoPadding_Transparent_ALT_DARKMODE.png" alt="FlameSpark logo"></img>
+          <img src="/Logo_SubtlePadding_Background_White.png" alt="FlameSpark logo"></img>
         </a>
       </div>
 
