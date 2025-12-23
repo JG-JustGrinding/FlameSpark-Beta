@@ -192,7 +192,7 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo, 
         isOpen={showSignup}
         onClose={() => setShowSignup(false)}
         message="Log in or create a FlameSpark-Beta account to join and support projects!"
-        loginText="View Project"
+        loginText="View Project as Guest"
         loginHref={`/project/${id}`}
         signupText="Login"
         signupHref={`/login?redirectUrl=/project/${id}/preview`}

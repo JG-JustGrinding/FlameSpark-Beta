@@ -331,6 +331,10 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                 onClose={() => setShowSignupNotice(false)}
                 title="Join the FlameSpark-Beta Community"
                 messageIndex={1}
+                loginText="View Project as Guest"
+                loginHref={`/project/${id}`}
+                signupText="Login"
+                signupHref={`/login?redirectUrl=/project/${id}/post/${postId}`}
             />
         </div>
 		</>
