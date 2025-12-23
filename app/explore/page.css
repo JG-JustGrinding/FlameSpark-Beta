@@ -242,9 +242,14 @@
 	gap: 8px;
 	padding: 10px 12px;
 	border-radius: 10px;
-	background: #3737371a;
 	border: 1px solid rgba(255, 255, 255, 0.25);
 	text-decoration: none;
+	transition: transform 120ms ease, background 120ms ease;
+}
+
+.content-frame .post-content-view .links a:hover {
+	background: #3737371a;
+	transform: scale(1.02);
 }
 
 /* Allow vertical scrolling for long text/polls/links without growing the frame */

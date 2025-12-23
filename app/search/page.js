@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import PrimaryPageLayout from "@/components/PrimaryPageLayout";
 import PrimaryProject from "@/components/PrimaryProject";
 import "@/styles/SearchPage.css";
@@ -8,8 +8,9 @@ import { search } from "@/lib/projectFunctions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@/lib/useUser";
 import { Paginator } from "@/lib/infinitePostFeed";
+import "@/styles/content.css";
 
-export default function Search() {
+function SearchClient() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -63,4 +64,12 @@ export default function Search() {
             </div>
         </PrimaryPageLayout>
     )
+}
+
+export default function Search() {
+    return (
+        <Suspense fallback={<PrimaryPageLayout title="Loading Search..." description="Loading search results..."></PrimaryPageLayout>}>
+            <SearchClient />
+        </Suspense>
+    );
 }
