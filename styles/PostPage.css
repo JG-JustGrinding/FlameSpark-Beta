@@ -32,7 +32,6 @@ body {
 .content {
     flex: .65;
     padding: 0px;
-    height: 100%;
 }
 
 .content h1 {
