@@ -39,7 +39,7 @@ export default function UserClient({ user, initialProjects = [], initialJoinedPr
 
   return (
     <>
-      <div className="banner"></div>
+      <div className="user-page-banner"></div>
       <main className="main-container">
         <div className="user-info">
           <div className="profile-info">

@@ -3,7 +3,7 @@ body {
     flex-direction: column;
 }
 
-.body-container {
+.bodyContainer {
     display: flex;
     flex-direction: column;
     background-color: var(--flamespark-tinted-page);
@@ -38,13 +38,13 @@ body {
     line-height: 1;
 }
 
-.title-date {
+.titleDate {
     display: flex;
     gap: 20px;
     align-items: center;
 }
 
-.post-content-view {
+.postContentView {
     width: 100%;
     min-height: 50px;
     /* box-shadow: 0 4px 8px var(--shadow); */
@@ -54,14 +54,14 @@ body {
     margin-top: 15px;
 }
 
-.post-bottom {
+.postBottom {
     margin-top: 15px;
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
-.comments-container {
+.commentsContainer {
     margin-top: 30px;
     display: flex;
     flex-direction: column;
@@ -70,22 +70,22 @@ body {
     padding-top: 15px;*/
 }
 
-.comment-input {
+.commentInput {
     width: 100%;
 }
 
-.comment-input textarea {
+.commentInput textarea {
     max-height: 250px;
 }
 
-.comments-section {
+.commentsSection {
     display: flex;
     flex-direction: column;
     gap: 40px;
     margin-top: 5px;
 }
 
-.side-section {
+.sideSection {
     padding: 0px;
     flex: .35;
     display: flex;
@@ -93,7 +93,7 @@ body {
     gap: 15px;
 }
 
-.back-button {
+.backButton {
     cursor: pointer;
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 50%;
@@ -108,50 +108,50 @@ body {
     margin-bottom: 10px;
 }
 
-.info-and-date {
+.infoAndDate {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.project-information {
+.projectInformation {
     display: flex;
     align-items: center;
     gap: 5px;
     font-size: .9rem;
 }
 
-.info-and-date .date {
+.infoAndDate .date {
     font-size: .8rem;
 }
 
-.project-icon {
+.projectIcon {
     width: 50px;
     height: 50px;
     margin-right: 10px;
 }
 
-.project-icon-other {
+.projectIconOther {
     width: 30px;
     height: 30px;
     margin-right: 0px;
 }
 
-button.project-action {
+button.projectAction {
     margin-top: 15px;
     width: 100%;
 }
 
-.project-title {
+.projectTitle {
     font-size: 1.2rem;
 }
 
-.other-posts {
+.otherPosts {
     display: flex;
     flex-direction: column;
 }
 
-.other-post-container {
+.otherPostContainer {
     display: flex;
     flex-direction: column;
 }
@@ -163,7 +163,7 @@ span.break {
     height: 1px;
 }
 
-.other-post {
+.otherPost {
     display: flex;
     flex-direction: column;
     border-radius: 10px;
@@ -173,22 +173,22 @@ span.break {
     text-decoration: none;
 }
 
-.other-post:hover {
+.otherPost:hover {
     background-color: var(--shadow);
 }
 
-.other-post .o-content {
+.otherPost .oContent {
     margin-top: 10px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.other-post .o-content .text {
+.otherPost .oContent .text {
     flex: 1;
 }
 
-.other-post-content-display {
+.otherPostContentDisplay {
     border: 1px solid #ccc;
     border-radius: 10px;
     overflow: hidden;
@@ -200,7 +200,7 @@ span.break {
     align-items: center;
 }
 
-.other-post-content-display > * {
+.otherPostContentDisplay > * {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -250,16 +250,16 @@ span.break {
         width: fit-content;
     }
 
-    .main .back .back-button {
+    .main .back .backButton {
         background-color: var(--white);
         box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    .other-post-content-display .icon-container {
+    .otherPostContentDisplay .iconContainer {
         padding: 20%;
     }
 
-    .other-post-content-display .icon {
+    .otherPostContentDisplay .icon {
         width: 100%;
         height: 100%;
     }

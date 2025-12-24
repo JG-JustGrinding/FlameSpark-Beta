@@ -1,7 +1,7 @@
 "use client";
 
 import Header from "@/components/Header";
-import "../../styles/auth.css";
+import styles from "@/styles/auth.module.css";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -81,22 +81,22 @@ export default function LoginPage() {
         <>
             <Header />
         
-            <main className="main-container">
-                <div className="background">
-                    <img src="/Login-Signup Background.png" className="not-mobile"/>
-                    <img src="/Login-Signup Background Mobile Variation.jpeg" className="mobile"/>
+            <main className={styles.mainContainer}>
+                <div className={styles.background}>
+                    <img src="/Login-Signup Background.png" className={styles.notMobile}/>
+                    <img src="/Login-Signup Background Mobile Variation.jpeg" className={styles.mobile}/>
                 </div>
-                <div className="container">
-                    <div className="top-bar">
-                        <button className="left button button-shape bodyFont cursor-default">Log In</button>
-                        <a href="/signup" className="right button button-shape bodyFont off">Sign Up</a>
+                <div className={styles.container}>
+                    <div className={styles.topBar}>
+                        <button className={`${styles.left} ${styles.button} button-shape bodyFont ${styles.cursorDefault}`}>Log In</button>
+                        <a href="/signup" className={`${styles.right} ${styles.button} button-shape bodyFont ${styles.off}`}>Sign Up</a>
                     </div>
 
                     <h1 className="titleFont header-size">Log In to FlameSpark-Beta</h1>
                     {error && <p className="error-message titleFont">Error: {error}</p>}
-                    <div className="auth-content">
-                        <div className="input-container">
-                            <div className="label">
+                    <div className={styles.authContent}>
+                        <div className={styles.inputContainer}>
+                            <div className={styles.label}>
                                 <FontAwesomeIcon icon={faEnvelope} />
                                 <p className="label-color bodyFont body-size">Email Address</p>
                             </div>
@@ -108,8 +108,8 @@ export default function LoginPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
-                        <div className="input-container">
-                            <div className="label">
+                        <div className={styles.inputContainer}>
+                            <div className={styles.label}>
                                 <FontAwesomeIcon icon={faLock} />
                                 <p className="label-color bodyFont body-size">Password</p>
                             </div>
@@ -121,22 +121,22 @@ export default function LoginPage() {
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
-                        <div className="checkbox-container">
-                            <input id="remember-me-checkbox" className="checkbox red" type="checkbox" defaultChecked />
+                        <div className={styles.checkboxContainer}>
+                            <input id="remember-me-checkbox" className={`${styles.red} ${styles.checkbox}`} type="checkbox" defaultChecked />
                             <label htmlFor="remember-me-checkbox" className="bodyFont body-size">Remember Me</label>
                         </div>
-                        <button className={`button-shape input-button bodyFont red auth-button`}
+                        <button className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`}
                         onClick={handleLogin}
                         disabled={loading}
                         >
                             {loading ? "Logging in..." : "Login"}
                         </button>
-                        <div className="bottom-section">
-                            <button className="button-shape input-button bodyFont clear" 
+                        <div className={styles.bottomSection}>
+                            <button className={`button-shape ${styles.inputButton} bodyFont ${styles.clear}`} 
                             onClick={handleGoogleLogin}><img src="/logo_google.png"/>
                             Login with Google
                             </button>
-                            <p className="label-color bodyFont account-if">Don't have an account? <a href="/signup">sign up</a></p>
+                            <p className={`label-color bodyFont ${styles.accountIf}`}>Don't have an account? <a href="/signup">sign up</a></p>
                         </div>
                     </div>
                 </div>

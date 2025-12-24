@@ -5,14 +5,14 @@ html, body {
     flex-direction: column;
 }
 
-.main-container{
+.mainContainer{
     display: flex;
     flex-direction: row;
     flex: 1;
     background-color: var(--white);
 }
 
-.side-panel {
+.sidePanel {
     display: none;
     flex-direction: column;
     width: 250px;
@@ -21,7 +21,7 @@ html, body {
     box-shadow: 2px 0px 4px var(--shadow);
 }
 
-.side-panel .options {
+.sidePanel .options {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -29,7 +29,7 @@ html, body {
     width: 100%;
 }
 
-.side-panel .options div {
+.sidePanel .options div {
     padding: 15px;
     text-align: center;
     font-size: 1.1rem;
@@ -41,29 +41,29 @@ html, body {
     -ms-user-select: none;
 }
 
-.side-panel .options div:hover {
+.sidePanel .options div:hover {
     background-color: rgba(0, 0, 0, 0.2);
 }
 
-.content-view {
+.contentView {
     margin: 45px;
     width: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.content-view .profile {
+.contentView .profile {
     display: flex;
     flex-direction: column;
 }
 
-.content-view .profile .profile-content{
+.contentView .profile .profileContent{
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-.content-view .card {
+.contentView .card {
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -73,18 +73,18 @@ html, body {
     padding: 10px;
 }
 
-.content-view .profile-picture {
+.contentView .profilePicture {
     display: flex;
     align-items: center;
 }
 
-.content-view .profile-picture img {
+.contentView .profilePicture img {
     max-width: 120px;
     aspect-ratio: 1 / 1;
     max-height: 120px;
 }
 
-.content-view .profile .right {
+.contentView .profile .right {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -92,18 +92,18 @@ html, body {
     max-width: 100%;
 }
 
-.content-view .profile .change-container {
+.contentView .profile .changeContainer {
     display: flex;
     flex-direction: column;
     gap: 0;
 }
 
-.content-view .profile .change-container p {
+.contentView .profile .changeContainer p {
     margin: 0px 0px 4px 0px;
     font-size: .8rem;
 }
 
-.content-view .profile .changeButton {
+.contentView .profile .changeButton {
     background-color: transparent;
     border: 1px solid var(--flamespark-blue);
     color: var(--flamespark-blue);
@@ -111,65 +111,65 @@ html, body {
     margin: 0px 10px 5px 0px;
 }
 
-.content-view .profile .changeButton:disabled {
+.contentView .profile .changeButton:disabled {
     border: 1px solid rgba(35, 35, 35, .5);
     color: rgba(35, 35, 35, .5);
     cursor: default;
 }
 
-.content-view .profile .save-pfp-button {
-    background-color: var(--flamespark-green);
+.contentView .profile .savePfpButton {
+    background-color: var(--flamespark-red);
     color: var(--white);
     font-size: .8rem;
     margin-right: 10px;
     margin-bottom: 5px;
 }
 
-.content-view .profile .save-pfp-button:disabled {
+.contentView .profile .savePfpButton:disabled {
     background-color: rgba(35, 35, 35, .5);
     cursor: default;
 }
 
-.content-view .profile .cancel-pfp-button {
+.contentView .profile .cancelPfpButton {
     font-size: .8rem;
 }
 
-.content-view .profile .save-button-container {
+.contentView .profile .saveButtonContainer {
     display: flex;
     width: 100%;
     justify-content: end;
 }
 
-.content-view .profile .save-button-container button{
+.contentView .profile .saveButtonContainer button{
     padding: .5rem 3rem;
-    background-color: var(--flamespark-green);
+    background-color: var(--flamespark-red);
     color: var(--white);
 }
 
-.content-view .profile .save-button-container button:disabled{
+.contentView .profile .saveButtonContainer button:disabled{
     background-color: rgba(35, 35, 35, .5);
     cursor: default;
 }
 
-.content-view .input-container {
+.contentView .inputContainer {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-.content-view .input-container .label{
+.contentView .inputContainer .label{
     display: flex;
     gap: 5px;
     align-items: center;
     padding: 5px 0px;
 }
 
-.content-view .input-container .label *{
+.contentView .inputContainer .label *{
     margin: 0px;
     padding:  0px;
 }
 
-.content-view .profile .user-info{
+.contentView .profile .userInfo{
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -199,22 +199,22 @@ input:disabled {
 
 @media(max-width:768px) {
     /*
-    .main-container {
+    .mainContainer {
         flex-direction: column;
     }
-    .side-panel {
+    .sidePanel {
         width: 100%;
         max-width: 100%;
     }
 
-    .side-panel .options {
+    .sidePanel .options {
         width: 100%;
         flex-direction: row;
         overflow-y: none;
         overflow-x: auto;
     }
         */
-    .content-view {
+    .contentView {
         margin: 15px;
     }
 
@@ -224,21 +224,21 @@ input:disabled {
 }
 
 @media (max-width: 480px) {
-    .content-view {
+    .contentView {
         margin: 10px;
     }
 
-    .content-view  .profile-picture {
+    .contentView  .profilePicture {
         flex-direction: column;
         align-items: center;
     }
 
-    .content-view .profile-picture img {
+    .contentView .profilePicture img {
         max-width: 100px;
         max-height: 100px;
     }
 
-    .content-view .profile .right {
+    .contentView .profile .right {
         align-items: center;
         text-align: center;
     }

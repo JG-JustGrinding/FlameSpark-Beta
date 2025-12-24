@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faTag, faLock, faKey } from "@fortawesome/free-solid-svg-icons";
-import "@/styles/auth.css";
+import styles from "@/styles/auth.module.css";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -89,36 +89,35 @@ export default function SignupPage() {
     <>
       <Header />
 
-      <main className="main-container">
-        <div className="background">
+      <main className={styles.mainContainer}>
+        <div className={styles.background}>
           <img
             src="/Login-Signup Background.png"
             alt="Background"
-            className="not-mobile"
+            className={styles.notMobile}
           />
           <img
             src="/Login-Signup Background Mobile Variation.jpeg"
             alt="Background Mobile"
-            className="mobile"
+            className={styles.mobile}
           />
         </div>
 
-        <div className="container">
-          <div className="top-bar">
-            <a href="/login" className="left button button-shape bodyFont off">
+        <div className={styles.container}>
+          <div className={styles.topBar}>
+            <a href="/login" className={`${styles.left} ${styles.button} button-shape bodyFont ${styles.off}`}>
               Log In
             </a>
-            <button className="right button button-shape bodyFont cursor-default">Sign Up</button>
+            <button className={`${styles.right} ${styles.button} button-shape bodyFont ${styles.cursorDefault}`}>Sign Up</button>
           </div>
 
           <h1 className="titleFont header-size">Sign Up for FlameSpark-Beta!</h1>
 
           {error && <p className="titleFont error-message">{error}</p>}
 
-          <div className="auth-content">
-
-            <div className="input-container">
-              <div className="label">
+          <div className={styles.authContent}>
+            <div className={styles.inputContainer}>
+              <div className={styles.label}>
                 <FontAwesomeIcon icon={faKey} />
                 <p className="bodyFont body-size bold">Access Key</p>
               </div>
@@ -131,9 +130,9 @@ export default function SignupPage() {
               />
             </div>
 
-            <div className="email-and-user">
-              <div className="input-container">
-                <div className="label">
+            <div className={styles.emailAndUser}>
+              <div className={styles.inputContainer}>
+                <div className={styles.label}>
                   <FontAwesomeIcon icon={faEnvelope} />
                   <p className="label-color bodyFont body-size">Email Address</p>
                 </div>
@@ -146,10 +145,10 @@ export default function SignupPage() {
                 />
               </div>
 
-              <div className="input-container">
-                <div className="label">
+              <div className={styles.inputContainer}>
+                <div className={styles.label}>
                   <FontAwesomeIcon icon={faTag} />
-                  <p className="label-color bodyFont body-size">Username</p>
+                  <p className={`label-color bodyFont body-size`}>Username</p>
                 </div>
                 <input
                   className="bodyFont input-field"
@@ -161,8 +160,8 @@ export default function SignupPage() {
               </div>
             </div>
 
-            <div className="input-container">
-              <div className="label">
+            <div className={styles.inputContainer}>
+              <div className={styles.label}>
                 <FontAwesomeIcon icon={faLock} />
                 <p className="label-color bodyFont body-size">Password</p>
               </div>
@@ -175,8 +174,8 @@ export default function SignupPage() {
               />
             </div>
 
-            <div className="input-container">
-              <div className="label">
+            <div className={styles.inputContainer}>
+              <div className={styles.label}>
                 <FontAwesomeIcon icon={faLock} />
                 <p className="label-color bodyFont body-size">Confirm Password</p>
               </div>
@@ -190,24 +189,24 @@ export default function SignupPage() {
             </div>
 
             <button
-              className={`button-shape input-button bodyFont blue auth-button`}
+              className={`button-shape ${styles.inputButton} bodyFont ${styles.blue} ${styles.authButton}`}
               onClick={handleSignup}
               disabled={loading}
             >
               {loading ? "Signing up..." : "Signup"}
             </button>
 
-            <div className="bottom-section">
-              <button onClick={handleGoogleLogin} className="button-shape input-button bodyFont clear">
+            <div className={styles.bottomSection}>
+              <button onClick={handleGoogleLogin} className={`button-shape ${styles.inputButton} bodyFont ${styles.clear}`}>
                 <img src="/logo_google.png" alt="Google Logo" />
                 Signup with Google
               </button>
 
-              <div className="bottom">
-                <p className="label-color reset bodyFont account-if" style={{marginRight: '15px', marginBottom: '5px'}}>
+              <div className={styles.bottom}>
+                <p className={`label-color reset bodyFont ${styles.accountIf}`} style={{marginRight: '15px', marginBottom: '5px'}}>
                   Already have an account? <Link href="/login">log in</Link>
                 </p>
-                <p className="reset label-color bodyFont">
+                <p className={`reset label-color bodyFont ${styles.accountIf}`}>
                   By signing up you agree to our <Link href="/privacy">Privacy Policy</Link>.
                 </p>
               </div>

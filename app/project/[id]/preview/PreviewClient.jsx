@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { isUserJoinedOrOwner, joinProject } from "@/lib/projectFunctions";
 import SignupNotice from "@/components/SignupNotice";
-import "@/styles/preview.css";
+import styles from "@/styles/preview.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faExclamation } from "@fortawesome/free-solid-svg-icons";
 
@@ -97,24 +97,26 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo, 
   };
 
   return (
-    <main className="main-container">
-      <div className="top">
-        <div className="left">
-          <img src={project?.icon} width={48} height={48} alt="Project logo" className="project-logo" />
-          <h1 className="titleFont header-size project-title">{project?.title}</h1>
-          {project?.is_completed && <div className="display completed">
-            <div className="box">
-              <FontAwesomeIcon icon={faCheck} className="check-icon" />
+    <main className={styles.mainContainer}>
+      <div className={styles.top}>
+        <div className={styles.left}>
+          <a href={`/project/${id}`} className={styles.projectInfoLink}>
+            <img src={project?.icon} width={48} height={48} alt="Project logo" className={styles.projectLogo} />
+            <h1 className={`titleFont header-size ${styles.projectTitle}`}>{project?.title}</h1>
+          </a>
+          {project?.is_completed && <div className={`${styles.display} ${styles.completed}`}>
+            <div className={styles.box}>
+              <FontAwesomeIcon icon={faCheck} className={styles.checkIcon} />
             </div>
-            <span className="bodyFont bold text">Completed</span>
+            <span className={`bodyFont bold ${styles.text}`}>Completed</span>
           </div>}
         </div>
-        <div className="right">
-        {(viewCount < 100 && isJoinedSet && !isJoined && !project.is_completed) && <div className="display early-support">
-          <div className="box">
-            <FontAwesomeIcon icon={faExclamation} className="check-icon" />
+        <div className={styles.right}>
+        {(viewCount < 100 && isJoinedSet && !isJoined && !project.is_completed) && <div className={`${styles.display} ${styles.earlySupport}`}>
+          <div className={styles.box}>
+            <FontAwesomeIcon icon={faExclamation} className={styles.checkIcon} />
           </div>
-          <span className="bodyFont bold text">Be among the first supporters!</span>
+          <span className={`bodyFont bold ${styles.text}`}>Be among the first supporters!</span>
         </div>}
           {!isJoinedSet && (
             <a href={`/project/${id}`} className={`button-shape bodyFont skeleton join-button body-size cursor-default`}>
@@ -123,7 +125,7 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo, 
           )}
           {isJoinedSet && (
             <button
-              className={`button-shape bodyFont join-button ${(isJoined || project.is_completed) ? "blue" : "red"} body-size appear`}
+              className={`button-shape bodyFont ${styles.joinButton} ${(isJoined || project.is_completed) ? styles.blue : styles.red} body-size ${styles.appear}`}
               onClick={viewOrJoinProject}
             >
               {isJoined || project.is_completed ? "View Project" : "Join Project"}
@@ -131,20 +133,20 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo, 
           )}
         </div>
       </div>
-      <div className="images">
-        <div className="current-image">
+      <div className={styles.images}>
+        <div className={styles.currentImage}>
           <img src={currentImage} />
           {previewMedia?.length > 1 && (
           <>
-          <div className="arrows">
-            <div className="arrow left no-select-pointer" onClick={prevImage}>&#10094;</div>
-            <div className="arrow right no-select-pointer" onClick={nextImage}>&#10095;</div>
+          <div className={styles.arrows}>
+            <div className={`${styles.arrow} ${styles.left} no-select-pointer`} onClick={prevImage}>&#10094;</div>
+            <div className={`${styles.arrow} ${styles.right} no-select-pointer`} onClick={nextImage}>&#10095;</div>
           </div>
-            <div className="dots">
+            <div className={styles.dots}>
               {previewMedia.map((_, i) => (
                 <button
                   key={i}
-                  className={"dot" + (i === currentIndex ? " active" : "")}
+                  className={`${styles.dot} ${i === currentIndex ? styles.active : ""}`}
                   aria-label={`Go to image ${i + 1}`}
                   onClick={() => {
                     setCurrentIndex(i);
@@ -156,35 +158,35 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo, 
             </>
           )}
         </div>
-        <div className="side-images">
+        <div className={styles.sideImages}>
           <h2 className="titleFont">Images</h2>
-          <div className="side-images-container">
+          <div className={styles.sideImagesContainer}>
               {previewMedia.map((media, i) => (
-                <div key={i} className="side-image-container" onClick={() => { setCurrentIndex(i); setCurrentImage(media.url); }}>
+                <div key={i} className={styles.sideImageContainer} onClick={() => { setCurrentIndex(i); setCurrentImage(media.url); }}>
                 <img src={media.url} alt={`Preview ${i}`} />
               </div>
             ))}
           </div>
         </div>
       </div>
-      <div className="project-info">
+      <div className={styles.projectInfo}>
         <h2 className="titleFont">About This Project</h2>
         {project?.tagline && (
           <span className="label-color bodyFont large-caption-size">{project?.tagline}</span>
         )}
         {project?.description && <p className="bodyFont">{project?.description}</p>}
-        <div className="tags">
+        <div className={styles.tags}>
           {project?.tags?.map((tag, i) => (
-            <span key={i} className="tag bodyFont bold large-caption-size">
+            <p key={i} className={`${styles.tag} bodyFont bold reset large-caption-size`}>
               {tag}
-            </span>
+            </p>
           ))}
         </div>
-        <div className="creator-info">
-          <span className="bodyFont body-size">Created By: </span>
-          <a className="name" href={`/user/${creatorInfo?.id}`}>
+        <div className={styles.creatorInfo}>
+          <p className="bodyFont body-size">Created By: </p>
+          <a className={styles.name} href={`/user/${creatorInfo?.id}`}>
             <img className="creator-pfp pfp-shape" src={creatorInfo?.avatar_url} />
-            <span className="titleFont body-size bold">{creatorInfo?.username ? creatorInfo?.username : "No Username"}</span>
+            <p className="titleFont body-size bold reset" aria-label="Creator Username">{creatorInfo?.username ? creatorInfo?.username : "No Username"}</p>
           </a>
         </div>
       </div>

@@ -2,7 +2,7 @@ html, body {
     background-color: var(--white);
 }
 
-.main-container{
+.mainContainer{
     display: flex;
     flex-direction: column;
     padding: 100px 10%;
@@ -10,13 +10,13 @@ html, body {
 
 /* Adapt main container padding across screen sizes */
 @media (max-width: 1440px) {
-    .main-container {
+    .mainContainer {
         padding: 80px 6%;
     }
 }
 
 @media (max-width: 1024px) {
-    .main-container {
+    .mainContainer {
         padding: 48px 4%;
     }
 }
@@ -40,7 +40,7 @@ html, body {
     overflow: hidden;
 }
 
-.project-title {
+.projectTitle {
     overflow-wrap: break-word;
     word-break: break-word;
 }
@@ -67,12 +67,12 @@ html, body {
     border: 2px solid var(--flamespark-green);
 }
 
-.display.early-support {
+.display.earlySupport {
     color: #fff;
     background-color: var(--flamespark-orange);
 }
 
-.display.early-support {
+.display.earlySupport {
     border: 2px solid var(--flamespark-orange);
 }
 
@@ -90,7 +90,7 @@ html, body {
     background-color: var(--flamespark-green);
 }
 
-.display.early-support .box {
+.display.earlySupport .box {
     background-color: #fff;
     color: var(--flamespark-orange)
 }
@@ -107,7 +107,7 @@ html, body {
     animation-delay: 60ms;
 }
 
-.display.early-support {
+.display.earlySupport {
     animation-delay: 120ms;
 }
 
@@ -120,7 +120,7 @@ html, body {
 }
 
 .display.completed .box { animation-delay: 180ms; }
-.display.early-support .box { animation-delay: 220ms; }
+.display.earlySupport .box { animation-delay: 220ms; }
 
 @keyframes displayAppear {
     from { opacity: 0; transform: translateY(-6px) scale(0.98); }
@@ -142,7 +142,7 @@ html, body {
     }
 }
 
-.project-logo {
+.projectLogo {
     border-radius: 50%;
 }
 
@@ -153,20 +153,20 @@ html, body {
     align-items: stretch;
 }
 
-.current-image {
+.currentImage {
     aspect-ratio: 16 / 9;
     width: 85%;
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-.current-image img {
+.currentImage img {
     width: 100%;
     height: 100%;
     aspect-ratio: 16 / 9;
     object-fit: contain;
 }
 
-.side-images {
+.sideImages {
     width: 15%;
     display: flex;
     flex-direction: column;
@@ -174,11 +174,11 @@ html, body {
     gap: 10px;
 }
 
-.side-images h2 {
+.sideImages h2 {
     margin: 0;
 }
 
-.side-images-container {
+.sideImagesContainer {
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -187,7 +187,7 @@ html, body {
     height: 100%;
 }
 
-.side-image-container {
+.sideImageContainer {
     width: 100%;
     aspect-ratio: 16 / 9;
     background-color: rgba(0, 0, 0, 0.1);
@@ -198,13 +198,13 @@ html, body {
     overflow: hidden;
 }
 
-.side-image-container img {
+.sideImageContainer img {
     object-fit: cover;
     height: 100%;
     width: 100%;
 }
 
-.project-info {
+.projectInfo {
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -212,12 +212,23 @@ html, body {
     margin-top: 45px;
 }
 
-.project-info * {
+.projectInfoLink {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.projectInfoLink:not(:hover) {
+    text-decoration: none;
+    color: inherit;
+}
+
+.projectInfo * {
     margin: 0px;
     padding: 0px;
 }
 
-.project-info .tags {
+.projectInfo .tags {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
@@ -227,27 +238,28 @@ html, body {
     padding: 5px 10px;
     border: 1px solid var(--black);
     color: var(--black);
+    background-color: transparent;
     border-radius: 999px;
 }
 
-.join-button {
+.joinButton {
     padding-left: 3rem;
     padding-right: 3rem;
 }
 
-.join-button:not(.skeleton) {
+.joinButton:not(.skeleton) {
     color: var(--white);
 }
 
-.join-button.red {
+.joinButton.red {
     background-color: var(--flamespark-red);
 }
 
-.join-button.blue {
+.joinButton.blue {
     background-color: var(--flamespark-blue);
 }
 
-.join-button.appear {
+.joinButton.appear {
     opacity: 0;
     /* transform: translateY(6px); */
     animation: joinButtonAppear 220ms ease-out forwards;
@@ -260,14 +272,14 @@ html, body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .join-button.appear {
+    .joinButton.appear {
         animation: none;
         opacity: 1;
         transform: none;
     }
 }
 
-.current-image{
+.currentImage {
     position: relative;
     width: 100%;
 }
@@ -350,7 +362,7 @@ html, body {
     background: var(--flamespark-red);
 }
 
-.creator-info {
+.creatorInfo {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -361,18 +373,18 @@ html, body {
     -webkit-user-select: n;
 }
 
-.creator-info .name {
+.creatorInfo .name {
     display: flex;
     align-items: center;
     gap: 10px;
     text-decoration: none;
 }
 
-.creator-info .name:not(:hover) {
+.creatorInfo .name:not(:hover) {
     color: var(--black);
 }
 
-.creator-info img {
+.creatorInfo img {
     width: 32px;
     height: 32px;
 }
@@ -388,7 +400,7 @@ html, body {
 }
 
 @media(max-width: 768px) {
-    .main-container{
+    .mainContainer{
         padding: 24px 16px;
     }
     
@@ -396,6 +408,7 @@ html, body {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
+        margin-bottom: 0px;
     }
     
     .top .left, .top .right {
@@ -422,19 +435,19 @@ html, body {
         flex-direction: column;
     }
 
-    .side-images {
+    .sideImages {
         width: 100%;
         max-height: 150px;
     }
 
-    .side-images-container {
+    .sideImagesContainer {
         max-height: inherit;
         flex-direction: row;
         overflow-x: auto;
         height: auto;
     }
 
-    .side-image-container {
+    .sideImageContainer {
         max-height: inherit;
         min-width: 150px;
         width: 150px;
@@ -442,24 +455,32 @@ html, body {
         flex-shrink: 0;
     }
 
-    .join-button {
+    .joinButton {
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
         width: 100%;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
     }
 
-    .project-title {
+    .currentImage {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+        overflow: hidden;
+    }
+
+    .projectTitle {
         font-size: 1.5rem;
     }
     
-    .project-logo {
+    .projectLogo {
         width: 40px;
         height: 40px;
     }
 }
 
 @media (max-width: 640px) {
-    .main-container {
+    .mainContainer {
         padding: 16px;
     }
     
@@ -467,11 +488,11 @@ html, body {
         gap: 8px;
     }
     
-    .project-title {
+    .projectTitle {
         font-size: 1.25rem;
     }
     
-    .project-logo {
+    .projectLogo {
         width: 36px;
         height: 36px;
     }

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { faShare, faArrowUp, faArrowDown, faEllipsisH, faTrash, faPaperPlane, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { createComment, shortenNumber, getProject, getPost, fetchComments, timeAgo, isUserJoinedOrOwner, getPostRating, getUserRating, ratePost, fetchProjectPageOtherPosts, fetchReplyCount } from "@/lib/projectFunctions";
 import Header from "@/components/Header";
-import "@/styles/PostPage.css";
+import styles from "@/styles/PostPage.module.css";
 import "@/styles/ProjectPost.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -92,10 +92,10 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                 const contentHeight = contentRef.current.offsetHeight;
                 const sideHeight = sideRef.current.offsetHeight;
                 
-                console.log(`Content height: ${contentHeight}px, Side section height: ${sideHeight}px`);
+                //console.log(`Content height: ${contentHeight}px, Side section height: ${sideHeight}px`);
 
                 if (sideHeight < contentHeight) {
-                    console.log(`Side section height (${sideHeight}px) is less than content height (${contentHeight}px)`);
+                    //console.log(`Side section height (${sideHeight}px) is less than content height (${contentHeight}px)`);
                 }
             }
         };
@@ -256,22 +256,22 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
 
 	return (
 		<>
-        <div className="body-container">
+        <div className={styles.bodyContainer}>
 			<Header />
-            <main className="main">
-                <div className="back">
+            <main className={styles.main}>
+                <div className={styles.back}>
                     <a href={`/project/${id}`} className="reset">
-                        <FontAwesomeIcon className="back-button reset" icon={faArrowLeft}/>
+                        <FontAwesomeIcon className={`${styles.backButton} reset`} icon={faArrowLeft}/>
                     </a>
                 </div>
-                <div className="content card" ref={contentRef}>
-                    <div className="title-date">
+                <div className={`${styles.content} ${styles.card}`} ref={contentRef}>
+                    <div className={styles.titleDate}>
                         {post?.title && <h1 className="titleFont reset">{post?.title}</h1>}
-                        {post?.created_at &&  <p className="post-date label-color bodyFont reset">{timeAgo(post?.created_at)}</p>}
+                        {post?.created_at &&  <p className={`${styles.postDate} label-color bodyFont reset`}>{timeAgo(post?.created_at)}</p>}
                     </div>
                     {post?.description && <h2 className="bodyFont reset normal-weight label-color">{post?.description}</h2>}
                     <PostContentView postContent={post?.content} defaultStyling={true}/>
-                    <div className="post-bottom bodyFont">
+                    <div className={`${styles.postBottom} post-bottom bodyFont`}>
                         <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
                             <button className={`vote up${userRating == 1 ? " selected" : ""}`} icon={faArrowUp} onClick={() => {rateProjectPost(1); UpdateRating(1)}}>▲</button>
                             <span className="bold bad">{shortenNumber(postRating + (userRating || 0))}</span>
@@ -279,7 +279,7 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                         </div>
                         <ShareButton postId={postId} projectId={id}/>
                     </div>
-                    <div className="comments-container">
+                    <div className={`${styles.commentsContainer}`}>
                         <h3 className="titleFont reset">Comments</h3>
                         <MarkdownTextArea value={commentInput} onChange={(e) => setCommentInput(e.target.value)} placeholder={commentInputDisabled ? "Log in to comment" : "Add a comment..."} disabled={commentInputDisabled || commentInputLoading} maxLength={1000} className="comment-input" id="comment-input" noMinHeight={true} submitButton={true} submitFunction={() => {submitComment()}} />
                         {((user || !userSet) && commentInput) && 
@@ -289,7 +289,7 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                         </>
                         }
 
-                        <div className="comments-section">
+                        <div className={`${styles.commentsSection}`}>
                             <Paginator fetchFunction={FetchCommentsFunction} projectId={postId}
                             renderItem={(comment, idx) => (
                                 <Comment key={idx} id={comment.id} postId={postId} isOwner={user?.id === comment.user_id} posterId={comment.user_id} username={comment.username} avatar={comment.avatar_url || "/profile_icon_colored.svg"} date={comment.created_at} body={comment.content} replyCount={comment.reply_count} user={user} currentUsername={username} currentAvatar={avatar} editCommentFunction={editComment.bind(null, comment)} edited={comment.was_edited} deleteCommentFunction={() => deleteComment(comment)} deleting={comment.deleting} reportCommentFunction={reportComment.bind(null, comment)} removeReportButton={comment.removeReportButton || !user} canReply={user}/>
@@ -304,23 +304,23 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                         </div>
                     </div>
                 </div>
-                <div className="side-section" ref={sideRef}>
-                    <div className={`project-info card`}>
-                        <a href={`/project/${project?.id}`} className="project styled-link">
-                            <img className="project-icon pfp-shape" src={project?.icon} alt="Project Icon"></img>
+                <div className={`${styles.sideSection}`} ref={sideRef}>
+                    <div className={`${styles.projectInfo} ${styles.card}`}>
+                        <a href={`/project/${project?.id}`} className={`${styles.project} ${styles.styledLink}`}>
+                            <img className={`${styles.projectIcon} pfp-shape`} src={project?.icon} alt="Project Icon"></img>
                             <h3 className={`titleFont full-width reset${project ? "" : " skeleton"}`}>{project?.title || "No Title"}</h3>
                         </a>
                         {project?.description && <p className="bodyFont">{project?.description}</p>}
                         {project?.tags && <p className="bodyFont reset normal-weight label-color">{project?.tags.join(', ')}</p>}
 
-                        {!isJoinedSet && <button className={`button-shape bodyFont skeleton project-action body-size cursor-default`} disabled>View Project</button>}
-                        {isJoinedSet && <button className={`button-shape bodyFont project-action ${isJoined ? "blue-color" : "red-color"} body-size`} onClick={viewOrJoinProject}>{isJoined ? "View Project" : "Join Project"}</button>}
+                        {!isJoinedSet && <button className={`button-shape bodyFont skeleton ${styles.projectAction} body-size cursor-default`} disabled>View Project</button>}
+                        {isJoinedSet && <button className={`button-shape bodyFont ${styles.projectAction} ${isJoined ? "blue-color" : "red-color"} body-size`} onClick={viewOrJoinProject}>{isJoined ? "View Project" : "Join Project"}</button>}
                     </div>
-                    {otherPosts?.length > 0 && <div className="other-posts card">
+                    {otherPosts?.length > 0 && <div className={`${styles.otherPosts} ${styles.card}`}>
                         {otherPosts.map((post, i) => (
-                            <div className="other-post-container" key={i}>
-                                <OtherPost postContent={post.post_content} postId={post.post_id} postTitle={post.post_title} postDescription={post.post_description} projectId={post.project_id} projectTitle={post.project_title} projectIcon={post.project_icon} postDate={post.post_created_at} />
-                                {i <= otherPosts.length - 2 && <span className="break"/>}
+                            <div className={`${styles.otherPostContainer}`} key={i}>
+                                <OtherPost postContent={post.post_content} postId={post.post_id} postTitle={post.post_title} postDescription={post.post_description} projectId={post.project_id} projectTitle={post.project_title} projectIcon={post.project_icon} postDate={post.post_created_at} styles={styles} />
+                                {i <= otherPosts.length - 2 && <span className={`${styles.break}`}/>}
                             </div>
                         ))}
                     </div>}

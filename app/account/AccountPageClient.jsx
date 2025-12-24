@@ -3,12 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Header from "@/components/Header";
-import "@/styles/account.css";
+import styles from "@/styles/account.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTag, faBook, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { getUser } from "@/lib/projectFunctions";
 
 export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT = 5 }) {
+    const [user, setUser] = useState(initialProfile);
     const [avatar, setAvatar] = useState(initialProfile?.avatar_url || null);
     const [username, setUsername] = useState(initialProfile?.username ?? "");
     const [bio, setBio] = useState(initialProfile?.bio ?? "");
@@ -23,6 +24,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
     const [profileSuccess, setProfileSuccess] = useState("");
     const [profileInfoError, setProfileInfoError] = useState("");
     const [profileInfoSuccess, setProfileInfoSuccess] = useState("");
+    const maxProfilePicSizeMB = 2;
 
     useEffect(() => {
         // Listen for auth changes
@@ -37,6 +39,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
             if (currentUserId) {
                 try {
                     const currentUser = await getUser(currentUserId);
+                    setUser(currentUser);
 
                     if (currentUser)
                     {
@@ -66,11 +69,12 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
         const newUrl = URL.createObjectURL(file);
         setAvatar(newUrl);
         setProfileSuccess("");
+        setProfileError("");
         setNewAvatarFile(file);
     }
 
     async function cancelNewAvatar() {
-        setAvatar(initialProfile?.avatar_url || "/profile_icon_colored.svg");
+        setAvatar(user?.avatar_url || "/profile_icon_colored.svg");
         setNewProfilePending(false);
         fileInputRef.current.value = '';
         setProfileSuccess("");
@@ -91,6 +95,14 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
             const file = newAvatarFile;
 
             if (!file) return;
+
+            if (file.size > maxProfilePicSizeMB * 1024 * 1024) { // 2MB limit
+                setProfileError(`Error: File size exceeds ${maxProfilePicSizeMB}MB limit.`);
+                fileInputRef.current.value = '';
+                setNewAvatarFile(null);
+                setAvatar(initialProfile?.avatar_url || "/profile_icon_colored.svg");
+                return;
+            }
 
             const oldAvatarUrl = initialProfile?.avatar_url;
 
@@ -134,11 +146,11 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
             }
 
             setProfileSuccess("Profile picture updated");
-            setCurrentAvatar(publicUrl);
+            setAvatar(publicUrl);
             fileInputRef.current.value = '';
         } catch (error) {
             setProfileError("Error: " + error.message);
-            setAvatar(initialProfile?.avatar_url || "/profile_icon_colored.svg");
+            setAvatar(user?.avatar_url || "/profile_icon_colored.svg");
             fileInputRef.current.value = '';
             setNewAvatarFile(null);
         } finally {
@@ -212,9 +224,9 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
         <>
             <Header />
 
-            <main className="main-container">
-                <div className="side-panel">
-                    <div className="options">
+            <main className={styles.mainContainer}>
+                <div className={styles.sidePanel}>
+                    <div className={styles.options}>
                         <div>
                             <p className="bodyFont">Profile</p>
                         </div>
@@ -226,32 +238,37 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                         </div>
                     </div>
                 </div>
-                <div className="content-view">
-                    <div className="profile">
+                <div className={styles.contentView}>
+                    <div className={styles.profile}>
                         <h1 className="titleFont">User Profile</h1>
-                        <div className="profile-content">
-                            <div className="card profile-picture">
+                        <div className={styles.profileContent}>
+                            <div className={`${styles.card} ${styles.profilePicture}`}>
                                 <img className="pfp-shape" src={avatar || "/profile_icon_colored.svg"} alt="profile picture" />
-                                <div className="right">
+                                <div className={styles.right}>
                                     {profileError && <p className="error-message titleFont">{profileError}</p>}
                                     {profileSuccess && <p className="success-message titleFont">{profileSuccess}</p>}
                                     <span className="bodyFont bold">Profile Picture</span>
-                                    <div className="change-container bodyFont">
-                                        <p className="label">Change Image:</p>
-                                        <div className="options">
-                                            <input className="button-shape changeButton" type="file" accept=".jpg,.jpeg,.png,.webp,.avif" ref={fileInputRef} onChange={onNewAvatarUploaded} disabled={uploading} />
-                                            {newProfilePending && <button className="button-shape save-pfp-button" disabled={uploading} onClick={uploadAvatar}>{uploading ? "Saving..." : "Save"}</button>}
-                                            {newProfilePending && !uploading && <button className="button-shape cancel-pfp-button" onClick={cancelNewAvatar}>Cancel</button>}
+                                    <div className={`${styles.changeContainer} bodyFont`}>
+                                        <p className={styles.label}>Change Image:</p>
+                                        <div className={styles.options}>
+                                            <input className={`${styles.changeButton} button-shape`} type="file" accept=".jpg,.jpeg,.png,.webp,.avif" ref={fileInputRef} onChange={onNewAvatarUploaded} disabled={uploading} />
+                                            <div>
+                                                <p className={`label-color ${styles.label}`}>Recommended size: 512x512px. Max size: 2MB.</p>
+                                            </div>
+                                            <div>
+                                                {newProfilePending && <button className={`${styles.savePfpButton} button-shape`} disabled={uploading} onClick={uploadAvatar}>{uploading ? "Saving..." : "Save"}</button>}
+                                                {newProfilePending && !uploading && <button className={`${styles.cancelPfpButton} button-shape`} onClick={cancelNewAvatar}>Cancel</button>}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div className="card user-info">
+                            <div className={`${styles.card} ${styles.userInfo}`}>
                                 {profileInfoError && <p className="error-message titleFont">{profileInfoError}</p>}
                                 {profileInfoSuccess && <p className="success-message titleFont">{profileInfoSuccess}</p>}
 
-                                <div className="input-container">
-                                    <div className="label">
+                                <div className={styles.inputContainer}>
+                                    <div className={styles.label}>
                                         <FontAwesomeIcon icon={faTag} />
                                         <p className="label-color bodyFont body-size">Username</p>
                                     </div>
@@ -267,8 +284,8 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                                         }}
                                     />
                                 </div>
-                                <div className="input-container">
-                                    <div className="label">
+                                <div className={styles.inputContainer}>
+                                    <div className={styles.label}>
                                         <FontAwesomeIcon icon={faBook} />
                                         <p className="label-color bodyFont body-size">Bio</p>
                                     </div>
@@ -284,8 +301,8 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                                         }}
                                     />
                                 </div>
-                                <div className="input-container">
-                                    <div className="label">
+                                <div className={styles.inputContainer}>
+                                    <div className={styles.label}>
                                         <FontAwesomeIcon icon={faHeart} />
                                         <p className="label-color bodyFont body-size">Interests (comma separated, e.g. "Art, Gaming")</p>
                                     </div>
@@ -302,9 +319,9 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                                         }}
                                         onKeyDown={(e) => e.key === "Enter" && addInterest()}
                                     />
-                                    <div className="interests">
+                                    <div className={styles.interests}>
                                         {interestsArray.map((interest, i) => (
-                                            <span key={i} className="interest bodyFont">
+                                            <span key={i} className={`${styles.interest} bodyFont`}>
                                                 {interest}
                                                 <span className={`no-select-pointer bodyFont`} onClick={() => removeInterest(i)}>
                                                     ✕
@@ -313,7 +330,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                                         ))}
                                     </div>
                                 </div>
-                                <div className="save-button-container">
+                                <div className={styles.saveButtonContainer}>
                                     <button className="button-shape bodyFont" onClick={saveProfileInfo} disabled={savingInfo}>{`${savingInfo ? "Saving..." : "Save"}`}</button>
                                 </div>
                             </div>
