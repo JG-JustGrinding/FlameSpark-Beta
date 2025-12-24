@@ -1,10 +1,6 @@
-body {
+.project-page {
     background-color: var(--flamespark-tinted-page);
-}
-
-h1, img {
-    margin: 0;
-    padding: 0;
+    min-height: 100vh;
 }
 
 .container {
@@ -527,6 +523,24 @@ button:disabled {
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+.wrapped-panel .leave-panel-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 600px) {
+    .wrapped-panel .leave-panel-actions {
+        flex-direction: column-reverse;
+        width: 100%;
+    }
+
+    .wrapped-panel .leave-panel-actions button {
+        width: 100%;
+    }
 }
 
 .coming-soon-panel .panel-content {

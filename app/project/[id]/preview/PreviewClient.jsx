@@ -98,7 +98,7 @@ export default function PreviewClient({ id, project, previewMedia, creatorInfo, 
 
   return (
     <main className={styles.mainContainer}>
-      <div className={styles.top}>
+      <div className={styles.previewTop}>
         <div className={styles.left}>
           <a href={`/project/${id}`} className={styles.projectInfoLink}>
             <img src={project?.icon} width={48} height={48} alt="Project logo" className={styles.projectLogo} />

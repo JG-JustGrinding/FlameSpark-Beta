@@ -21,6 +21,7 @@ import SignupNotice from "@/components/SignupNotice.jsx";
 import { Paginator } from "@/lib/paginator";
 import CappedInput from "@/components/CappedInput";
 import InfiniteScroll from "@/lib/infinitePostFeed";
+import PanelOverlay from "@/components/PanelOverlay";
 
 export default function ProjectPage({ project, isOwner, hasJoined, initialPosts, otherProjects, filters = ["Recent", "Oldest", "Top"], pageSize = 10 }) {
     const [projectPosts, setProjectPosts] = useState(initialPosts);
@@ -1054,17 +1055,14 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                     </div>
                 </div>
                 }
-                {leaveProjectPanelOpen && 
-                <div className="panel wrapped-panel">
-                    <div className="backdrop"></div>
-                    <div className="panel-content bodyFont">
-                        <FontAwesomeIcon icon={faCircleXmark} className="close-button bodyFont no-select-pointer" onClick={() => setLeaveProjectPanelOpen(false)}/>
-                        <h2 className="titleFont reset">Are you sure you want to leave {project.title}?</h2>
-                        <span><i>“{leaveMessage}”</i></span>
+                <PanelOverlay isOpen={leaveProjectPanelOpen} onClose={() => setLeaveProjectPanelOpen(false)} panelClass="panel-content" overlayClass="panel wrapped-panel leave-project-panel">
+                    <h2 className="titleFont reset">Are you sure you want to leave <i>{project?.title}</i>?</h2>
+                    <span><i>“{leaveMessage}”</i></span>
+                    <div className="leave-panel-actions">
+                        <button className="button-shape" onClick={() => setLeaveProjectPanelOpen(false)}>Cancel</button>
                         <button className="button-shape button-red-harsh" onClick={() => LeaveProjectFunction()} disabled={isLeaving}>{isLeaving ? "Leaving..." : "Leave Project"}</button>
                     </div>
-                </div>
-                }
+                </PanelOverlay>
                 <SignupNotice
                     isOpen={showSignupNotice}
                     onClose={() => setShowSignupNotice(false)}

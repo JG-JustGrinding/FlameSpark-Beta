@@ -125,6 +125,10 @@ html, body {
     accent-color: var(--flamespark-blue);
 }
 
+.checkbox.orange{
+    accent-color: var(--flamespark-orange);
+}
+
 .container .inputButton{
     padding: 1rem 0px;
     color: var(--white);
@@ -142,6 +146,11 @@ html, body {
 .container .inputButton.red{
     border: 1px solid var(--flamespark-red);
     background-color: var(--flamespark-red);
+}
+
+.container .inputButton.orange{
+    border: 1px solid var(--flamespark-orange);
+    background-color: var(--flamespark-orange);
 }
 
 .container .inputButton.blue{

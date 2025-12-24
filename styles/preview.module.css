@@ -21,21 +21,21 @@ html, body {
     }
 }
 
-.top {
+.previewTop {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 }
 
-.top .left, .top .right {
+.previewTop .left, .previewTop .right {
     display: flex;
     align-items: center;
     gap: 5px;
     min-width: 0;
 }
 
-.top .left {
+.previewTop .left {
     flex: 1;
     overflow: hidden;
 }
@@ -45,11 +45,11 @@ html, body {
     word-break: break-word;
 }
 
-.top .right {
+.previewTop .right {
     gap: 10px;
 }
 
-.top .display {
+.previewTop .display {
     display: flex;
     align-items: center;
     border-radius: 0px;
@@ -390,7 +390,7 @@ html, body {
 }
 
 @media(max-width: 1024px) {
-    .top {
+    .previewTop {
         gap: 16px;
     }
     
@@ -404,19 +404,19 @@ html, body {
         padding: 24px 16px;
     }
     
-    .top {
+    .previewTop {
         flex-direction: column;
         align-items: flex-start;
         gap: 16px;
         margin-bottom: 0px;
     }
     
-    .top .left, .top .right {
+    .previewTop .left, .previewTop .right {
         width: 100%;
         flex-wrap: wrap;
     }
     
-    .top .right {
+    .previewTop .right {
         flex-direction: column;
         align-items: stretch;
     }
@@ -484,7 +484,7 @@ html, body {
         padding: 16px;
     }
     
-    .top .left {
+    .previewTop .left {
         gap: 8px;
     }
     
