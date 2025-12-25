@@ -38,6 +38,13 @@ body {
     line-height: 1;
 }
 
+.postHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
 .titleDate {
     display: flex;
     gap: 20px;

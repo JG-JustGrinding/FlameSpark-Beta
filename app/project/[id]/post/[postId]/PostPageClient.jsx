@@ -265,11 +265,13 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                     </a>
                 </div>
                 <div className={`${styles.content} ${styles.card}`} ref={contentRef}>
-                    <div className={styles.titleDate}>
-                        {post?.title && <h1 className="titleFont reset">{post?.title}</h1>}
-                        {post?.created_at &&  <p className={`${styles.postDate} label-color bodyFont reset`}>{timeAgo(post?.created_at)}</p>}
+                    <div className={styles.postHeader}>
+                        <div className={styles.titleDate}>
+                            {post?.title && <h1 className="titleFont reset">{post?.title}</h1>}
+                            {post?.created_at &&  <p className={`${styles.postDate} label-color bodyFont reset`}>{timeAgo(post?.created_at)}</p>}
+                        </div>
+                        {post?.description && <h2 className="bodyFont reset normal-weight label-color">{post?.description}</h2>}
                     </div>
-                    {post?.description && <h2 className="bodyFont reset normal-weight label-color">{post?.description}</h2>}
                     <PostContentView postContent={post?.content} defaultStyling={true}/>
                     <div className={`${styles.postBottom} post-bottom bodyFont`}>
                         <div className={`rating${ratingLoading ? " skeleton" : ""}`}>
@@ -306,7 +308,7 @@ export default function PostPage({id, postId, post, project, seed, otherPostsSta
                 </div>
                 <div className={`${styles.sideSection}`} ref={sideRef}>
                     <div className={`${styles.projectInfo} ${styles.card}`}>
-                        <a href={`/project/${project?.id}`} className={`${styles.project} ${styles.styledLink}`}>
+                        <a href={`/project/${project?.id}`} className={`${styles.project} styled-link`}>
                             <img className={`${styles.projectIcon} pfp-shape`} src={project?.icon} alt="Project Icon"></img>
                             <h3 className={`titleFont full-width reset${project ? "" : " skeleton"}`}>{project?.title || "No Title"}</h3>
                         </a>
