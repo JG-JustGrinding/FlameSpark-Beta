@@ -9,11 +9,13 @@ import Link from "next/link";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope } from '@fortawesome/free-solid-svg-icons'
 import { faLock } from '@fortawesome/free-solid-svg-icons'
+import { faPatreon } from "@fortawesome/free-brands-svg-icons";
 
 export default function LoginPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const rawRedirect = searchParams.get("redirectUrl") || "/";
+    const mode = searchParams.get("mode") || "";
 
     const sanitizeRedirect = (url) => {
         try {
@@ -35,7 +37,7 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
-    const persist = document.getElementById("remember-me-checkbox").checked;
+    const persist = document.getElementById("remember-me-checkbox")?.checked;
 
     setError("");
 
@@ -94,7 +96,7 @@ export default function LoginPage() {
 
                     <h1 className="titleFont header-size">Log In to FlameSpark-Beta</h1>
                     {error && <p className="error-message titleFont">Error: {error}</p>}
-                    <div className={styles.authContent}>
+                    {mode == "admin" && <div className={styles.authContent}>
                         <div className={styles.inputContainer}>
                             <div className={styles.label}>
                                 <FontAwesomeIcon icon={faEnvelope} />
@@ -129,16 +131,31 @@ export default function LoginPage() {
                         onClick={handleLogin}
                         disabled={loading}
                         >
-                            {loading ? "Logging in..." : "Login"}
+                        {loading ? "Logging in..." : "Login"}
                         </button>
                         <div className={styles.bottomSection}>
-                            <button className={`button-shape ${styles.inputButton} bodyFont ${styles.clear}`} 
+                            {false && <button className={`button-shape ${styles.inputButton} bodyFont ${styles.clear}`} 
                             onClick={handleGoogleLogin}><img src="/logo_google.png"/>
                             Login with Google
-                            </button>
+                            </button>}
                             <p className={`label-color bodyFont ${styles.accountIf}`}>Don't have an account? <a href="/signup">sign up</a></p>
                         </div>
-                    </div>
+                    </div>}
+                    {mode != "admin" && 
+                    <div className={styles.authContent}>
+                        <button className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`}
+                        onClick={handleLogin}
+                        disabled={loading}
+                        >               
+                        <FontAwesomeIcon icon={faPatreon} style={{ marginRight: '5px' }} />
+                        Login With Patreon
+                        </button>
+                        <div className={styles.bottomSection}>
+                            <div className={styles.bottom}>
+                                <p className={`label-color bodyFont ${styles.accountIf}`}>Don't have an account? <a href="/signup">sign up</a></p>
+                            </div>
+                        </div>
+                    </div>}
                 </div>
             </main>
         </>

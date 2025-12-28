@@ -22,7 +22,6 @@
   background: var(--white);
   border-radius: 8px;
   padding: 20px;
-  max-width: 600px;
   z-index: 4000;
   max-width: 90%;
 
@@ -32,6 +31,10 @@
 
   /* Slide down animation
   animation: slideIn 0.3s ease-out; */
+}
+
+.overlay-panel.shrink-max-width {
+  max-width: 800px;
 }
 
 .overlay-panel h3 {

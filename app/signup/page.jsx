@@ -8,11 +8,14 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faTag, faLock, faKey } from "@fortawesome/free-solid-svg-icons";
 import styles from "@/styles/auth.module.css";
+import { faPatreon } from "@fortawesome/free-brands-svg-icons";
+import PanelOverlay from "@/components/PanelOverlay";
 
 export default function SignupPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawRedirect = searchParams.get("redirectUrl") || "/";
+  const mode = searchParams.get("mode") || "";
 
   const sanitizeRedirect = (url) => {
     try {
@@ -33,6 +36,7 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPatreonCommunityPanel, setShowPatreonCommunityPanel] = useState(false);
 
   const handleSignup = async () => {
     setError("");
@@ -47,8 +51,7 @@ export default function SignupPage() {
       return;
     }
 
-    if (username.length > 25)
-    {
+    if (username.length > 25) {
       setError("Username must not be greater than 25 characters long");
       return;
     }
@@ -67,22 +70,22 @@ export default function SignupPage() {
       setLoading(false);
       setError(error.message);
     } else {
-        router.push(redirectUrl || "/?show=verify_email");    
-      }
+      router.push(redirectUrl || "/?show=verify_email");
+    }
   };
 
-    const handleGoogleLogin = async () => {
-      const absoluteRedirect = `${window.location.origin}${redirectUrl}`;
-      const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-          redirectTo: absoluteRedirect,
-          },
-      });
+  const handleGoogleLogin = async () => {
+    const absoluteRedirect = `${window.location.origin}${redirectUrl}`;
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: absoluteRedirect,
+      },
+    });
 
-      if (error) {
-          setError(error.message);
-      }
+    if (error) {
+      setError(error.message);
+    }
   };
 
   return (
@@ -115,7 +118,7 @@ export default function SignupPage() {
 
           {error && <p className="titleFont error-message">{error}</p>}
 
-          <div className={styles.authContent}>
+          {mode == "admin" && <div className={styles.authContent}>
             <div className={styles.inputContainer}>
               <div className={styles.label}>
                 <FontAwesomeIcon icon={faKey} />
@@ -189,7 +192,7 @@ export default function SignupPage() {
             </div>
 
             <button
-              className={`button-shape ${styles.inputButton} bodyFont ${styles.blue} ${styles.authButton}`}
+              className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`}
               onClick={handleSignup}
               disabled={loading}
             >
@@ -197,13 +200,13 @@ export default function SignupPage() {
             </button>
 
             <div className={styles.bottomSection}>
-              <button onClick={handleGoogleLogin} className={`button-shape ${styles.inputButton} bodyFont ${styles.clear}`}>
+              {false && <button onClick={handleGoogleLogin} className={`button-shape ${styles.inputButton} bodyFont ${styles.clear}`}>
                 <img src="/logo_google.png" alt="Google Logo" />
                 Signup with Google
-              </button>
+              </button>}
 
               <div className={styles.bottom}>
-                <p className={`label-color reset bodyFont ${styles.accountIf}`} style={{marginRight: '15px', marginBottom: '5px'}}>
+                <p className={`label-color reset bodyFont ${styles.accountIf}`} style={{ marginRight: '15px', marginBottom: '5px' }}>
                   Already have an account? <Link href="/login">log in</Link>
                 </p>
                 <p className={`reset label-color bodyFont ${styles.accountIf}`}>
@@ -211,9 +214,38 @@ export default function SignupPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </div>}
+          {mode != "admin" && <div className={styles.authContent}>
+            <p className="bodyFont body-size">
+              Access to FlameSpark-Beta is granted by supporting the development of FlameSpark through joining the FlameSpark Patreon Community. Please visit our Patreon to sign up!
+            </p>
+            <a href="https://www.patreon.com/flamespark" target="_blank" rel="noopener noreferrer" className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`} >
+              <FontAwesomeIcon icon={faPatreon} style={{ marginRight: '5px' }} />
+              Visit Our Patreon
+            </a>
+            <button onClick={() => setShowPatreonCommunityPanel(true)} className={`button-shape ${styles.inputButton} bodyFont ${styles.clear} ${styles.authButton}`}>
+              Tell Me More
+            </button>
+            <div className={styles.bottom}>
+              <p className={`label-color reset bodyFont ${styles.accountIf}`} style={{ marginRight: '15px', marginBottom: '5px' }}>
+                Already have an account? <Link href="/login">log in</Link>
+              </p>
+              <p className={`reset label-color bodyFont ${styles.accountIf}`}>
+                By signing up you agree to our <Link href="/privacy">Privacy Policy</Link>.
+              </p>
+            </div>
+          </div>}
         </div>
+        <PanelOverlay panelClass="shrink-max-width" isOpen={showPatreonCommunityPanel} onClose={() => setShowPatreonCommunityPanel(false)}>
+          <h2 className="titleFont header-size">FlameSpark Patreon Community</h2>
+          <p className="bodyFont body-size">
+            FlameSpark is an upcoming project that is being actively developed. By joining our Patreon Community, you not only support the ongoing development of FlameSpark, but also gain exclusive access to FlameSpark-Beta.
+          </p>
+          <a href="https://www.patreon.com/flamespark" target="_blank" rel="noopener noreferrer" className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`} >
+            <FontAwesomeIcon icon={faPatreon} style={{ marginRight: '5px' }} />
+            Visit Our Patreon
+          </a>
+        </PanelOverlay>
       </main>
     </>
-  );
-}
+  );}

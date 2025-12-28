@@ -392,6 +392,8 @@ export default function Header({ isDashboardHeader = false, searchFieldText = ""
 
       {/* Auth buttons */}
       <div className={`${styles.authButtons} ${user ? "" : styles.unlogged}`}>
+        {!userSet && <button className="bodyFont button-shape skeleton">Loading</button>
+        }
         {userSet && (
           <>
             {user ? (
