@@ -36,57 +36,57 @@ export default function LoginPage() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+
     const handleLogin = async () => {
-    const persist = document.getElementById("remember-me-checkbox")?.checked;
+        const REDIRECT_URI = `http://localhost:3000/api/auth/patreon/callback`;
 
-    setError("");
+        const PATREON_AUTH_URL =
+        `https://www.patreon.com/oauth2/authorize` +
+        `?response_type=code` +
+        `&client_id=${process.env.PATREON_CLIENT_ID}` +
+        `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
+        `&scope=identity identity.memberships`;
 
-    if (!email || !password) {
-        setError("All fields are required");
-        return;
-    }
-
-    setLoading(true);
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-    }, {
-        options: {
-            persistSession: persist,
-        },
-    });
-
-    if (error) {
-        setLoading(false);
-        setError(error.message);
-    } else {
-        router.push(redirectUrl);
-        }
+        window.location.href = PATREON_AUTH_URL;
     };
 
-    const handleGoogleLogin = async () => {
-        const absoluteRedirect = `${window.location.origin}${redirectUrl}`;
-        const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
+    const handleEmailLogin = async () => {
+        const persist = document.getElementById("remember-me-checkbox")?.checked;
+
+        setError("");
+
+        if (!email || !password) {
+            setError("All fields are required");
+            return;
+        }
+
+        setLoading(true);
+
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        }, {
             options: {
-            redirectTo: absoluteRedirect,
+                persistSession: persist,
             },
         });
 
         if (error) {
+            setLoading(false);
             setError(error.message);
+        } else {
+            router.push(redirectUrl);
         }
     };
 
     return (
         <>
             <Header />
-        
+
             <main className={styles.mainContainer}>
                 <div className={styles.background}>
-                    <img src="/Login-Signup Background.png" className={styles.notMobile}/>
-                    <img src="/Login-Signup Background Mobile Variation.jpeg" className={styles.mobile}/>
+                    <img src="/Login-Signup Background.png" className={styles.notMobile} />
+                    <img src="/Login-Signup Background Mobile Variation.jpeg" className={styles.mobile} />
                 </div>
                 <div className={styles.container}>
                     <div className={styles.topBar}>
@@ -103,11 +103,11 @@ export default function LoginPage() {
                                 <p className="label-color bodyFont body-size">Email Address</p>
                             </div>
                             <input
-                            className="bodyFont input-field"
-                            type="email"
-                            placeholder="Enter text here..."
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                                className="bodyFont input-field"
+                                type="email"
+                                placeholder="Enter text here..."
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div className={styles.inputContainer}>
@@ -128,34 +128,34 @@ export default function LoginPage() {
                             <label htmlFor="remember-me-checkbox" className="bodyFont body-size">Remember Me</label>
                         </div>
                         <button className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`}
-                        onClick={handleLogin}
-                        disabled={loading}
+                            onClick={handleEmailLogin}
+                            disabled={loading}
                         >
-                        {loading ? "Logging in..." : "Login"}
+                            {loading ? "Logging in..." : "Login"}
                         </button>
                         <div className={styles.bottomSection}>
-                            {false && <button className={`button-shape ${styles.inputButton} bodyFont ${styles.clear}`} 
-                            onClick={handleGoogleLogin}><img src="/logo_google.png"/>
-                            Login with Google
+                            {false && <button className={`button-shape ${styles.inputButton} bodyFont ${styles.clear}`}
+                                onClick={handleGoogleLogin}><img src="/logo_google.png" />
+                                Login with Google
                             </button>}
                             <p className={`label-color bodyFont ${styles.accountIf}`}>Don't have an account? <a href="/signup">sign up</a></p>
                         </div>
                     </div>}
-                    {mode != "admin" && 
-                    <div className={styles.authContent}>
-                        <button className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`}
-                        onClick={handleLogin}
-                        disabled={loading}
-                        >               
-                        <FontAwesomeIcon icon={faPatreon} style={{ marginRight: '5px' }} />
-                        Login With Patreon
-                        </button>
-                        <div className={styles.bottomSection}>
-                            <div className={styles.bottom}>
-                                <p className={`label-color bodyFont ${styles.accountIf}`}>Don't have an account? <a href="/signup">sign up</a></p>
+                    {mode != "admin" &&
+                        <div className={styles.authContent}>
+                            <button className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`}
+                                onClick={handleLogin}
+                                disabled={loading}
+                            >
+                                <FontAwesomeIcon icon={faPatreon} style={{ marginRight: '5px' }} />
+                                Login With Patreon
+                            </button>
+                            <div className={styles.bottomSection}>
+                                <div className={styles.bottom}>
+                                    <p className={`label-color bodyFont ${styles.accountIf}`}>Not a Member? <a href="/signup">sign up</a></p>
+                                </div>
                             </div>
-                        </div>
-                    </div>}
+                        </div>}
                 </div>
             </main>
         </>

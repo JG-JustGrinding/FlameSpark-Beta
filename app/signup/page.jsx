@@ -74,20 +74,6 @@ export default function SignupPage() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    const absoluteRedirect = `${window.location.origin}${redirectUrl}`;
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: absoluteRedirect,
-      },
-    });
-
-    if (error) {
-      setError(error.message);
-    }
-  };
-
   return (
     <>
       <Header />
@@ -228,7 +214,7 @@ export default function SignupPage() {
             </button>
             <div className={styles.bottom}>
               <p className={`label-color reset bodyFont ${styles.accountIf}`} style={{ marginRight: '15px', marginBottom: '5px' }}>
-                Already have an account? <Link href="/login">log in</Link>
+                Already a Member? <Link href="/login">log in</Link>
               </p>
               <p className={`reset label-color bodyFont ${styles.accountIf}`}>
                 By signing up you agree to our <Link href="/privacy">Privacy Policy</Link>.
