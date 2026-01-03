@@ -110,6 +110,13 @@ export default function PatreonCommunityPanel({ onClose, isOpen, styles }) {
                         <FontAwesomeIcon icon={faPatreon} style={{ marginRight: '6px' }} />
                         Become a Member
                     </a>
+                    <button
+                        onClick={onClose}
+                        className="button-shape bodyFont neutral-color member-button"
+                        style={{marginTop: '5px'}}
+                    >
+                        Close
+                    </button>
                     <p className="pc-disclaimer bodyFont body-size">Membership status is verified via Patreon authentication. Some perks may vary by tier.</p>
                 </section>
             </div>
