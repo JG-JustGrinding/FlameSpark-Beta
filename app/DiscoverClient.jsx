@@ -14,6 +14,7 @@ const PAGE_SIZE = 10;
 export default function DiscoverClient({ initialProjects = [], initialError = "", initialHasMore = true }) {
   const [errorMessage, setErrorMessage] = useState(initialError || "");
   const [warningMessage, setWarningMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [projects, setProjects] = useState(initialProjects || []);
   const [page, setPage] = useState(initialProjects?.length > 0 ? 0 : -1);
   const [loading, setLoading] = useState(false);
@@ -37,6 +38,12 @@ export default function DiscoverClient({ initialProjects = [], initialError = ""
       const { data: { user } } = await supabase.auth.getUser();
       if (user && !user.email_confirmed_at) {
         setWarningMessage("Your email is not verified. Please check your inbox to confirm, or you may not be able to log in.");
+      }
+
+      const searchParams = new URLSearchParams(window.location.search);
+      const showParam = searchParams.get("show");
+      if (showParam === "signup_success") {
+        setSuccessMessage("Signup successful! You can now log in with your credentials.");
       }
     }
     checkUser();
@@ -112,6 +119,33 @@ export default function DiscoverClient({ initialProjects = [], initialError = ""
           <span className="titleFont">{warningMessage}</span>
           <button className="titleFont"
             onClick={() => setWarningMessage("")}
+            style={{
+              border: "none",
+              background: "transparent",
+              fontWeight: "bold",
+              cursor: "pointer",
+              color: "var(--white, #ffffff)",
+            }}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {successMessage && (
+        <div style={{
+          backgroundColor: "var(--success-color, #000000)",
+          color: "var(--white, #ffffff)",
+          padding: "12px 20px",
+          borderRadius: "5px",
+          margin: "10px 0",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center"
+        }}>
+          <span className="titleFont">{successMessage}</span>
+          <button className="titleFont"
+            onClick={() => setSuccessMessage("")}
             style={{
               border: "none",
               background: "transparent",

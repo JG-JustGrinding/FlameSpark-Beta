@@ -37,6 +37,10 @@
   max-width: 800px;
 }
 
+.overlay-panel.shrink-max-height {
+  max-height: 95%;
+}
+
 .overlay-panel h3 {
   margin-right: 30px;
 }

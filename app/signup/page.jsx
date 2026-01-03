@@ -10,6 +10,7 @@ import { faEnvelope, faTag, faLock, faKey } from "@fortawesome/free-solid-svg-ic
 import styles from "@/styles/auth.module.css";
 import { faPatreon } from "@fortawesome/free-brands-svg-icons";
 import PanelOverlay from "@/components/PanelOverlay";
+import PatreonCommunityPanel from "./PatreonCommunityPanel";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -58,19 +59,28 @@ export default function SignupPage() {
 
     setLoading(true);
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { username },
-      },
-    });
+    try {
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          accessKey,
+          username
+        })
+      });
 
-    if (error) {
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Signup failed');
+      }
+
+      router.push("/?show=signup_success");
+    } catch (error) {
       setLoading(false);
       setError(error.message);
-    } else {
-      router.push(redirectUrl || "/?show=verify_email");
     }
   };
 
@@ -222,16 +232,8 @@ export default function SignupPage() {
             </div>
           </div>}
         </div>
-        <PanelOverlay panelClass="shrink-max-width" isOpen={showPatreonCommunityPanel} onClose={() => setShowPatreonCommunityPanel(false)}>
-          <h2 className="titleFont header-size">FlameSpark Patreon Community</h2>
-          <p className="bodyFont body-size">
-            FlameSpark is an upcoming project that is being actively developed. By joining our Patreon Community, you not only support the ongoing development of FlameSpark, but also gain exclusive access to FlameSpark-Beta.
-          </p>
-          <a href="https://www.patreon.com/flamespark" target="_blank" rel="noopener noreferrer" className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`} >
-            <FontAwesomeIcon icon={faPatreon} style={{ marginRight: '5px' }} />
-            Visit Our Patreon
-          </a>
-        </PanelOverlay>
+        <PatreonCommunityPanel isOpen={showPatreonCommunityPanel} onClose={() => setShowPatreonCommunityPanel(false)} styles={styles} />
       </main>
     </>
-  );}
+  );
+}

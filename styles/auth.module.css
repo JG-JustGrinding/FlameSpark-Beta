@@ -132,7 +132,7 @@ html, body {
     accent-color: var(--flamespark-orange);
 }
 
-.container .inputButton{
+.inputButton{
     padding: 1rem 0px;
     color: var(--white);
     font-size: 1rem;
@@ -142,26 +142,26 @@ html, body {
     gap: 10px;
 }
 
-.container .inputButton img{
+.inputButton img{
     width: 1.5rem;
 }
 
-.container .inputButton.red{
+.inputButton.red{
     border: 1px solid var(--flamespark-red);
     background-color: var(--flamespark-red);
 }
 
-.container .inputButton.orange{
+.inputButton.orange{
     border: 1px solid var(--flamespark-orange);
     background-color: var(--flamespark-orange);
 }
 
-.container .inputButton.blue{
+.inputButton.blue{
     border: 1px solid var(--flamespark-blue);
     background-color: var(--flamespark-blue);
 }
 
-.container .inputButton.clear{
+.inputButton.clear{
     border: 1px solid black;
     background-color: var(--white);
     color: var(--text-default);

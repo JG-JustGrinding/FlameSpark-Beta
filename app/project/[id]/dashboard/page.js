@@ -9,7 +9,7 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import "@/styles/dashboard.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL, faKey, faFlag, faStar, faEye, faThumbsUp, faHourglass, faPercent, faThumbsDown, faCircle, faCheckCircle, faSpinner, faTrash, faTimeline, faFire } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faPencil, faChartBar, faLayerGroup, faPaintBrush, faList, faNoteSticky, faHeart, faGlobe, faFireFlameCurved, faLock, faL, faKey, faFlag, faStar, faEye, faThumbsUp, faHourglass, faPercent, faThumbsDown, faCircle, faCheckCircle, faSpinner, faTrash, faTimeline, faFire, faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons'
 import CappedInput from "@/components/CappedInput";
 import ArrayInputField from "@/components/ArrayInputField";
 import PreviewImagesContainer from "@/components/PreviewImagesContainer";
@@ -793,15 +793,15 @@ const removeLink = (index) => {
                         </div>
                         }
                         {(selectedIndex > items.length - 1 && selectedIndex < items.length + unlockableItems.length) && 
-                        <div className="content-section locked" style={{padding: '48px 0', minHeight: '340px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '24px'}}>
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px'}}>
-                                <FontAwesomeIcon icon={faLock} className="label-color icon" style={{fontSize: '5rem', color: 'var(--flamespark-red)', marginBottom: '8px'}}/>
+                        <div className="content-section locked" style={{padding: '48px 0', minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '24px', textAlign: 'center', width: '100%'}}>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', maxWidth: '560px'}}>
+                                <FontAwesomeIcon icon={faScrewdriverWrench} className="label-color icon" style={{fontSize: '5rem', color: 'var(--flamespark-red)', marginBottom: '8px'}}/>
                                 <h2 className="titleFont bold" style={{fontSize: '2.2rem', margin: 0}}>Feature In Development</h2>
-                                <span className="bodyFont label-color" style={{fontSize: '1.1rem', textAlign: 'center', maxWidth: '420px'}}>Thank you for being a member and supporting FlameSpark-Beta! This feature is currently in development and will be available soon.<br/>If you’re not a member yet, you can join below.</span>
+                                <span className="bodyFont label-color" style={{fontSize: '1.1rem', textAlign: 'center', maxWidth: '420px'}}>Thank you for being a member and supporting FlameSpark-Beta! This feature is currently in development and will be available soon.</span>
                             </div>
-                            <a href="https://patreon.com" target="_blank" rel="noopener noreferrer">
+                            {false && <a href="https://patreon.com/flamespark" target="_blank" rel="noopener noreferrer">
                                 <button className="button-shape bodyFont red-color" style={{marginTop: '18px', fontSize: '1.1rem', padding: '12px 32px'}}>Become a Member</button>
-                            </a>
+                            </a> }
                         </div>
                         }
                         {selectedIndex == (items.length + unlockableItems.length) && 

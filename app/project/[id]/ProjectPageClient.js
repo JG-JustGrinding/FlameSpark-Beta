@@ -1024,7 +1024,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
                         <span className="bodyFont bold body">We're currently in beta. Project to-do lists will launch after FlameSpark-Beta gets enough members. Thank you for your support!</span>
                         <div>
-                            <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
+                            <a href="https://patreon.com/flamespark" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
                         </div>
                     </div>
                 </div>
@@ -1037,7 +1037,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
                         <span className="bodyFont bold body">We're currently in beta. Project timelines will launch after FlameSpark-Beta gets enough members. Thank you for your support!</span>
                         <div>
-                            <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
+                            <a href="https://patreon.com/flamespark" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
                         </div>
                     </div>
                 </div>
@@ -1050,7 +1050,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                         <h2 className="titleFont title header-size reset">Coming Soon!</h2>
                         <span className="bodyFont bold body">We're currently in beta. Project community spaces will launch after FlameSpark-Beta gets enough members. Thank you for your support!</span>
                         <div>
-                            <a href="https://patreon.com" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
+                            <a href="https://patreon.com/flamespark" target="_blank"><button className="button-shape patreon-button bodyFont">Become a Member</button></a>
                         </div>
                     </div>
                 </div>

@@ -31,21 +31,53 @@ export default function LoginPage() {
     };
 
     const redirectUrl = sanitizeRedirect(rawRedirect);
+    const errorParam = searchParams.get("error") ? getErrorFromParam(searchParams.get("error")) : "";
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [error, setError] = useState(errorParam);
     const [loading, setLoading] = useState(false);
 
+    function getErrorFromParam(errorParam) {
+        errorParam = errorParam.replace(/_/g, " ");
+        errorParam = errorParam.charAt(0).toUpperCase() + errorParam.slice(1);
+
+        if (errorParam === "Not a patron") {
+            return "You must be an active Patreon Community member to log in.";
+        }
+
+        return errorParam;
+    }
 
     const handleLogin = async () => {
-        const REDIRECT_URI = `http://localhost:3000/api/auth/patreon/callback`;
+        const REDIRECT_URI = process.env.NEXT_PUBLIC_PATREON_REDIRECT_URI;
+
+        // When adding email, validate and pass it via OAuth `state`
+        let stateParam = "";
+        if (mode === "add_email") {
+            const trimmedEmail = (email || "").trim();
+            const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail);
+            if (!isValidEmail) {
+                setError("Please enter a valid email.");
+                return;
+            }
+            // Include redirectUrl for continuity
+            const payload = { email: trimmedEmail, redirectUrl };
+            try {
+                const state = btoa(JSON.stringify(payload));
+                stateParam = `&state=${encodeURIComponent(state)}`;
+            } catch {
+                // If encoding fails, fall back to requiring user input on callback
+                stateParam = "";
+            }
+        }
 
         const PATREON_AUTH_URL =
-        `https://www.patreon.com/oauth2/authorize` +
-        `?response_type=code` +
-        `&client_id=${process.env.PATREON_CLIENT_ID}` +
-        `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
-        `&scope=identity identity.memberships`;
+            `https://www.patreon.com/oauth2/authorize` +
+            `?response_type=code` +
+            `&client_id=${process.env.NEXT_PUBLIC_PATREON_CLIENT_ID}` +
+            `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
+            `&scope=identity identity[email] identity.memberships` +
+            stateParam;
 
         window.location.href = PATREON_AUTH_URL;
     };
@@ -141,8 +173,9 @@ export default function LoginPage() {
                             <p className={`label-color bodyFont ${styles.accountIf}`}>Don't have an account? <a href="/signup">sign up</a></p>
                         </div>
                     </div>}
-                    {mode != "admin" &&
+                    {mode != "admin" && mode != "add_email" &&
                         <div className={styles.authContent}>
+                            <p className="bodyFont reset">Login with your account connected to your FlameSpark Patreon Community membership.</p>
                             <button className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`}
                                 onClick={handleLogin}
                                 disabled={loading}
@@ -155,6 +188,29 @@ export default function LoginPage() {
                                     <p className={`label-color bodyFont ${styles.accountIf}`}>Not a Member? <a href="/signup">sign up</a></p>
                                 </div>
                             </div>
+                        </div>}
+                    {mode == "add_email" &&
+                        <div className={styles.authContent}>
+                            <p className="bodyFont reset">Please add your email to continue.</p>
+                            
+                        <div className={styles.inputContainer}>
+                            <div className={styles.label}>
+                                <FontAwesomeIcon icon={faEnvelope} />
+                                <p className="label-color bodyFont body-size">Email: </p>
+                            </div>
+                            <input
+                                className="bodyFont input-field"
+                                type="email"
+                                placeholder="Enter your email..."
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+
+                        <button className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`}
+                            onClick={handleLogin}
+                            disabled={loading}
+                        >Login</button>
                         </div>}
                 </div>
             </main>
