@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import PrimaryPageLayout from "@/components/PrimaryPageLayout";
 
-export default function MagicLinkVerifier() {
+function VerifyBlock() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState("Verifying magic link...");
@@ -38,9 +38,15 @@ export default function MagicLinkVerifier() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  return <p className="bodyFont" style={{ marginTop: 24 }}>{status}</p>;
+}
+
+export default function MagicLinkVerifier() {
   return (
     <PrimaryPageLayout title="Signing In" description="Completing your login">
-      <p className="bodyFont" style={{ marginTop: 24 }}>{status}</p>
+      <Suspense fallback={<p className="bodyFont" style={{ marginTop: 24 }}>Preparing…</p>}>
+        <VerifyBlock />
+      </Suspense>
     </PrimaryPageLayout>
   );
 }
