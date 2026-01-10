@@ -59,8 +59,7 @@ As a result, the few creators at the top get an absurd share of the attention, l
         <p className="label-color"><b><i>...And that's why there's flameSpark.</i></b></p>
 
         <div className="article-cta">
-            <a href="/create" className="cta-button button-shape">Share Your First Project</a>
-            <a href="/discover" className="cta-button button-shape secondary">Discover Projects</a>
+            <a href="/signup" className="cta-button button-shape">Sign up for FlameSpark-Beta</a>
         </div>
     </BlogArticle>
   );

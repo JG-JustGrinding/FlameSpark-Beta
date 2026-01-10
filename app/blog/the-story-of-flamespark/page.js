@@ -46,8 +46,7 @@ export default function TheStoryOfFlameSpark() {
       </p>
 
       <div className="article-cta">
-        <a href="/create" className="cta-button button-shape">Share Your First Project</a>
-        <a href="/discover" className="cta-button button-shape secondary">Discover Projects</a>
+          <a href="/signup" className="cta-button button-shape">Sign up for FlameSpark-Beta</a>
       </div>
     </BlogArticle>
   );
