@@ -402,7 +402,7 @@ export default function CreatePage({ initialUser }) {
           </div>
 
           <div className={`${styles.field} ${styles.mb}`}>
-            <label className="bodyFont">Cover Image (16:9)</label>
+            <label className="bodyFont">Cover Image (16:9 Aspect Ratio)</label>
               <div className={styles.fileAndImage}>
                 <input type="file" accept=".jpg,.jpeg,.png,.webp,.avif" onChange={handleCoverChange}
                   onClick={guardInteraction}
@@ -411,7 +411,7 @@ export default function CreatePage({ initialUser }) {
                 <img src={coverImage} className={`${styles.displayImage} ${styles.sixteennine} ${coverImage ? styles.solid : styles.dashed}`}/>
               </div>
 
-            <label className={`${styles.mt} bodyFont`}>Project Logo</label>
+            <label className={`${styles.mt} bodyFont`}>Project Logo (1:1 Aspect Ratio)</label>
               <div className={`${styles.fileAndImage} ${styles.projectLogo}`}>
                 <input type="file" accept=".jpg,.jpeg,.png,.webp,.avif" onChange={handleIconChange}
                   onClick={guardInteraction}

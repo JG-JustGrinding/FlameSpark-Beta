@@ -444,7 +444,7 @@ export default function Header({ isDashboardHeader = false, searchFieldText = ""
                       Logout
                     </button>
                   </div>
-                  <span className={`${styles.closeButton} ${styles.bodyFont}`} onClick={() => { setUserPanelOpen(false) }}>X</span>
+                  <span className={`${styles.closeButton} ${styles.bodyFont}`} onClick={() => { setUserPanelOpen(false) }}><FontAwesomeIcon icon={faCircleXmark} /></span>
                 </div>
               </>
             ) : (

@@ -16,6 +16,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
     const [interestsField, setInterestsField] = useState("");
     const [interestsArray, setInterestsArray] = useState(initialProfile?.interests ?? []);
     const [savingInfo, setSavingInfo] = useState(false);
+    const [savingEmails, setSavingEmails] = useState(false);
     const fileInputRef = useRef(null);
     const [newProfilePending, setNewProfilePending] = useState(false);
     const [newAvatarFile, setNewAvatarFile] = useState(null);
@@ -24,7 +25,44 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
     const [profileSuccess, setProfileSuccess] = useState("");
     const [profileInfoError, setProfileInfoError] = useState("");
     const [profileInfoSuccess, setProfileInfoSuccess] = useState("");
+    const [emailPrefsError, setEmailPrefsError] = useState("");
+    const [emailPrefsSuccess, setEmailPrefsSuccess] = useState("");
+    const [emailDigestEnabled, setEmailDigestEnabled] = useState(
+        initialProfile?.disable_email_digest !== undefined
+            ? !initialProfile.disable_email_digest
+            : initialProfile?.email_digest ?? true
+    );
+    const [emailImportantEnabled, setEmailImportantEnabled] = useState(
+        initialProfile?.disable_email_important !== undefined
+            ? !initialProfile.disable_email_important
+            : initialProfile?.email_important ?? true
+    );
+    const [emailInteractionEnabled, setEmailInteractionEnabled] = useState(
+        initialProfile?.disable_email_interaction !== undefined
+            ? !initialProfile.disable_email_interaction
+            : initialProfile?.email_interaction ?? true
+    );
+    const [emailNewsletterEnabled, setEmailNewsletterEnabled] = useState(
+        initialProfile?.disable_email_newsletter !== undefined
+            ? !initialProfile.disable_email_newsletter
+            : initialProfile?.email_newsletter ?? true
+    );
     const maxProfilePicSizeMB = 2;
+    
+    useEffect(() => {
+        // get user metadata on load
+        const getMetadata = async () => {
+            const { data: { user: currentUser } } = await supabase.auth.getUser();
+            if (currentUser) {
+                const meta = currentUser.user_metadata || {};
+                setEmailDigestEnabled(!(meta.disable_email_digest ?? user?.disable_email_digest ?? false));
+                setEmailImportantEnabled(!(meta.disable_email_important ?? user?.disable_email_important ?? false));
+                setEmailInteractionEnabled(!(meta.disable_email_interaction ?? user?.disable_email_interaction ?? false));
+                setEmailNewsletterEnabled(!(meta.disable_email_newsletter ?? user?.disable_email_newsletter ?? false));
+            }
+        };
+        getMetadata();
+    }, []);
 
     useEffect(() => {
         // Listen for auth changes
@@ -47,6 +85,11 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                         setUsername(currentUser.username || "");
                         setBio(currentUser.bio || "");
                         setInterestsArray(currentUser.interests || []);
+                        const meta = session?.user?.user_metadata || {};
+                        setEmailDigestEnabled(!(meta.disable_email_digest ?? currentUser.disable_email_digest ?? false));
+                        setEmailImportantEnabled(!(meta.disable_email_important ?? currentUser.disable_email_important ?? false));
+                        setEmailInteractionEnabled(!(meta.disable_email_interaction ?? currentUser.disable_email_interaction ?? false));
+                        setEmailNewsletterEnabled(!(meta.disable_email_newsletter ?? currentUser.disable_email_newsletter ?? false));
                     }
                 } catch (error) {
                     window.location.href = "/";
@@ -190,6 +233,38 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
         }
     }
 
+    async function saveEmailPreferences() {
+        try {
+            setSavingEmails(true);
+            setEmailPrefsError("");
+            setEmailPrefsSuccess("");
+
+            if (!user) return;
+
+            const dataToUpdate = {
+                disable_email_digest: !emailDigestEnabled,
+                disable_email_important: !emailImportantEnabled,
+                disable_email_interaction: !emailInteractionEnabled,
+                disable_email_newsletter: !emailNewsletterEnabled,
+            };
+
+            const { error } = await supabase.auth.updateUser({
+                data: dataToUpdate,
+            });
+
+            if (error) {
+                setEmailPrefsError("Error: " + error.message);
+                return;
+            }
+
+            setEmailPrefsSuccess("Email preferences updated");
+        } catch (error) {
+            setEmailPrefsError("Error: " + error.message);
+        } finally {
+            setSavingEmails(false);
+        }
+    }
+
     useEffect(() => {
         if (!interestsField) {
             return;
@@ -240,14 +315,14 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                 </div>
                 <div className={styles.contentView}>
                     <div className={styles.profile}>
-                        <h1 className="titleFont">User Profile</h1>
+                        {false && <h1 className="titleFont">User Profile</h1>}
                         <div className={styles.profileContent}>
                             <div className={`${styles.card} ${styles.profilePicture}`}>
                                 <img className="pfp-shape" src={avatar || "/profile_icon_colored.svg"} alt="profile picture" />
                                 <div className={styles.right}>
                                     {profileError && <p className="error-message titleFont">{profileError}</p>}
                                     {profileSuccess && <p className="success-message titleFont">{profileSuccess}</p>}
-                                    <span className="bodyFont bold">Profile Picture</span>
+                                    <h2 className="titleFont bold reset">Profile Picture</h2>
                                     <div className={`${styles.changeContainer} bodyFont`}>
                                         <p className={styles.label}>Change Image:</p>
                                         <div className={styles.options}>
@@ -264,6 +339,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                                 </div>
                             </div>
                             <div className={`${styles.card} ${styles.userInfo}`}>
+                                <h2 className="titleFont" style={{marginBottom: '0px'}}>Profile Information</h2>
                                 {profileInfoError && <p className="error-message titleFont">{profileInfoError}</p>}
                                 {profileInfoSuccess && <p className="success-message titleFont">{profileInfoSuccess}</p>}
 
@@ -332,6 +408,90 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                                 </div>
                                 <div className={styles.saveButtonContainer}>
                                     <button className="button-shape bodyFont" onClick={saveProfileInfo} disabled={savingInfo}>{`${savingInfo ? "Saving..." : "Save"}`}</button>
+                                </div>
+                            </div>
+                            <div className={`${styles.card} ${styles.emailSettings}`}>
+                                <h2 className="titleFont" style={{marginBottom: '0px'}}>Email Preferences</h2>
+                                {false && <p className={`${styles.description} bodyFont`}>Choose which emails you want to receive.</p>}
+                                {emailPrefsError && <p className="error-message titleFont reset">{emailPrefsError}</p>}
+                                {emailPrefsSuccess && <p className="success-message titleFont reset">{emailPrefsSuccess}</p>}
+
+                                <div className={styles.toggles}>
+                                    <div className={styles.toggleRow}>
+                                        <div className={styles.label}>
+                                            <p className="label-color bodyFont body-size"><strong>Important</strong> Notifications</p>
+                                        </div>
+                                        <label className="bodyFont">
+                                            <input
+                                                type="checkbox"
+                                                checked={!!emailImportantEnabled}
+                                                onChange={(e) => {
+                                                    setEmailImportantEnabled(e.target.checked);
+                                                    setEmailPrefsSuccess("");
+                                                    setEmailPrefsError("");
+                                                }}
+                                            />
+                                            <span> Project completions and major updates</span>
+                                        </label>
+                                    </div>
+
+                                    <div className={styles.toggleRow}>
+                                        <div className={styles.label}>
+                                            <p className="label-color bodyFont body-size">Digest Emails</p>
+                                        </div>
+                                        <label className="bodyFont">
+                                            <input
+                                                type="checkbox"
+                                                checked={!!emailDigestEnabled}
+                                                onChange={(e) => {
+                                                    setEmailDigestEnabled(e.target.checked);
+                                                    setEmailPrefsSuccess("");
+                                                    setEmailPrefsError("");
+                                                }}
+                                            />
+                                            <span> Periodic updates on recent activity</span>
+                                        </label>
+                                    </div>
+
+                                    <div className={styles.toggleRow}>
+                                        <div className={styles.label}>
+                                            <p className="label-color bodyFont body-size">Interaction Emails</p>
+                                        </div>
+                                        <label className="bodyFont">
+                                            <input
+                                                type="checkbox"
+                                                checked={!!emailInteractionEnabled}
+                                                onChange={(e) => {
+                                                    setEmailInteractionEnabled(e.target.checked);
+                                                    setEmailPrefsSuccess("");
+                                                    setEmailPrefsError("");
+                                                }}
+                                            />
+                                            <span> Comments, replies and other direct activity</span>
+                                        </label>
+                                    </div>
+
+                                    <div className={styles.toggleRow}>
+                                        <div className={styles.label}>
+                                            <p className="label-color bodyFont body-size">Newsletter Emails</p>
+                                        </div>
+                                        <label className="bodyFont">
+                                            <input
+                                                type="checkbox"
+                                                checked={!!emailNewsletterEnabled}
+                                                onChange={(e) => {
+                                                    setEmailNewsletterEnabled(e.target.checked);
+                                                    setEmailPrefsSuccess("");
+                                                    setEmailPrefsError("");
+                                                }}
+                                            />
+                                            <span> FlameSpark news and updates</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div className={styles.saveButtonContainer} style={{ marginTop: '20px' }}>
+                                    <button className="button-shape bodyFont" onClick={saveEmailPreferences} disabled={savingEmails}>{`${savingEmails ? "Saving..." : "Save Email Preferences"}`}</button>
                                 </div>
                             </div>
                         </div>

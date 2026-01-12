@@ -126,7 +126,7 @@ export default function LoginPage() {
                         <a href="/signup" className={`${styles.right} ${styles.button} button-shape bodyFont ${styles.off}`}>Sign Up</a>
                     </div>
 
-                    <h1 className="titleFont header-size">Log In to FlameSpark-Beta</h1>
+                    <h1 className={`titleFont header-size ${styles.mainTitle}`}>Log In to FlameSpark-Beta</h1>
                     {error && <p className="error-message titleFont">Error: {error}</p>}
                     {mode == "admin" && <div className={styles.authContent}>
                         <div className={styles.inputContainer}>
@@ -210,7 +210,10 @@ export default function LoginPage() {
                         <button className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`}
                             onClick={handleLogin}
                             disabled={loading}
-                        >Login</button>
+                        >
+                            <FontAwesomeIcon icon={faPatreon} style={{ marginRight: '5px' }} />
+                            Login With Patreon
+                        </button>
                         </div>}
                 </div>
             </main>

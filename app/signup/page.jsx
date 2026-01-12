@@ -110,7 +110,7 @@ export default function SignupPage() {
             <button className={`${styles.right} ${styles.button} button-shape bodyFont ${styles.cursorDefault}`}>Sign Up</button>
           </div>
 
-          <h1 className="titleFont header-size">Sign Up for FlameSpark-Beta!</h1>
+          <h1 className={`titleFont header-size ${styles.mainTitle}`}>Sign Up for FlameSpark-Beta!</h1>
 
           {error && <p className="titleFont error-message">{error}</p>}
 
