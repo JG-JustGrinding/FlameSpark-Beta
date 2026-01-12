@@ -1,8 +1,15 @@
 "use client";
 import Header from "@/components/Header";
 import styles from "@/styles/ErrorPage.module.css";
+import { useRouter } from "next/navigation";
 
 export default function ErrorPage() {
+  const Router = useRouter();
+
+  const toDiscover = () => {
+    window.location.href = "/";
+  }
+
   return (
     <div className={styles.container}>
       <Header />
@@ -19,7 +26,7 @@ export default function ErrorPage() {
             It might have been moved or deleted.<br />
             Please check the URL for errors or return to our discover page to continue browsing.
           </p>
-          <button className="bodyFontBold">Go to Discover</button>
+          <button className="bodyFontBold" onClick={toDiscover}>Go to Discover</button>
         </div>
       </main>
     </div>

@@ -7,7 +7,7 @@ export default function Unauthorized() {
   const Router = useRouter();
   
   const toDiscover = () => {
-    Router.push("/");
+    window.location.href = "/";
   }
 
   return (

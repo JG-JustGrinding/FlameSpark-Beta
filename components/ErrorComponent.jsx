@@ -7,7 +7,7 @@ export default function NotFound() {
   const Router = useRouter();
   
   const toDiscover = () => {
-    Router.push("/");
+    window.location.href = "/";
   }
 
   return (
