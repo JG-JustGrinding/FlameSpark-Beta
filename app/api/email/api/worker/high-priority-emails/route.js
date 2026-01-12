@@ -5,7 +5,7 @@ import { supabaseServiceClient } from '@/lib/supabaseServiceClient';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const BATCH_SIZE = Number(30);
-const FETCH_LIMIT = 150;
+const FETCH_LIMIT = 60;
 const celebrationEmojis = ["🎉", "🚀", "✨", "🥳", "🎊", "🌟", "🔥", "⚡", "🏆"];
 
 function chunkArray(arr, size) {
