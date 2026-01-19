@@ -43,6 +43,8 @@ export default function Header({ isDashboardHeader = false, searchFieldText = ""
   const [supressCompletionsUnreadFilterIcon, setSupressCompletionsUnreadFilterIcon] = useState({ All: false, Projects: false, Interactions: false, Completions: false });
   const [socialOpen, setSocialOpen] = useState(false);
 
+  const didMount = useRef(false); // to avoid useEffect running on first render
+
   const search = () => {
     if (!searchQuery.trim()) return;
 
@@ -259,11 +261,13 @@ export default function Header({ isDashboardHeader = false, searchFieldText = ""
         return updated;
       });
 
+      /*
       await supabase
         .from('profiles')
         .update({ notifications_last_checked_at: new Date().toISOString() })
-        .eq('id', user?.id);
+        .eq('id', user?.id); */
     }
+
 
     handle();
 
