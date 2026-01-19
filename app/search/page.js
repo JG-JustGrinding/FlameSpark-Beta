@@ -52,7 +52,9 @@ function SearchClient() {
                             ) : item.type === "user" ? (
                             <a href={`/user/${item.id}`} key={idx} className="project user">
                                 <div className="cover-image-wrapper">
+                                    <div className="profile-wrapper">
                                     <img src={item.avatar_url || "/profile_icon_colored.svg"} className="searchUserAvatar" alt="profile-picture"/>
+                                    </div>
                                 </div>
                                 <span className="bodyFont bold">{item.username || "No Username"}</span>
                                 {item.bio && <span className="bodyFont label-color bio-snippet">{item.bio}</span>}
