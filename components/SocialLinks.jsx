@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faInstagram, faYoutube, faPatreon, faDiscord } from '@fortawesome/free-brands-svg-icons';
+import { faInstagram, faYoutube, faPatreon, faDiscord, faXTwitter } from '@fortawesome/free-brands-svg-icons';
 import socials from '@/lib/socials';
 import styles from './SocialLinks.module.css';
 
@@ -15,6 +15,10 @@ export default function SocialLinks({ className = '', excludeExtra = false, show
       <a href={socials.discord} target="_blank" rel="noopener noreferrer" aria-label="Discord" className={styles.icon}>
         <FontAwesomeIcon icon={faDiscord} className={fontSize ? styles.fontSizeControl : ''} />
         {showLabels && <span>Discord</span>}
+      </a>
+      <a href={socials.x} target="_blank" rel="noopener noreferrer" aria-label="X" className={styles.icon}>
+        <FontAwesomeIcon icon={faXTwitter} className={fontSize ? styles.fontSizeControl : ''} />
+        {showLabels && <span>X</span>}
       </a>
     {!excludeExtra && (
         <>

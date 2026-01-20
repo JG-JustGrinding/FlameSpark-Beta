@@ -40,7 +40,7 @@ export default function LandngPage() {
         <div className="landing-container">
           <div className="header-content">
             <a href="/" className="header-logo">
-              <img src="/logo_NoPadding_Transparent.png" alt="FlameSpark Logo" />
+              <img src="/Logo_NoPadding_Transparent.png" alt="FlameSpark Logo" />
             </a>
             <nav className="header-nav">
               <a href="#about" className="bodyFont">About</a>
