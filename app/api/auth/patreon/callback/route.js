@@ -119,13 +119,17 @@ export async function GET(req) {
     /* -------------------------
        Create OR fetch user
     ------------------------- */
+    let username = email.split('@')[0];
+    username = username?.replace(/[^a-zA-Z0-9._-]/g, '');
+
     const { data: user, error: createUserError } =
         await supabase.auth.admin.createUser({
             email,
             email_confirm: true,
             user_metadata: {
                 provider: 'patreon',
-                patreon_id: patreonId
+                patreon_id: patreonId,
+                username
             }
         });
 

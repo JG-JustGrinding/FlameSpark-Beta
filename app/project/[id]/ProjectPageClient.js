@@ -701,7 +701,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
     return (
         <div className="project-page">
             <Header/>
-            <div className="container">
+            <div className="project-page-container">
                 <main className="main">
                     <div className="sections">
                         <div className="side">
@@ -726,7 +726,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
                         <div className="posts">
                             <div className="topbar">
                                 <div className="project-info">
-                                    <img className="project-icon" src={project?.icon}/>
+                                    <img className="project-page-project-icon" src={project?.icon}/>
                                     <h1 className="titleFont title-size">{project?.title}</h1>
                                 </div>
                                 {isOwner && 

@@ -48,7 +48,9 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
             : initialProfile?.email_newsletter ?? true
     );
     const maxProfilePicSizeMB = 2;
-    
+    const maxUsernameLength = 50;
+    const maxBioLength = 300;
+
     useEffect(() => {
         // get user metadata on load
         const getMetadata = async () => {
@@ -210,6 +212,21 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
 
             if (!user) return;
 
+            if (username.trim().length === 0) {
+                setProfileInfoError("Error: Username cannot be empty.");
+                return;
+            }
+
+            if (username.length > maxUsernameLength) {
+                setProfileInfoError(`Error: Username cannot exceed ${maxUsernameLength} characters.`);
+                return;
+            }
+
+            if (bio.length > maxBioLength) {
+                setProfileInfoError(`Error: Bio cannot exceed ${maxBioLength} characters.`);
+                return;
+            }
+
             const dataToUpdate = {};
             if (username !== undefined) dataToUpdate.username = username;
             if (bio !== undefined) dataToUpdate.bio = bio;
@@ -358,6 +375,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                                             setProfileInfoSuccess("");
                                             setProfileInfoError("");
                                         }}
+                                        maxLength={maxUsernameLength}
                                     />
                                 </div>
                                 <div className={styles.inputContainer}>
@@ -375,6 +393,7 @@ export default function AccountPageClient({ initialProfile, MAX_INTERESTS_COUNT 
                                             setProfileInfoSuccess("");
                                             setProfileInfoError("");
                                         }}
+                                        maxLength={maxBioLength}
                                     />
                                 </div>
                                 <div className={styles.inputContainer}>
