@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import "@/styles/landing.css";
+import socials from "@/lib/socials";
 
 export default function LandngPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -161,7 +162,7 @@ export default function LandngPage() {
               <div className="step-content">
                 <h3 className="titleFont">Complete</h3>
                 <div className="step-icon">
-                  <img src="/landing/complete.png" alt="Step 3" />
+                  <img src="/landing/Complete.png" alt="Step 3" />
                 </div>
                 <p className="bodyFont">
                 <b>
@@ -196,13 +197,13 @@ export default function LandngPage() {
               <p className="bodyFont">Read about the story of FlameSpark!</p>
               <span className="cta-card-arrow">→</span>
             </a>
-            <a href="/about" className="cta-card">
+            <a href={socials.discord} className="cta-card">
               <div className="cta-card-icon">🌎</div>
               <h3 className="titleFont">Join the FlameSpark Discord Community</h3>
               <p className="bodyFont">Become part of the FlameSpark Discord Community for updates, events, and conversation!</p>
               <span className="cta-card-arrow">→</span>
             </a>
-            <a href="/blogs" className="cta-card">
+            <a href={socials.linktree} className="cta-card" target="_blank">
               <div className="cta-card-icon">✨</div>
               <h3 className="titleFont">Find FlameSpark on Other Social Media</h3>
               <p className="bodyFont">Follow FlameSpark on other social media platforms for more content!</p>

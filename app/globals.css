@@ -250,10 +250,10 @@ input[type="file"] {
 }
 
 input.disabled, textarea.disabled, .disabled:not(.no-disable-coloring) {
-    cursor: default;
-    background-color: rgba(230, 230, 230, 0.3);
-    color: rgb(84, 84, 84);
-    opacity: 0.7;
+    cursor: default !important;
+    background-color: rgba(230, 230, 230, 0.3) !important;
+    color: rgb(84, 84, 84) !important;
+    opacity: 0.7 !important;
 }
 
 @keyframes shimmer {

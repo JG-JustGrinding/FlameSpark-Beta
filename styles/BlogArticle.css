@@ -204,8 +204,9 @@
 .article-cta {
     display: flex;
     gap: 16px;
-    margin-top: 48px;
     flex-wrap: wrap;
+    margin: 0 auto;
+    margin-top: 48px;
 }
 
 .article-cta .cta-button {
@@ -214,6 +215,7 @@
     text-decoration: none;
     transition: all 0.2s ease;
     border: 2px solid var(--flamespark-red);
+    margin: 0 auto;
 }
 
 .article-cta .cta-button:hover {

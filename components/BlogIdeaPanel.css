@@ -1,0 +1,47 @@
+.blog-idea-panel {
+    width: 100%;
+    max-width: 860px;
+}
+
+.blog-idea-panel.full-width {
+    max-width: 960px;
+}
+
+.blog-idea-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.blog-idea-form input,
+.blog-idea-form textarea {
+    width: 100%;
+}
+
+.blog-idea-footer {
+    background: var(--white);
+    padding: 12px 0 0 0;
+    border-top: 1px solid #eef2f7;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.blog-idea-footer .disabled {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .blog-idea-panel {
+        max-width: 100%;
+        padding-bottom: 0;
+    }
+
+    .blog-idea-footer {
+        padding: 12px 0 calc(12px + env(safe-area-inset-bottom));
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+}

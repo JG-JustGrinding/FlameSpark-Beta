@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import BlogCard from "@/components/BlogCard";
+import BlogIdeaCTA from "@/components/BlogIdeaCTA";
 import "@/styles/BlogsPage.css";
 
 export const metadata = {
@@ -90,6 +91,7 @@ export default function Blogs() {
               showDate={post.showDate}
             />
           ))}
+          <BlogIdeaCTA />
         </div>
 
         {blogPosts.length === 0 && (
