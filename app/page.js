@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import DiscoverClient from "./DiscoverClient";
 import { createServerClient } from "@/lib/supabaseServerClient";
 import PrimaryPageLayout from "@/components/PrimaryPageLayout";
