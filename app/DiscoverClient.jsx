@@ -170,7 +170,7 @@ export default function DiscoverClient({ initialProjects = [], initialError = ""
           setLoading={setLoading}
           fetchFunction={fetchProjects}
           renderItem={renderProject}
-          noneFoundMessage="No projects found."
+          noneFoundMessage=""
           noMoreObject={
             <div className="end-of-discover bodyFont">
               <h2 className="titleFont reset" style={{ fontSize: "1.25rem", fontWeight: 700, width: "100%" }}>

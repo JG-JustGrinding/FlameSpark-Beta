@@ -462,7 +462,7 @@ export default function Header({ isDashboardHeader = false, searchFieldText = ""
                     aria-haspopup="true"
                     aria-expanded={socialOpen}
                   >
-                    {socialEnabled && <FontAwesomeIcon className={styles.socialWrapperIcon} icon={faBullhorn} />}
+                    {socialEnabled && <FontAwesomeIcon className={styles.socialWrapperIcon} icon={faNewspaper} />}
                   </button>
                   <div ref={socialRef} className={`${styles.socialDropdown} ${socialOpen ? styles.open : ''}`}>
                     <a href="/blogs" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontWeight: 'bold', justifyContent: 'center' }}>
