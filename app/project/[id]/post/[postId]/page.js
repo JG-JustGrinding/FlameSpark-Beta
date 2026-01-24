@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import PostPageClient from "./PostPageClient.jsx";
 import ErrorPage from "@/components/error.jsx";
 import { getPost, getProject, fetchProjectPageOtherPosts, getPostRating } from "@/lib/projectFunctions";

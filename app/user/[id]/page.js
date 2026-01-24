@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Header from "@/components/Header";
 import UserClient from "./UserClient.jsx";
 import { supabase } from "@/lib/supabaseClient.js";

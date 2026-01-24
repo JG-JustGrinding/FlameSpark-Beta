@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import ExplorePageClient from "./ExplorePageClient";
 import { fetchExplorePagePostsNew } from "@/lib/projectFunctions";
 import { supabaseServerClient } from "@/lib/supabaseServerClient.js";

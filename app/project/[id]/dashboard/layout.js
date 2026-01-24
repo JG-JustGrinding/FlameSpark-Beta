@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import ErrorPage from "@/components/error";
 import Unauthorized from "@/components/Unauthorized";
 import { supabaseServerClient } from "@/lib/supabaseServerClient.js";

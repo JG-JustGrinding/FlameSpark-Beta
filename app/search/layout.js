@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
 	title: "Search - FlameSpark",
 	description: "Search projects, users, and content on FlameSpark.",

@@ -23,12 +23,12 @@ import CappedInput from "@/components/CappedInput";
 import InfiniteScroll from "@/lib/infinitePostFeed";
 import PanelOverlay from "@/components/PanelOverlay";
 
-export default function ProjectPage({ project, isOwner, hasJoined, initialPosts, otherProjects, filters = ["Recent", "Oldest", "Top"], pageSize = 10 }) {
+export default function ProjectPage({ project, isOwner, hasJoined, initialPosts, otherProjects, filters = ["Recent", "Oldest", "Top"], pageSize = 10, initialHasMore = true }) {
     const [projectPosts, setProjectPosts] = useState(initialPosts);
     const [fetchPage, setFetchPage] = useState(initialPosts?.length > 0 ? 0 : -1);
     const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
-
+    const [hasMore, setHasMore] = useState(initialHasMore || true);
+    
     const filterIcons = [faClock, faHourglass, faStar];
     const [selectedFilter, setSelectedFilter] = useState(0);
     const fromFilterChange = useRef(false); // to prevent double fetching on intial filter change
@@ -106,7 +106,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
 
         window.scrollTo(0, 0);
 
-        setLoading(true);
+        setLoading(initialHasMore);
         fromFilterChange.current = true;
         setSelectedFilter(index);
     }
@@ -122,7 +122,7 @@ export default function ProjectPage({ project, isOwner, hasJoined, initialPosts,
             
             setProjectPosts([]);
             setFetchPage(0);
-            setHasMore(true);
+            setHasMore(initialHasMore || true);
 
             const newPosts = await fetchPosts(id, 0, pageSize, filters[selectedFilter]);
 

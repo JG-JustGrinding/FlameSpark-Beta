@@ -72,6 +72,7 @@ export default async function ProjectPage({ params }) {
                     pageSize={pageSize}
                     filters={filters}
                     initialPosts={initialPosts}
+                    initialHasMore={initialPosts.length === pageSize}
                 />
             </>
         );
