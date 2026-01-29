@@ -8,7 +8,7 @@ import { supabaseServiceClient } from '@/lib/supabaseServiceClient';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const hoursLastNotificationThreshold = 12; // only send digest emails to users who haven't received a standard notification in the last # hours
-const daysBeforeSkipNewUsers = 3; // number of days to skip sending digest emails to new users
+const daysBeforeSkipNewUsers = 1; // number of days to skip sending digest emails to new users
 const digestNotificationMinCount = 3; // minimum number of notifications to send a digest email
 const digestNotificationMinWithHighPriorityCount = 5; // minimum number of notifications needed to send a digest email if at least one notification is high priority
 const highPriorityOverride = 10; // if a user has at least this many digest notifications, send digest regardless of total count
