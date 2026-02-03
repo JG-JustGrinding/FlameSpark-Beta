@@ -123,7 +123,7 @@ export default function LoginPage() {
                 <div className={styles.container}>
                     <div className={styles.topBar}>
                         <button className={`${styles.left} ${styles.button} button-shape bodyFont ${styles.cursorDefault}`}>Log In</button>
-                        <a href="/signup" className={`${styles.right} ${styles.button} button-shape bodyFont ${styles.off}`}>Sign Up</a>
+                        <a href={"/signup" + (mode == "admin" ? "?mode=admin" : "")} className={`${styles.right} ${styles.button} button-shape bodyFont ${styles.off}`}>Sign Up</a>
                     </div>
 
                     <h1 className={`titleFont header-size ${styles.mainTitle}`}>Log In to FlameSpark-Beta</h1>
@@ -170,7 +170,7 @@ export default function LoginPage() {
                                 onClick={handleGoogleLogin}><img src="/logo_google.png" />
                                 Login with Google
                             </button>}
-                            <p className={`label-color bodyFont ${styles.accountIf}`}>Don't have an account? <a href="/signup">sign up</a></p>
+                            <p className={`label-color bodyFont ${styles.accountIf}`}>Don't have an account? <a href={ mode == "admin" ? "/signup?mode=admin" : "/signup"}>sign up</a></p>
                         </div>
                     </div>}
                     {mode != "admin" && mode != "add_email" &&
@@ -185,7 +185,7 @@ export default function LoginPage() {
                             </button>
                             <div className={styles.bottomSection}>
                                 <div className={styles.bottom}>
-                                    <p className={`label-color bodyFont ${styles.accountIf}`}>Not a Member? <a href="/signup">sign up</a></p>
+                                    <p className={`label-color bodyFont ${styles.accountIf}`}>Not a Member? <a href={ mode == "admin" ? "/signup?mode=admin" : "/signup"}>sign up</a></p>
                                 </div>
                             </div>
                         </div>}

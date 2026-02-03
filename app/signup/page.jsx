@@ -104,7 +104,7 @@ export default function SignupPage() {
 
         <div className={styles.container}>
           <div className={styles.topBar}>
-            <a href="/login" className={`${styles.left} ${styles.button} button-shape bodyFont ${styles.off}`}>
+            <a href={"/login" + (mode == "admin" ? "?mode=admin" : "")} className={`${styles.left} ${styles.button} button-shape bodyFont ${styles.off}`}>
               Log In
             </a>
             <button className={`${styles.right} ${styles.button} button-shape bodyFont ${styles.cursorDefault}`}>Sign Up</button>
@@ -203,7 +203,7 @@ export default function SignupPage() {
 
               <div className={styles.bottom}>
                 <p className={`label-color reset bodyFont ${styles.accountIf}`} style={{ marginRight: '15px', marginBottom: '5px' }}>
-                  Already have an account? <Link href="/login">log in</Link>
+                  Already have an account? <Link href={mode == "admin" ? "login?mode=admin" : "/login"}>log in</Link>
                 </p>
                 <p className={`reset label-color bodyFont ${styles.accountIf}`}>
                   By signing up you agree to our <Link href="/privacy">Privacy Policy</Link>.
@@ -224,7 +224,7 @@ export default function SignupPage() {
             </button>
             <div className={styles.bottom}>
               <p className={`label-color reset bodyFont ${styles.accountIf}`} style={{ marginRight: '15px', marginBottom: '5px' }}>
-                Already a Member? <Link href="/login">log in</Link>
+                Already a Member? <Link href={mode == "admin" ? "login?mode=admin" : "/login"}>log in</Link>
               </p>
               <p className={`reset label-color bodyFont ${styles.accountIf}`}>
                 By signing up you agree to our <Link href="/privacy">Privacy Policy</Link>.
