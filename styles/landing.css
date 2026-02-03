@@ -522,7 +522,7 @@ html {
 
 .cta-card {
     padding: 40px;
-    background-color: var(--light-background);
+    background-color: #fff;
     border: 2px solid #ccc;
     border-radius: 16px;
     transition: all 0.3s ease;
