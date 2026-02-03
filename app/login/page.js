@@ -16,6 +16,7 @@ export default function LoginPage() {
     const searchParams = useSearchParams();
     const rawRedirect = searchParams.get("redirectUrl") || "/";
     const mode = searchParams.get("mode") || "";
+    const useEmailField = process.env.NEXT_PUBLIC_LOGIN_SIGNUP_WITH_EMAIL_FIELD;
 
     const sanitizeRedirect = (url) => {
         try {
@@ -123,12 +124,12 @@ export default function LoginPage() {
                 <div className={styles.container}>
                     <div className={styles.topBar}>
                         <button className={`${styles.left} ${styles.button} button-shape bodyFont ${styles.cursorDefault}`}>Log In</button>
-                        <a href={"/signup" + (mode == "admin" ? "?mode=admin" : "")} className={`${styles.right} ${styles.button} button-shape bodyFont ${styles.off}`}>Sign Up</a>
+                        <a href={"/signup" + (mode == useEmailField ? `?mode=${useEmailField}` : "")} className={`${styles.right} ${styles.button} button-shape bodyFont ${styles.off}`}>Sign Up</a>
                     </div>
 
                     <h1 className={`titleFont header-size ${styles.mainTitle}`}>Log In to FlameSpark-Beta</h1>
                     {error && <p className="error-message titleFont">Error: {error}</p>}
-                    {mode == "admin" && <div className={styles.authContent}>
+                    {mode == useEmailField && <div className={styles.authContent}>
                         <div className={styles.inputContainer}>
                             <div className={styles.label}>
                                 <FontAwesomeIcon icon={faEnvelope} />
@@ -170,10 +171,10 @@ export default function LoginPage() {
                                 onClick={handleGoogleLogin}><img src="/logo_google.png" />
                                 Login with Google
                             </button>}
-                            <p className={`label-color bodyFont ${styles.accountIf}`}>Don't have an account? <a href={ mode == "admin" ? "/signup?mode=admin" : "/signup"}>sign up</a></p>
+                            <p className={`label-color bodyFont ${styles.accountIf}`}>Don't have an account? <a href={ mode == useEmailField ? `/signup?mode=${useEmailField}` : "/signup"}>sign up</a></p>
                         </div>
                     </div>}
-                    {mode != "admin" && mode != "add_email" &&
+                    {mode != useEmailField && mode != "add_email" &&
                         <div className={styles.authContent}>
                             <p className="bodyFont reset">Login with your account connected to your FlameSpark Patreon Community membership.</p>
                             <button className={`button-shape ${styles.inputButton} bodyFont ${styles.red} ${styles.authButton}`}
@@ -185,7 +186,7 @@ export default function LoginPage() {
                             </button>
                             <div className={styles.bottomSection}>
                                 <div className={styles.bottom}>
-                                    <p className={`label-color bodyFont ${styles.accountIf}`}>Not a Member? <a href={ mode == "admin" ? "/signup?mode=admin" : "/signup"}>sign up</a></p>
+                                    <p className={`label-color bodyFont ${styles.accountIf}`}>Not a Member? <a href={ mode == useEmailField ? `/signup?mode=${useEmailField}` : "/signup"}>sign up</a></p>
                                 </div>
                             </div>
                         </div>}

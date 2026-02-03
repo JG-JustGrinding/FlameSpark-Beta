@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import Header from "@/components/Header";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -38,6 +38,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPatreonCommunityPanel, setShowPatreonCommunityPanel] = useState(false);
+  const useEmailField = process.env.NEXT_PUBLIC_LOGIN_SIGNUP_WITH_EMAIL_FIELD;
 
   const handleSignup = async () => {
     setError("");
@@ -104,7 +105,7 @@ export default function SignupPage() {
 
         <div className={styles.container}>
           <div className={styles.topBar}>
-            <a href={"/login" + (mode == "admin" ? "?mode=admin" : "")} className={`${styles.left} ${styles.button} button-shape bodyFont ${styles.off}`}>
+            <a href={"/login" + (mode == useEmailField ? `?mode=${useEmailField}` : "")} className={`${styles.left} ${styles.button} button-shape bodyFont ${styles.off}`}>
               Log In
             </a>
             <button className={`${styles.right} ${styles.button} button-shape bodyFont ${styles.cursorDefault}`}>Sign Up</button>
@@ -114,7 +115,7 @@ export default function SignupPage() {
 
           {error && <p className="titleFont error-message">{error}</p>}
 
-          {mode == "admin" && <div className={styles.authContent}>
+          {mode == useEmailField && <div className={styles.authContent}>
             <div className={styles.inputContainer}>
               <div className={styles.label}>
                 <FontAwesomeIcon icon={faKey} />
@@ -203,7 +204,7 @@ export default function SignupPage() {
 
               <div className={styles.bottom}>
                 <p className={`label-color reset bodyFont ${styles.accountIf}`} style={{ marginRight: '15px', marginBottom: '5px' }}>
-                  Already have an account? <Link href={mode == "admin" ? "login?mode=admin" : "/login"}>log in</Link>
+                  Already have an account? <Link href={mode == useEmailField ? `login?mode=${useEmailField}` : "/login"}>log in</Link>
                 </p>
                 <p className={`reset label-color bodyFont ${styles.accountIf}`}>
                   By signing up you agree to our <Link href="/privacy">Privacy Policy</Link>.
@@ -211,7 +212,7 @@ export default function SignupPage() {
               </div>
             </div>
           </div>}
-          {mode != "admin" && <div className={styles.authContent}>
+          {mode != useEmailField && <div className={styles.authContent}>
             <p className="bodyFont body-size">
               Access to FlameSpark-Beta is granted by supporting the development of FlameSpark through joining the FlameSpark Patreon Community. Please visit our Patreon to sign up!
             </p>
@@ -224,7 +225,7 @@ export default function SignupPage() {
             </button>
             <div className={styles.bottom}>
               <p className={`label-color reset bodyFont ${styles.accountIf}`} style={{ marginRight: '15px', marginBottom: '5px' }}>
-                Already a Member? <Link href={mode == "admin" ? "login?mode=admin" : "/login"}>log in</Link>
+                Already a Member? <Link href={mode == useEmailField ? `login?mode=${useEmailField}` : "/login"}>log in</Link>
               </p>
               <p className={`reset label-color bodyFont ${styles.accountIf}`}>
                 By signing up you agree to our <Link href="/privacy">Privacy Policy</Link>.
